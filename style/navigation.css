@@ -1,0 +1,119 @@
+.navigation-container {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+
+  width: 100%;
+  height: fit-content;
+}
+
+.navigation {
+  position: relative;
+
+  width: fit-content;
+  height: 80px;
+
+  padding: 10px;
+
+  background-color: var(--secondary-faded-1);
+  border: 1px solid var(--secondary-faded-2);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  z-index: 100;
+}
+
+.navigation-button {
+  width: 80px;
+  height: 80px;
+
+  margin-left: 5px;
+
+  background-color: var(--secondary-faded-2);
+  border: 1px solid var(--secondary-faded-3);
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  color: var(--secondary-faded-4);
+
+  cursor: pointer;
+}
+
+.navigation-button:hover {
+
+  background-color: var(--secondary-faded-3);
+  border: 1px solid var(--secondary-faded-4);
+  color: var(--primary-faded-4);
+}
+
+.navigation-button svg {
+  height: 40px;
+}
+
+.navigation-button.logo {
+  margin-left: 0;
+
+  background-image: url("../media/logo.png");
+  /*background fills the shape*/
+  background-size: cover;
+  border-radius: 5px;
+}
+
+.navigation-button.logo:hover {
+  scale: 0.95;
+
+  transition-duration: 0.2s;
+}
+
+.navigation-button.logo:active {
+  scale: 0.9;
+}
+
+.nav-modal-container {
+  position: fixed;
+  bottom: 130px;
+  left: 0;
+
+  width: 100vw;
+
+}
+
+.nav-modal {
+  position: relative;
+
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 440px;
+  background-color: var(--secondary-faded-1);
+  border: 1px solid var(--secondary-faded-2);
+  border-radius: 10px;
+}
+
+.nav-modal-settings .modal-content {
+  gap: 10px;
+}
+
+.nav-modal-settings .modal-content .button {
+  width: 420px;
+  height: 40px;
+
+  gap: 5px;
+
+  background-color: var(--secondary-faded-2);
+  border: 1px solid var(--secondary-faded-3);
+  border-radius: 5px;
+
+  color: var(--primary);
+
+  user-select: none;
+  cursor: pointer;
+}
+
+.nav-modal-settings .modal-content .button:hover {
+  background-color: var(--secondary-faded-3);
+  border: 1px solid var(--secondary-faded-4);
+}
+
+.nav-modal-help {
+  text-align: center;
+}
