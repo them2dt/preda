@@ -16,6 +16,7 @@ export default function Home() {
       data-theme={theme == 0 ? "light" : "dark"}
     >
       <Header panel={panel} setPanel={setPanel} theme={theme} />
+      <div id="mainboard"></div>
       <Navigation
         theme={theme}
         toggleTheme={() => setTheme(theme == 0 ? 1 : 0)}
