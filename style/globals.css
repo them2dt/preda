@@ -1,0 +1,338 @@
+@font-face {
+    font-family: "satoshi";
+    src: url(./fonts/Satoshi-Variable.ttf);
+}
+
+/* This file is a global stylesheet that contains the following:
+    - a font-face for the Satoshi font
+    - a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades
+    - a light and a dark variant for the following elements: primary, primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4)
+    - a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights
+    - a set of classes for display:flex variations - like .flex-(row / column)-(justify-content)-(align-items)
+    - a markdown-text explaining this file
+*/
+
+
+/*the scrollbar should be invisible and the page should still be scrollable*/
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--secondary);
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "satoshi";
+    background-color: var(--secondary);
+    color: var(--secondary);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: var(--accent);
+}
+
+/*a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades, lets take a #B763FF for the accent*/
+
+:root {
+
+    --black-1: #000000;
+    --black-2: #1A1A1A;
+    --black-3: #333333;
+    --black-4: #4D4D4D;
+    --black-5: #666666;
+
+    --white-1: #FFFFFF;
+    --white-2: #F2F2F2;
+    --white-3: #E5E5E5;
+    --white-4: #D9D9D9;
+    --white-5: #CCCCCC;
+
+    --accent-1: #B763FF;
+    --accent-2: #C17DFF;
+    --accent-3: #CA97FF;
+    --accent-4: #D3B1FF;
+    --accent-5: #DCCBFF;
+}
+
+/*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
+
+[data-theme="light"] {
+    --primary: var(--black-1);
+    --primary-faded-1: var(--black-2);
+    --primary-faded-2: var(--black-3);
+    --primary-faded-3: var(--black-4);
+    --primary-faded-4: var(--black-5);
+
+    --secondary: var(--white-1);
+    --secondary-faded-1: var(--white-2);
+    --secondary-faded-2: var(--white-3);
+    --secondary-faded-3: var(--white-4);
+    --secondary-faded-4: var(--white-5);
+
+    --accent: var(--accent-1);
+    --accent-faded-1: var(--accent-2);
+    --accent-faded-2: var(--accent-3);
+    --accent-faded-3: var(--accent-4);
+    --accent-faded-4: var(--accent-5);
+}
+
+[data-theme="dark"] {
+    --primary: var(--white-1);
+    --primary-faded-1: var(--white-2);
+    --primary-faded-2: var(--white-3);
+    --primary-faded-3: var(--white-4);
+    --primary-faded-4: var(--white-5);
+
+    --secondary: var(--black-1);
+    --secondary-faded-1: var(--black-2);
+    --secondary-faded-2: var(--black-3);
+    --secondary-faded-3: var(--black-4);
+    --secondary-faded-4: var(--black-5);
+
+    --accent: var(--accent-1);
+    --accent-faded-1: var(--accent-2);
+    --accent-faded-2: var(--accent-3);
+    --accent-faded-3: var(--accent-4);
+    --accent-faded-4: var(--accent-5);
+}
+
+/* a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/
+
+.font-h1 {
+    font-family: "satoshi";
+    font-size: 52px;
+    font-weight: 1000;
+}
+
+.font-h2 {
+    font-family: "satoshi";
+    font-size: 40px;
+    font-weight: 1000;
+}
+
+.font-h3 {
+    font-family: "satoshi";
+    font-size: 28px;
+    font-weight: 1000;
+}
+
+.font-h4 {
+    font-family: "satoshi";
+    font-size: 22px;
+    font-weight: 1000;
+}
+
+.font-text {
+    font-family: "satoshi";
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.font-text-bold {
+    font-family: "satoshi";
+    font-size: 18px;
+    font-weight: 1000;
+}
+
+.font-text-light {
+    font-family: "satoshi";
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.font-text-small {
+    font-family: "satoshi";
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.font-text-small-bold {
+    font-family: "satoshi";
+    font-size: 16px;
+    font-weight: 1000;
+}
+
+.font-text-small-light {
+    font-family: "satoshi";
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.font-text-tiny {
+    font-family: "satoshi";
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.font-text-tiny-bold {
+    font-family: "satoshi";
+    font-size: 14px;
+    font-weight: 1000;
+}
+
+.font-text-tiny-light {
+    font-family: "satoshi";
+    font-size: 14px;
+    font-weight: 300;
+}
+
+/* a set of classes for display:flex variations, like this: .flex-(row / column)-(justify-content)-(align-items)*/
+/*row-start**/
+.flex-row-start-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+}
+
+.flex-row-start-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.flex-row-start-end {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: end;
+}
+
+/*row-center**/
+.flex-row-center-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: start;
+}
+
+.flex-row-center-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-row-center-end {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: end;
+}
+
+/*row-end**/
+.flex-row-end-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: start;
+}
+
+.flex-row-end-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+}
+
+.flex-row-end-end {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+}
+
+.flex-row-between-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.flex-row-between-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-row-between-end {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.flex-column-center-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-column-center-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+.flex-column-center-end {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+}
+
+.flex-column-start-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.flex-column-start-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+
+.flex-column-start-end {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: end;
+}
+
+.flex-column-end-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+}
+
+.flex-column-end-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
+}
+
+.flex-column-end-end {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+}
