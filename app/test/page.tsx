@@ -20,16 +20,23 @@ export default function page() {
     }
     console.log("RPC URL: " + connection.rpcEndpoint);
   }, [wallet, connection]);
-  
+
   // function to be tested
-  const testingFunction = () => {
+  const testingFunction = async () => {
     console.log("Function 1 executed");
   };
   return (
     <>
       <div className="testfield flex-column-center-center">
         <div className="font-h1">Playground</div>
-        <button style={{ marginTop: "20px" }}>Execute Function 1</button>
+        <button
+          style={{ marginTop: "20px" }}
+          onClick={() => {
+            testingFunction();
+          }}
+        >
+          Execute Function 1
+        </button>
         <Navigation />
       </div>
     </>
