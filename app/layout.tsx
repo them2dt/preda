@@ -7,10 +7,11 @@ import "../style/adapter.css";
 import "../style/profile.css";
 import "../style/leaderboard.css";
 import "../style/gallery.css";
-import "../style/create.css";
+//
+import "../style/panels/nft/create.css";
+
 // imports
 import { useMemo } from "react";
-import type { Metadata } from "next";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 import {

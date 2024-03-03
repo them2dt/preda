@@ -4,7 +4,7 @@ import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 
-export default function Create() {
+export default function CreateNFTPanel() {
   const [attributeModal, setAttributeModal] = useState(false);
   //rerenders the attribute-modal on every change.
   const [renderHook, setRenderHook] = useState(0);
@@ -44,35 +44,6 @@ export default function Create() {
         >
           {/**Every operation is done in here.*/}
           <m.div className="editor">
-            <m.div className="switch font-text-small">
-              <m.div
-                onClick={() => {
-                  //setType(0);
-                }}
-                //className={type == 0 ? "active" : "inactive"}
-                transition={{ duration: 0.1 }}
-              >
-                NFT
-              </m.div>
-              <m.div
-                onClick={() => {
-                  //setType(1);
-                }}
-                //className={type == 1 ? "active" : "inactive"}
-                transition={{ duration: 0.1 }}
-              >
-                cNFT
-              </m.div>
-              <m.div
-                onClick={() => {
-                  //setType(2);
-                }}
-                //className={type == 2 ? "active" : "inactive"}
-                transition={{ duration: 0.1 }}
-              >
-                pNFT
-              </m.div>
-            </m.div>
             <m.div className="form">
               <input
                 type="text"
@@ -80,7 +51,16 @@ export default function Create() {
                 placeholder="Name"
                 className="font-text-small"
                 onChange={(e) => {
-                  // setTitle(e.target.value);
+                  setTitle(e.target.value);
+                }}
+              />
+              <input
+                type="text"
+                name="symbol"
+                placeholder="Symbol"
+                className="font-text-small"
+                onChange={(e) => {
+                  setSymbol(e.target.value);
                 }}
               />
               <textarea
@@ -89,14 +69,13 @@ export default function Create() {
                 placeholder="Description"
                 className="font-text-small"
                 onChange={(e) => {
-                  // setDescription(e.target.value);
+                  setDescription(e.target.value);
                 }}
               />
-              <m.div className="attributes"></m.div>
               <m.div
-                className="attributes-button font-text-bold"
+                className="attributes-button font-text"
                 onClick={() => {
-                  // setModal(1);
+                  setAttributeModal(true);
                 }}
               >
                 add attributes
@@ -209,7 +188,7 @@ export default function Create() {
                     />
                   </div>
                   <button
-                    className="submit font-text-bold"
+                    className="submit font-text"
                     type="submit"
                     disabled={!key || !value}
                     onClick={() => {
