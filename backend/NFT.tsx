@@ -3,7 +3,7 @@ import { Connection, PublicKey, Transaction, TransactionInstruction } from "@sol
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import mplTokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import { clusterApiUrl } from "@solana/web3.js";
-import { useConnection, useWallet } from "@solana/wallet-adapter";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { ShdwDrive } from "@shadow-drive/sdk";
 
 /**
@@ -18,7 +18,7 @@ const createStandardNFT = async (file, connection, wallet) => {
   const drive = new ShdwDrive(connection, wallet);
   try {
     await drive.init();
-  } catch (e) {
+  } catch (e: Error) {
     throw new Error("Failed to initialize ShdwDrive: " + e.message);
   }
 
@@ -55,12 +55,12 @@ const createStandardNFT = async (file, connection, wallet) => {
     console.log("NFT created:", nft);
 
     return nft.transactionSignature; // Return the transaction signature
-  } catch (e) {
+  } catch (e: Error) {
     throw new Error("Error in NFT creation: " + e.message);
   }
 };
 
-const MyComponent = () => {
+export const MyComponent = () => {
   // Initialize the file state variable with a default file
   const [file, setFile] = useState(
     new File(["Max Mustermann"], "muster.png", { type: "image/png" })
@@ -78,7 +78,7 @@ const MyComponent = () => {
     .catch((error) => {
       console.error("Error creating NFT:", error);
     });
-    return (
+   /* return (
       <div>
         <h1>Create NFT</h1>
         <form>
@@ -96,5 +96,5 @@ const MyComponent = () => {
           </button>
         </form>
       </div>
-    );
+    ); *
 };
