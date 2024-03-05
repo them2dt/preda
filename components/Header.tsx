@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion as m } from "framer-motion";
+import MyComponent from "../backend/NFT"
 
 export default function Header({
   panel,
@@ -41,6 +42,13 @@ export default function Header({
               NFT
             </m.div>
             <m.div className="header-operation">Create</m.div>
+            <MyComponent
+              file={null}
+              setFile={null}
+              connection={null}
+              wallet={null}
+              onCreate={() => {}}
+            />
             <m.div className="header-operation">Duplicate</m.div>
             <m.div className="header-operation">Edit</m.div>
             <m.div className="header-operation">Burn</m.div>
