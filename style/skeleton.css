@@ -67,7 +67,7 @@
     color: var(--primary-faded-4);
 }
 
-#mainboard {
+#mainboard{
     width: 100vw;
     height: calc(100vh - 202px);
 
