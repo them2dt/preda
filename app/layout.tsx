@@ -7,10 +7,11 @@ import "../style/adapter.css";
 import "../style/profile.css";
 import "../style/leaderboard.css";
 import "../style/gallery.css";
-import "../style/create.css";
+//
+import "../style/panels/nft/create.css";
+
 // imports
 import { useMemo } from "react";
-import type { Metadata } from "next";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 import {
@@ -26,7 +27,7 @@ export default function RootLayout({
 }>) {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(() => "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc", [network]);
   const wallets = useMemo(() => [], [network]);
 
   return (
