@@ -27,7 +27,11 @@ export default function page() {
     console.log("Function 1 executed");
     console.log("Image name: " + (image?.name || "No image selected"));
     if (image) {
-      await uploadFileToIrys(wallet, connection, image);
+      if (wallet.wallet) {
+        await uploadFileToIrys(wallet.wallet, connection, image);
+      } else {
+        console.log("Wallet is null");
+      }
     } else {
       console.log("No image selected");
     }
