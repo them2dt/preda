@@ -70,7 +70,7 @@ export async function uploadFileToIrys(
   wallet: Wallet,
   connection: Connection,
   file: File
-): Promise<any> {
+): Promise<string> {
   const bundler = await getIrys(wallet);
   const state = await bundler.ready();
   console.log("Irys state: " + state.address);
@@ -82,29 +82,17 @@ export async function uploadFileToIrys(
 
   const fileArrayBuffer = await file.arrayBuffer();
   const fileBuffer = Buffer.from(fileArrayBuffer);
+  console.log("creating transaction...");
   const imageUpload = bundler.createTransaction(fileBuffer, {
     tags: [{ name: "Content-Type", value: file.type }],
   });
+  console.log("creating transaction...");
+  const sign = await imageUpload.sign();
+  console.log("executing transaction...");
+  const upload = await imageUpload.upload();
+  console.log("FINAL: https://arweave.net/$" + upload.id);
 
-  if (funds.id) {
-    setTimeout(async () => {
-      console.log("timeout done.");
-      console.log("Uploading...");
-      try {
-        await imageUpload.upload().then((result) => {
-          if (result.id) {
-            console.log("Image uploaded to Irys: " + result.id);
-          } else {
-            console.log("Image upload failed");
-          }
-        });
-      } catch (error) {
-        console.log("IRYS-Error: " + error);
-      }
-    }, 1000);
-  } else {
-    console.log("Funds not found");
-  }
+  return "https://arweave.net/" + upload.id;
 }
 //function which takes required arguments like name, description, file and metadata and returns a metadata object
 export async function generateMetadata({}: any): Promise<any> {}
