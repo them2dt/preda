@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import { CustomSlider } from "@/components/ui/Slider";
+import { validateImage } from "@/backend/General";
 
 export default function CreateNFTPanel() {
   const [attributeModal, setAttributeModal] = useState(false);
@@ -14,9 +16,12 @@ export default function CreateNFTPanel() {
   const [symbol, setSymbol] = useState("-");
   //sets the description of NFT.
   const [description, setDescription] = useState("-");
-  //sets the image-url of NFT.
+  //sets the image of NFT.
   const [image, setImage] = useState();
+  //sets the image-preview of NFT.
+  const [imagePreview, setImagePreview] = useState();
   //sets the title of NFT.
+  const [sliderValue, setSliderValue] = useState(0);
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
 
   const [attributes, setAttributes] = useState(
@@ -72,6 +77,29 @@ export default function CreateNFTPanel() {
                   setDescription(e.target.value);
                 }}
               />
+              <div className="royalties flex-column-center-center">
+                <div className="legend flex-row-between-center">
+                  <div className="font-text-small">royalties</div>
+                  <div className="font-text-small-bold">{sliderValue}%</div>
+                </div>
+                <div className="slider-container">
+                  <CustomSlider
+                    min={0}
+                    max={20}
+                    step={1}
+                    value={sliderValue}
+                    onChange={(
+                      event: Event,
+                      value: number | number[],
+                      activeThumb: number
+                    ) => {
+                      if (typeof value == "number") {
+                        setSliderValue(value);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
               <m.div
                 className="attributes-button font-text"
                 onClick={() => {
@@ -88,20 +116,33 @@ export default function CreateNFTPanel() {
               <m.div
                 className="image"
                 onClick={() => {
-                  //document.getElementById("image-input").click();
+                  const imageInput = document.getElementById("image-input");
+                  if (imageInput) {
+                    imageInput.click();
+                  }
                 }}
               >
-                <div className="placeholder font-text-small">
-                  click here to import an image
-                </div>
+                {image ? (
+                  <img src={imagePreview} />
+                ) : (
+                  <div className="placeholder font-text-small">
+                    click here to import an image
+                  </div>
+                )}
                 <input
                   type="file"
                   name="cover"
                   id="image-input"
                   accept="image/png"
                   onChange={(e) => {
-                    //checkImage(e.target.files[0]);
-                    //console.log(e.target.files[0].name);
+                    if (e.target.files && e.target.files[0]) {
+                      validateImage(
+                        e.target.files[0],
+                        setImage,
+                        setImagePreview
+                      );
+                      console.log(e.target.files[0].name);
+                    }
                   }}
                 />
               </m.div>

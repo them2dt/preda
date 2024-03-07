@@ -1,18 +1,12 @@
 //TODO: Implement the functions.
 
-import {
-  WalletContextState,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
+import { Wallet } from "@solana/wallet-adapter-react";
 
 //solana
 import { Connection } from "@solana/web3.js";
-//metaplex
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
-import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { createGenericFile } from "@metaplex-foundation/umi";
+//Irys
+import { WebIrys } from "@irys/sdk";
+import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
 
 //NOTIZ: DAS FUNKTIONIERT - LUEG BI /TEST
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
@@ -54,24 +48,63 @@ export async function validateImage(
   return false;
 }
 
+const getIrys = async (wallet: Wallet) => {
+  const providerUrl =
+    "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc";
+
+  const useProvider = wallet?.adapter as Adapter;
+  await useProvider.connect();
+
+  const irys = new WebIrys({
+    url: "https://devnet.irys.xyz", // URL of the node you want to connect to
+    token: "solana", // Token used for payment
+    wallet: {
+      provider: useProvider,
+    },
+    config: { providerUrl }, // Optional provider URL, only required when using Devnet
+  });
+  return irys;
+};
 //function which takes a file and uploads it to the arweave network using the irys-sdk
 export async function uploadFileToIrys(
-  wallet: WalletContextState,
+  wallet: Wallet,
   connection: Connection,
   file: File
 ): Promise<any> {
-  const fileBuffer = await file.arrayBuffer();
-  const fileArray = new Uint8Array(fileBuffer); // Convert ArrayBuffer to Uint8Array
-  const genericFile = createGenericFile(fileArray, "test.txt", {
-    contentType: "text/txt",
+  const bundler = await getIrys(wallet);
+  const state = await bundler.ready();
+  console.log("Irys state: " + state.address);
+  const imagePrice = await bundler.getPrice(file.size + 1048576);
+  const funds = await bundler.fund(imagePrice);
+
+  console.log("Image price: " + imagePrice);
+  console.log("Funds: " + funds.id);
+
+  const fileArrayBuffer = await file.arrayBuffer();
+  const fileBuffer = Buffer.from(fileArrayBuffer);
+  const imageUpload = bundler.createTransaction(fileBuffer, {
+    tags: [{ name: "Content-Type", value: file.type }],
   });
 
-  const umi = createUmi(connection); //create umi
-  irysUploader().install(umi);
-  umi.use(irysUploader()); //install irys-uploader-plugin
-  umi.use(walletAdapterIdentity(wallet)); //install wallet-adapter-identity
-  const [uri] = await umi.uploader.upload([genericFile]); //upload file to irys and get the uri
-  console.log(uri);
+  if (funds.id) {
+    setTimeout(async () => {
+      console.log("timeout done.");
+      console.log("Uploading...");
+      try {
+        await imageUpload.upload().then((result) => {
+          if (result.id) {
+            console.log("Image uploaded to Irys: " + result.id);
+          } else {
+            console.log("Image upload failed");
+          }
+        });
+      } catch (error) {
+        console.log("IRYS-Error: " + error);
+      }
+    }, 1000);
+  } else {
+    console.log("Funds not found");
+  }
 }
 //function which takes required arguments like name, description, file and metadata and returns a metadata object
 export async function generateMetadata({}: any): Promise<any> {}
