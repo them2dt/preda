@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@irys/sdk": "^0.1.14",
@@ -16,6 +18,8 @@
     "@metaplex-foundation/umi-bundle-defaults": "^0.9.1",
     "@metaplex-foundation/umi-signer-wallet-adapters": "^0.9.1",
     "@metaplex-foundation/umi-uploader-irys": "^0.9.1",
+    "@mui/base": "^5.0.0-beta.38",
+    "@mui/system": "^5.15.12",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",

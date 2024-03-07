@@ -1,25 +1,11 @@
 //TODO: Implement the functions.
 
-import {
-  Wallet,
-  WalletContextState,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
+import { Wallet } from "@solana/wallet-adapter-react";
 
 //solana
 import { Connection } from "@solana/web3.js";
-//metaplex
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
-import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { createGenericFile } from "@metaplex-foundation/umi";
 //Irys
 import { WebIrys } from "@irys/sdk";
-import {
-  PhantomWalletAdapter,
-  WalletConnectWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
 import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
 
 //NOTIZ: DAS FUNKTIONIERT - LUEG BI /TEST
@@ -62,7 +48,7 @@ export async function validateImage(
   return false;
 }
 
-const getIrys = async (wallet:Wallet) => {
+const getIrys = async (wallet: Wallet) => {
   const providerUrl =
     "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc";
 
@@ -79,25 +65,20 @@ const getIrys = async (wallet:Wallet) => {
   });
   return irys;
 };
-
 //function which takes a file and uploads it to the arweave network using the irys-sdk
 export async function uploadFileToIrys(
   wallet: Wallet,
   connection: Connection,
   file: File
 ): Promise<any> {
-  /*
-  const fileBuffer = await file.arrayBuffer();
-  const fileArray = new Uint8Array(fileBuffer); // Convert ArrayBuffer to Uint8Array
-  const genericFile = createGenericFile(fileArray, "test.txt", {
-    contentType: "text/txt",
-  });
-  */
-
   const bundler = await getIrys(wallet);
-  await bundler.ready();
+  const state = await bundler.ready();
+  console.log("Irys state: " + state.address);
   const imagePrice = await bundler.getPrice(file.size + 1048576);
   const funds = await bundler.fund(imagePrice);
+
+  console.log("Image price: " + imagePrice);
+  console.log("Funds: " + funds.id);
 
   const fileArrayBuffer = await file.arrayBuffer();
   const fileBuffer = Buffer.from(fileArrayBuffer);
@@ -105,12 +86,24 @@ export async function uploadFileToIrys(
     tags: [{ name: "Content-Type", value: file.type }],
   });
 
-  const imageResult = await imageUpload.upload();
-  const imageUri = `https://arweave.net/${imageResult.id}`;
-  if (imageUri) {
-    console.log("Image uploaded to Irys: " + imageUri);
+  if (funds.id) {
+    setTimeout(async () => {
+      console.log("timeout done.");
+      console.log("Uploading...");
+      try {
+        await imageUpload.upload().then((result) => {
+          if (result.id) {
+            console.log("Image uploaded to Irys: " + result.id);
+          } else {
+            console.log("Image upload failed");
+          }
+        });
+      } catch (error) {
+        console.log("IRYS-Error: " + error);
+      }
+    }, 1000);
   } else {
-    console.log("Image upload failed");
+    console.log("Funds not found");
   }
 }
 //function which takes required arguments like name, description, file and metadata and returns a metadata object

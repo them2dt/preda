@@ -50,12 +50,36 @@
 }
 
 #mainboard .panel.create .editor .form textarea {
-    height: 260px;
+    height: 140px;
     resize: none;
 }
 
 #mainboard .panel.create .editor .form textarea::-webkit-scrollbar {
     display: none;
+}
+
+#mainboard .panel.create .editor .form .royalties {
+    width: 300px;
+    height: 115px;
+    padding: 20px;
+
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#mainboard .panel.create .editor .form .royalties .slider-container {
+    width: 200px;
+}
+
+#mainboard .panel.create .editor .form .royalties .legend {
+    width: 300px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    box-sizing: border-box;
+
+
 }
 
 #mainboard .panel.create .editor .attributes-button {
@@ -77,6 +101,8 @@
 
     cursor: pointer;
 }
+
+
 
 #mainboard .panel.create .editor .attributes-button:hover {
     background-color: var(--secondary-faded-3);
@@ -131,6 +157,8 @@
     color: var(--primary);
 }
 
+
+
 #image-input {
     display: none;
 }
@@ -162,6 +190,134 @@
     transition-duration: 0.2s;
 }
 
+
+#backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    background-color: var(--primary-foil);
+    backdrop-filter: blur(8px);
+
+    z-index: 100;
+}
+
+#backdrop .close-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    color: var(--primary);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 0.2s;
+
+}
+
+#backdrop .close-button:hover {
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+}
+
+
+
+
+
+#backdrop .modal {
+    position: relative;
+
+    width: fit-content;
+    height: fit-content;
+
+    padding: 20px;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 20px;
+}
+
+#backdrop .modal .create-attributes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#backdrop .modal .create-attributes form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 10px;
+}
+
+#backdrop .modal .create-attributes .input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#backdrop .modal .create-attributes input {
+    width: 300px;
+    height: 20px;
+
+    padding: 10px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    outline: none;
+    color: var(--primary);
+}
+
+
+
+#backdrop .modal .create-attributes .submit {
+
+    width: 654px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
+    outline: none;
+    color: var(--white);
+
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+
+#backdrop .modal .create-attributes .submit:disabled {
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-2);
+    color: var(--secondary);
+    cursor: not-allowed;
+    transition-duration: 0.2s;
+
+}
+
+#backdrop .modal .create-attributes .submit:not(:disabled):hover {
+    background-color: var(--accent-faded-1);
+}
+
 #backdrop .attributes {
     display: flex;
     align-items: center;
@@ -183,10 +339,11 @@
     justify-self: center;
     gap: 10px;
 
-    padding: 5px 20px;
+    padding: 10px 20px;
     border: 1px solid var(--secondary-faded-3);
     border-radius: 50px;
     cursor: pointer;
+    user-select: none;
 }
 
 #backdrop .attributes .attribute .line {
