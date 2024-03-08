@@ -146,9 +146,16 @@
     border: 1px solid var(--secondary-faded-3);
     border-radius: 10px;
     box-sizing: border-box;
+    overflow: hidden;
 
     color: var(--primary-faded-4);
     cursor: pointer;
+}
+
+#mainboard .panel.create .preview .content .image img {
+
+    width: 300px;
+    height: 300px;
 }
 
 #mainboard .panel.create .preview .content .image:hover {
