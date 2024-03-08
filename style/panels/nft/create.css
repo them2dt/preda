@@ -197,6 +197,12 @@
     transition-duration: 0.2s;
 }
 
+#mainboard .panel.create .preview .submit:disabled {
+    background-color: var(--secondary-faded-2);
+    border-color: var(--secondary-faded-3);
+    color: var(--primary-faded-4);
+    cursor: not-allowed;
+}
 
 #backdrop {
     position: fixed;

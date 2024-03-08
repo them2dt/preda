@@ -38,12 +38,15 @@ export default function CreateNFTPanel() {
     }
   };
 
-  //TODO
   const createNFT = () => {
-    console.log("NFT created.");
-    enqueueSnackbar("Fill out the empty fields.", {
-      variant: "error",
-    });
+    if (!title || !symbol || !description || !image) {
+      enqueueSnackbar("Fill out the empty fields.", {
+        variant: "error",
+      });
+    } else {
+      console.log("Creating the NFT function.");
+      //TODO
+    }
   };
 
   return (
@@ -157,8 +160,14 @@ export default function CreateNFTPanel() {
                   }}
                 />
               </m.div>
-              <button className="submit font-text-bold" onClick={createNFT}>
-                create
+              <button
+                className="submit font-text-bold"
+                disabled={!title || !symbol || !description || !image}
+                onClick={createNFT}
+              >
+                {!title || !symbol || !description || !image
+                  ? "fill out missing fields"
+                  : "create"}
               </button>
             </m.div>
           </m.div>
