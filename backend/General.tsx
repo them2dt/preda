@@ -7,6 +7,7 @@ import { Connection } from "@solana/web3.js";
 //Irys
 import { WebIrys } from "@irys/sdk";
 import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
+import { enqueueSnackbar } from "notistack";
 
 //NOTIZ: DAS FUNKTIONIERT - LUEG BI /TEST
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
@@ -27,18 +28,22 @@ export async function validateImage(
           if (img.width == img.height) {
             // Check if image is square
             setImage(input); // Set the image if it meets the criteria
-            console.log("match!");
+            enqueueSnackbar("Image is valid", { variant: "success" });
             setImagePreview([reader.result]);
             return true; // Return the image if it meets the criteria
           } else {
             console.log("not square");
+            enqueueSnackbar("Image has to be square format.", {
+              variant: "warning",
+            });
             return false; // Return undefined if image is not square
           }
         };
       };
       reader.readAsDataURL(input); // Read the image file
     } else {
-      console.log("not a png");
+      enqueueSnackbar("Image has to be a png.", { variant: "warning" });
+
       return false; // Return undefined if input type is not PNG
     }
   } else {

@@ -5,36 +5,48 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { CustomSlider } from "@/components/ui/Slider";
 import { validateImage } from "@/backend/General";
+import { enqueueSnackbar } from "notistack";
 
 export default function CreateNFTPanel() {
   const [attributeModal, setAttributeModal] = useState(false);
   //rerenders the attribute-modal on every change.
-  const [renderHook, setRenderHook] = useState(0);
+  const [renderHook, setRenderHook] = useState<number>(0);
   //sets the title of NFT.
-  const [title, setTitle] = useState("-");
+  const [title, setTitle] = useState<string>();
   //sets the symbol of NFT.
-  const [symbol, setSymbol] = useState("-");
+  const [symbol, setSymbol] = useState<string>();
   //sets the description of NFT.
-  const [description, setDescription] = useState("-");
+  const [description, setDescription] = useState<string>();
   //sets the image of NFT.
   const [image, setImage] = useState();
   //sets the image-preview of NFT.
   const [imagePreview, setImagePreview] = useState();
   //sets the title of NFT.
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState<number>(0);
+  // hooks to store the key and value of the attribute to be added.
+  const [key, setKey] = useState<string>();
+  const [value, setValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
-
-  const [attributes, setAttributes] = useState(
-    [] as { key: string; value: string }[]
-  );
+  const [attributes, setAttributes] =
+    useState<{ key: string; value: string }[]>();
   //hooks to store the key and value of the attribute to be added.
-  const [key, setKey] = useState("");
-  const [value, setValue] = useState("");
-  //a function called, which pops an item in the array of attributes at a given index and sets the new array of attributes
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
-    oldArray.splice(index, 1);
-    console.log(oldArray);
+    if (oldArray) {
+      oldArray.splice(index, 1);
+      console.log(oldArray);
+    }
+  };
+
+  const createNFT = () => {
+    if (!title || !symbol || !description || !image) {
+      enqueueSnackbar("Fill out the empty fields.", {
+        variant: "error",
+      });
+    } else {
+      console.log("Creating the NFT function.");
+      //TODO
+    }
   };
 
   return (
@@ -80,14 +92,16 @@ export default function CreateNFTPanel() {
               <div className="royalties flex-column-center-center">
                 <div className="legend flex-row-between-center">
                   <div className="font-text-small">royalties</div>
-                  <div className="font-text-small-bold">{sliderValue}%</div>
+                  <div className="font-text-small-bold">
+                    {sliderValue.toString()}%
+                  </div>
                 </div>
                 <div className="slider-container">
                   <CustomSlider
                     min={0}
                     max={20}
                     step={1}
-                    value={sliderValue}
+                    value={sliderValue} // Fix: Change the type of sliderValue to number
                     onChange={(
                       event: Event,
                       value: number | number[],
@@ -146,7 +160,15 @@ export default function CreateNFTPanel() {
                   }}
                 />
               </m.div>
-              <m.div className="submit font-text-bold">create</m.div>
+              <button
+                className="submit font-text-bold"
+                disabled={!title || !symbol || !description || !image}
+                onClick={createNFT}
+              >
+                {!title || !symbol || !description || !image
+                  ? "fill out missing fields"
+                  : "create"}
+              </button>
             </m.div>
           </m.div>
         </m.div>
@@ -169,7 +191,7 @@ export default function CreateNFTPanel() {
               }}
               key={renderHook}
             >
-              {attributes.map((attribute, index) => {
+              {attributes?.map((attribute, index) => {
                 return (
                   <m.div
                     className="attribute"
@@ -234,8 +256,8 @@ export default function CreateNFTPanel() {
                     disabled={!key || !value}
                     onClick={() => {
                       setAttributes([
-                        ...attributes,
-                        { key: key, value: value },
+                        ...(attributes || []),
+                        { key: key || "", value: value || "" },
                       ]);
                     }}
                   >
