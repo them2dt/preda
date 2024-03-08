@@ -11,6 +11,9 @@
     background-color: var(--secondary-faded-1);
     border: 1px solid var(--secondary-faded-2);
     border-radius: 20px;
+    border-top-left-radius: 0px;
+    color: var(--primary);
+
 
     backdrop-filter: blur(10px);
 }
@@ -79,7 +82,7 @@
 
     box-sizing: border-box;
 
-
+    color: var(--primary);
 }
 
 #mainboard .panel.create .editor .attributes-button {
@@ -363,4 +366,43 @@
     width: 1px;
     height: 25px;
     background-color: var(--secondary-faded-3);
+}
+
+.type-selector .type-options {
+    padding: 10px;
+
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    border-right: none;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    box-sizing: border-box;
+    z-index: 2;
+
+    gap: 5px;
+}
+
+.type-selector .type-option {
+    width: 200px;
+    padding: 10px;
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-4);
+    border-radius: 5px;
+    box-sizing: border-box;
+
+    color: var(--primary);
+    cursor: pointer;
+
+}
+
+.type-selector .type-option:hover {
+    background-color: var(--secondary-faded-4);
+}
+
+.type-selector .type-option.active {
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-3);
+    color: var(--secondary);
+    font-weight: 1000;
 }
