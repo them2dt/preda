@@ -19,6 +19,8 @@
     "@metaplex-foundation/umi-signer-wallet-adapters": "^0.9.1",
     "@metaplex-foundation/umi-uploader-irys": "^0.9.1",
     "@mui/base": "^5.0.0-beta.38",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/joy": "^5.0.0-beta.30",
     "@mui/material": "^5.15.12",
     "@mui/system": "^5.15.12",
     "@solana/wallet-adapter-base": "^0.9.23",

@@ -1,31 +1,21 @@
 "use client";
 
-import Header from "@/components/Header";
-import Navigation from "@/components/Navigation";
-import { useState } from "react";
-
-//panels
-import CreateNFTPanel from "../panels/nft/Create";
+import Link from "next/link";
 
 export default function Home() {
-  //hooks
-  const [theme, setTheme] = useState(0);
-  const [connected, setConnected] = useState(false);
-  const [panel, setPanel] = useState(0);
   return (
-    <div
-      id="skeleton"
-      className="skeleton"
-      data-theme={theme == 0 ? "light" : "dark"}
-    >
-      <Header panel={panel} setPanel={setPanel} theme={theme} />
-      <div id="mainboard" className="flex-column-center-center">
-        <CreateNFTPanel />
+    <div className="flex-column-center-center">
+      This is the homepage
+      <div className="title">Welcome to preda.</div>
+      <div className="link">
+        <Link href="/lab">Click here for the laboratory</Link>
       </div>
-      <Navigation
-        theme={theme}
-        toggleTheme={() => setTheme(theme == 0 ? 1 : 0)}
-      />
+      <div className="link">
+        <Link href="/gallery">Click here for the gallery</Link>
+      </div>
+      <div className="link">
+        <Link href="/profile">Click here for the profile</Link>
+      </div>
     </div>
   );
 }

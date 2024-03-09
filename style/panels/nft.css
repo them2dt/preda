@@ -1,4 +1,4 @@
-#mainboard .panel.create {
+#lab-panel-nft {
     width: fit-content;
     height: fit-content;
 
@@ -11,11 +11,14 @@
     background-color: var(--secondary-faded-1);
     border: 1px solid var(--secondary-faded-2);
     border-radius: 20px;
+    border-top-left-radius: 0px;
+    color: var(--primary);
+
 
     backdrop-filter: blur(10px);
 }
 
-#mainboard .panel.create .editor {
+#lab-panel-nft .editor {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -24,7 +27,7 @@
 }
 
 
-#mainboard .panel.create .editor .form {
+#lab-panel-nft .editor .form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -32,8 +35,8 @@
     gap: 5px;
 }
 
-#mainboard .panel.create .editor .form input,
-#mainboard .panel.create .editor .form textarea {
+#lab-panel-nft .editor .form input,
+#lab-panel-nft .editor .form textarea {
     width: 300px;
     height: 40px;
     padding: 10px;
@@ -49,16 +52,16 @@
     color: var(--primary);
 }
 
-#mainboard .panel.create .editor .form textarea {
+#lab-panel-nft .editor .form textarea {
     height: 140px;
     resize: none;
 }
 
-#mainboard .panel.create .editor .form textarea::-webkit-scrollbar {
+#lab-panel-nft .editor .form textarea::-webkit-scrollbar {
     display: none;
 }
 
-#mainboard .panel.create .editor .form .royalties {
+#lab-panel-nft .editor .form .royalties {
     width: 300px;
     height: 115px;
     padding: 20px;
@@ -68,21 +71,21 @@
     box-sizing: border-box;
 }
 
-#mainboard .panel.create .editor .form .royalties .slider-container {
+#lab-panel-nft .editor .form .royalties .slider-container {
     width: 200px;
 }
 
-#mainboard .panel.create .editor .form .royalties .legend {
+#lab-panel-nft .editor .form .royalties .legend {
     width: 300px;
     padding-left: 20px;
     padding-right: 20px;
 
     box-sizing: border-box;
 
-
+    color: var(--primary);
 }
 
-#mainboard .panel.create .editor .attributes-button {
+#lab-panel-nft .editor .attributes-button {
     width: 300px;
     height: 40px;
 
@@ -104,18 +107,18 @@
 
 
 
-#mainboard .panel.create .editor .attributes-button:hover {
+#lab-panel-nft .editor .attributes-button:hover {
     background-color: var(--secondary-faded-3);
     border: 1px solid var(--secondary-faded-4);
     color: var(--primary);
 }
 
-#mainboard .panel.create .editor .attributes-button:not(:hover) {
+#lab-panel-nft .editor .attributes-button:not(:hover) {
 
     transition-duration: 0.2s;
 }
 
-#mainboard .panel.create .preview {
+#lab-panel-nft .preview {
 
     display: flex;
     align-items: center;
@@ -124,7 +127,7 @@
 
 }
 
-#mainboard .panel.create .preview .content {
+#lab-panel-nft .preview .content {
     position: relative;
 
     display: flex;
@@ -134,7 +137,7 @@
     gap: 5px;
 }
 
-#mainboard .panel.create .preview .content .image {
+#lab-panel-nft .preview .content .image {
     width: 300px;
     height: 300px;
 
@@ -152,13 +155,13 @@
     cursor: pointer;
 }
 
-#mainboard .panel.create .preview .content .image img {
+#lab-panel-nft .preview .content .image img {
 
     width: 300px;
     height: 300px;
 }
 
-#mainboard .panel.create .preview .content .image:hover {
+#lab-panel-nft .preview .content .image:hover {
     background-color: var(--secondary-faded-3);
     border: 1px solid var(--secondary-faded-4);
     color: var(--primary);
@@ -170,7 +173,7 @@
     display: none;
 }
 
-#mainboard .panel.create .preview .submit {
+#lab-panel-nft .preview .submit {
     width: 300px;
     height: 90px;
 
@@ -187,24 +190,24 @@
     cursor: pointer;
 }
 
-#mainboard .panel.create .preview .submit:hover {
+#lab-panel-nft .preview .submit:hover {
     background-color: var(--secondary);
     color: var(--accent);
     transition-duration: 0.2s;
 }
 
-#mainboard .panel.create .preview .submit:not(:hover) {
+#lab-panel-nft .preview .submit:not(:hover) {
     transition-duration: 0.2s;
 }
 
-#mainboard .panel.create .preview .submit:disabled {
+#lab-panel-nft .preview .submit:disabled {
     background-color: var(--secondary-faded-2);
     border-color: var(--secondary-faded-3);
     color: var(--primary-faded-4);
     cursor: not-allowed;
 }
 
-#backdrop {
+#attribute-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -224,7 +227,7 @@
     z-index: 100;
 }
 
-#backdrop .close-button {
+#attribute-modal .close-button {
     width: 40px;
     height: 40px;
     background-color: var(--secondary-faded-1);
@@ -239,7 +242,7 @@
 
 }
 
-#backdrop .close-button:hover {
+#attribute-modal .close-button:hover {
     background-color: var(--secondary-faded-2);
     border: 1px solid var(--secondary-faded-3);
 }
@@ -248,7 +251,7 @@
 
 
 
-#backdrop .modal {
+#attribute-modal .modal {
     position: relative;
 
     width: fit-content;
@@ -261,14 +264,14 @@
     border-radius: 20px;
 }
 
-#backdrop .modal .create-attributes {
+#attribute-modal .modal .create-attributes {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-#backdrop .modal .create-attributes form {
+#attribute-modal .modal .create-attributes form {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -276,14 +279,14 @@
     gap: 10px;
 }
 
-#backdrop .modal .create-attributes .input {
+#attribute-modal .modal .create-attributes .input {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 }
 
-#backdrop .modal .create-attributes input {
+#attribute-modal .modal .create-attributes input {
     width: 300px;
     height: 20px;
 
@@ -297,7 +300,7 @@
 
 
 
-#backdrop .modal .create-attributes .submit {
+#attribute-modal .modal .create-attributes .submit {
 
     width: 654px;
     height: 20px;
@@ -318,7 +321,7 @@
     transition-duration: 0.2s;
 }
 
-#backdrop .modal .create-attributes .submit:disabled {
+#attribute-modal .modal .create-attributes .submit:disabled {
     background-color: var(--secondary-faded-3);
     border: 1px solid var(--secondary-faded-2);
     color: var(--secondary);
@@ -327,11 +330,11 @@
 
 }
 
-#backdrop .modal .create-attributes .submit:not(:disabled):hover {
+#attribute-modal .modal .create-attributes .submit:not(:disabled):hover {
     background-color: var(--accent-faded-1);
 }
 
-#backdrop .attributes {
+#attribute-modal .attributes {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -346,7 +349,7 @@
     overflow: scroll;
 }
 
-#backdrop .attributes .attribute {
+#attribute-modal .attributes .attribute {
     display: flex;
     align-items: center;
     justify-self: center;
@@ -359,8 +362,47 @@
     user-select: none;
 }
 
-#backdrop .attributes .attribute .line {
+#attribute-modal .attributes .attribute .line {
     width: 1px;
     height: 25px;
     background-color: var(--secondary-faded-3);
+}
+
+.type-selector .type-options {
+    padding: 10px;
+
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    border-right: none;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    box-sizing: border-box;
+    z-index: 2;
+
+    gap: 5px;
+}
+
+.type-selector .type-option {
+    width: 200px;
+    padding: 10px;
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-4);
+    border-radius: 5px;
+    box-sizing: border-box;
+
+    color: var(--primary);
+    cursor: pointer;
+
+}
+
+.type-selector .type-option:hover {
+    background-color: var(--secondary-faded-4);
+}
+
+.type-selector .type-option.active {
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-3);
+    color: var(--secondary);
+    font-weight: 1000;
 }
