@@ -7,7 +7,7 @@ import { CustomSlider } from "@/components/ui/Slider";
 import { validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
 
-export default function CreateNFTPanel() {
+export default function Panel() {
   const [attributeModal, setAttributeModal] = useState(false);
   //rerenders the attribute-modal on every change.
   const [renderHook, setRenderHook] = useState<number>(0);
@@ -53,6 +53,7 @@ export default function CreateNFTPanel() {
     <>
       <AnimatePresence>
         <m.div
+        id="lab-panel-nft"
           className="panel create"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -174,8 +175,8 @@ export default function CreateNFTPanel() {
         </m.div>
         {attributeModal && (
           <m.div
-            className="backdrop"
-            id="backdrop"
+            className="attribute-modal"
+            id="attribute-modal"
             onClick={() => {
               setAttributeModal(false);
             }}
