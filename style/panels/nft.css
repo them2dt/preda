@@ -201,9 +201,9 @@
 }
 
 #lab-panel-nft .preview .submit:disabled {
-    background-color: var(--secondary-faded-2);
-    border-color: var(--secondary-faded-3);
-    color: var(--primary-faded-4);
+    background-color: var(--accent-faded-4);
+    border: 2px dashed var(--accent-faded-2);
+    color: var(--accent-faded-2);
     cursor: not-allowed;
 }
 
