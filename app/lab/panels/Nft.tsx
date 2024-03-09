@@ -4,8 +4,10 @@ import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { CustomSlider } from "@/components/ui/Slider";
-import { validateImage } from "@/backend/General";
+import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
+import { createNFT } from "@/backend/NFT";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 export default function Panel() {
   const [attributeModal, setAttributeModal] = useState(false);
@@ -28,7 +30,7 @@ export default function Panel() {
   const [value, setValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
-    useState<{ key: string; value: string }[]>();
+    useState<{ trait_type: string; value: string }[]>();
   //hooks to store the key and value of the attribute to be added.
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
@@ -38,14 +40,85 @@ export default function Panel() {
     }
   };
 
-  const createNFT = () => {
-    if (!title || !symbol || !description || !image) {
+  const { wallet } = useWallet();
+  const { connection } = useConnection();
+
+  //run methode wo die hauptfunktionen drin sind
+  const run = async () => {
+    if (!wallet || !connection || !title || !symbol || !description || !image) {
       enqueueSnackbar("Fill out the empty fields.", {
         variant: "error",
       });
     } else {
-      console.log("Creating the NFT function.");
-      //TODO
+      enqueueSnackbar("Uploading image...", { variant: "info" });
+      const imageUri = await uploadFileToIrys({
+        wallet: wallet,
+        connection: connection,
+        file: image,
+      });
+
+      if (imageUri) {
+        const jsonUri = await uploadFileToIrys({
+          wallet: wallet,
+          connection: connection,
+          file: image,
+        });
+
+        const metadata = {
+          name: title,
+          symbol: symbol,
+          description: description,
+          seller_fee_basis_points: sliderValue,
+          image: imageUri,
+          external_url: "emptea.xyz",
+          attributes: attributes || [],
+          properties: {
+            files: [{ uri: imageUri, type: "image/png" }],
+            category: "image",
+            creators: [
+              {
+                address:
+                  wallet.adapter.publicKey?.toBase58() ||
+                  "DFoRBzY3odkJ53FgCeSj26Ps6Bk7tuZ5kaV47QsyrqnV",
+                share: 100,
+              },
+            ],
+          },
+          collection: {},
+        };
+        const metadataFile = new File(
+          [JSON.stringify(metadata)],
+          "metadata.json",
+          { type: "application/json" }
+        );
+        const metadataUri = await uploadFileToIrys({
+          wallet: wallet,
+          connection: connection,
+          file: metadataFile,
+        });
+
+        if (metadataUri) {
+          const mint = await createNFT({
+            wallet: wallet,
+            connection: connection,
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+          });
+
+          if (mint) {
+            enqueueSnackbar("NFT created!", { variant: "success" });
+          } else {
+            enqueueSnackbar("NFT creation failed.", { variant: "error" });
+          }
+        } else {
+          enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+          return;
+        }
+      } else {
+        enqueueSnackbar("Image upload failed.", { variant: "error" });
+        return;
+      }
     }
   };
 
@@ -53,7 +126,7 @@ export default function Panel() {
     <>
       <AnimatePresence>
         <m.div
-        id="lab-panel-nft"
+          id="lab-panel-nft"
           className="panel create"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -164,7 +237,7 @@ export default function Panel() {
               <button
                 className="submit font-text-bold"
                 disabled={!title || !symbol || !description || !image}
-                onClick={createNFT}
+                onClick={run}
               >
                 {!title || !symbol || !description || !image
                   ? "fill out missing fields"
@@ -208,7 +281,9 @@ export default function Panel() {
                       setRenderHook(renderHook + 1);
                     }}
                   >
-                    <div className="key font-text-bold">{attribute.key}</div>
+                    <div className="key font-text-bold">
+                      {attribute.trait_type}
+                    </div>
 
                     <div className="line"></div>
                     <div className="value font-text-light">
@@ -258,7 +333,7 @@ export default function Panel() {
                     onClick={() => {
                       setAttributes([
                         ...(attributes || []),
-                        { key: key || "", value: value || "" },
+                        { trait_type: key || "", value: value || "" },
                       ]);
                     }}
                   >

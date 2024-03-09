@@ -53,10 +53,14 @@ export async function validateImage(
   return false;
 }
 
-const getIrys = async (wallet: Wallet) => {
-  const providerUrl =
-    "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc";
-
+const getIrys = async ({
+  wallet,
+  connection,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+}) => {
+  const providerUrl = connection.rpcEndpoint;
   const useProvider = wallet?.adapter as Adapter;
   await useProvider.connect();
 
@@ -71,12 +75,16 @@ const getIrys = async (wallet: Wallet) => {
   return irys;
 };
 //function which takes a file and uploads it to the arweave network using the irys-sdk
-export async function uploadFileToIrys(
-  wallet: Wallet,
-  connection: Connection,
-  file: File
-): Promise<string> {
-  const bundler = await getIrys(wallet);
+export async function uploadFileToIrys({
+  wallet,
+  connection,
+  file,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+  file: File;
+}): Promise<string> {
+  const bundler = await getIrys({ wallet: wallet, connection: connection });
   const state = await bundler.ready();
   console.log("Irys state: " + state.address);
   const imagePrice = await bundler.getPrice(file.size + 1048576);
@@ -98,6 +106,4 @@ export async function uploadFileToIrys(
   console.log("FINAL: https://arweave.net/$" + upload.id);
 
   return "https://arweave.net/" + upload.id;
-}
-//function which takes required arguments like name, description, file and metadata and returns a metadata object
-export async function generateMetadata({}: any): Promise<any> {}
+}//function which takes a file and uploads it to the arweave network using the irys-sdk

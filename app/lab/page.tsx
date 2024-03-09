@@ -39,6 +39,7 @@ export default function Home() {
               {typeLabels.map((label, index) => {
                 return (
                   <motion.div
+                    key={"to-" + index}
                     className={
                       type == index ? "type-option active" : "type-option"
                     }
