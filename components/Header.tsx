@@ -1,18 +1,9 @@
 import React, { useState } from "react";
 import { motion as m } from "framer-motion";
+import Link from "next/link";
 
-export default function Header({
-  panel,
-  setPanel,
-  theme,
-}: {
-  panel: number;
-  setPanel: Function;
-  theme: number;
-}) {
-  const labels = ["Lab", "Gallery"];
-  const [page, setPage] = useState(0);
-
+export default function Header({ id, theme }: { id: number; theme: number }) {
+  const labels = ["Laboratory", "Gallery"];
   return (
     <>
       <m.div
@@ -20,18 +11,20 @@ export default function Header({
         className="header flex-row-between-center"
         data-theme={theme == 0 ? "light" : "dark"}
       >
-        <m.div className="logo font-h4">Preda</m.div>
+        <m.div className="logo font-h4">
+          <Link href={"/"}>Preda</Link>
+        </m.div>
         <m.div
           className="operator font-text-tiny"
           onClick={() => {
-            if (page == 0) {
-              setPage(1);
+            if (id == 0) {
+              window.location.href = "/gallery";
             } else {
-              setPage(0);
+              window.location.href = "/lab";
             }
           }}
         >
-          {labels[page]}
+          {labels[id]}
         </m.div>
       </m.div>
     </>
