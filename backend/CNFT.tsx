@@ -4,7 +4,11 @@ import bs58 from "bs58";
 //umi
 
 import { none, percentAmount } from "@metaplex-foundation/umi";
-import { mintV1, createTree } from "@metaplex-foundation/mpl-bubblegum";
+import {
+  mintV1,
+  createTree,
+  fetchMerkleTree,
+} from "@metaplex-foundation/mpl-bubblegum";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -37,77 +41,43 @@ export const createCNFT = async ({
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
-}): Promise<string> => {
+}): Promise<any> => {
+  enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
-  //
   const merkleTree = generateSigner(umi);
-  const tx_1 = await createTree(umi, {
+
+  //create "create tree" transaction
+  console.log("Creating Merkle Tree...");
+  const treeTX = await createTree(umi, {
     merkleTree,
-    maxDepth: 14,
-    maxBufferSize: 64,
+    maxDepth: 3,
+    maxBufferSize: 8,
   });
-  //
-  const tx_2 = mintV1(umi, {
+  //send "create tree" transaction
+  const treeTXResult = await treeTX.sendAndConfirm(umi);
+  console.log("Tree Signature: " + bs58.encode(treeTXResult.signature));
+  //wait
+  setTimeout(() => {
+    console.log("Timed out.");
+  }, 1000);
+  // create "mint CNFT" transaction
+  console.log("Minting CNFT...");
+  const mintTX = mintV1(umi, {
     leafOwner: umi.identity.publicKey,
     merkleTree: merkleTree.publicKey,
     metadata: {
       name: title,
       uri: metadata,
-      sellerFeeBasisPoints: sellerFeeBasisPoints, // 5%
+      sellerFeeBasisPoints: sellerFeeBasisPoints*100, // 5%
       collection: none(),
       creators: [
         { address: umi.identity.publicKey, verified: false, share: 100 },
       ],
     },
   });
-  //
-  try {
-    const signature_1 = await tx_1.sendAndConfirm(umi);
-    if (signature_1.signature) {
-      const signature_2 = await tx_2.sendAndConfirm(umi);
-      console.log("Mint: " + merkleTree.publicKey);
-      console.log("Signature 2: " + signature_2.signature);
-    }
-  } catch (error) {
-    console.log("Error: " + error);
-  }
-  return merkleTree.publicKey;
-};
-
-/**
- * Burns Metaplex PNFT.
- * @param {Wallet} wallet - The wallet used for the transaction.
- * @param {Connection} connection - The connection to the Solana blockchain.
- * @param {Object} mintAddress - The address of the NFT to be burned.
- */
-export const burnCNFT = async ({
-  wallet,
-  connection,
-  mintAdress,
-}: {
-  wallet: Wallet;
-  connection: Connection;
-  mintAdress: string;
-}): Promise<string> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  const mint = generateSigner(umi);
-  try {
-    const signature = await burnV1(umi, {
-      mint: publicKey(mintAdress),
-      tokenStandard: TokenStandard.ProgrammableNonFungible,
-      tokenOwner: umi.identity.publicKey,
-    }).sendAndConfirm(umi);
-    console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(signature.signature));
-    return mint.publicKey;
-  } catch (error) {
-    console.log("Error burning PNFT: " + error);
-    enqueueSnackbar("Error creating PNFT: " + error, { variant: "error" });
-
-    return "Error creating PNFT: " + error;
-  }
+  //send "mint CNFT" transaction
+  const mintTXResult = await mintTX.sendAndConfirm(umi);
+  console.log("Mint Signature: " + bs58.encode(mintTXResult.signature));
+  //log the signature
 };

@@ -58,12 +58,6 @@ export default function Panel() {
       });
 
       if (imageUri) {
-        const jsonUri = await uploadFileToIrys({
-          wallet: wallet,
-          connection: connection,
-          file: image,
-        });
-
         const metadata = {
           name: title,
           symbol: symbol,

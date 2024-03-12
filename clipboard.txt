@@ -18,3 +18,26 @@
     console.log("Mint: " + mint.publicKey);
     console.log("Signature: " + bs58.encode(mintResult.signature));
     return mint.publicKey; */
+
+      const tx_2 = mintV1(umi, {
+    leafOwner: umi.identity.publicKey,
+    merkleTree: merkleTree.publicKey,
+    metadata: {
+      name: title,
+      uri: metadata,
+      sellerFeeBasisPoints: sellerFeeBasisPoints, // 5%
+      collection: none(),
+      creators: [
+        { address: umi.identity.publicKey, verified: false, share: 100 },
+      ],
+    },
+  });
+
+  
+  const signature = await burnV1(umi, {
+    mint: publicKey(mintAdress),
+    tokenStandard: TokenStandard.ProgrammableNonFungible,
+    tokenOwner: umi.identity.publicKey,
+  }).sendAndConfirm(umi);
+  console.log("Mint: " + mint.publicKey);
+  console.log("Signature: " + bs58.encode(signature.signature));
