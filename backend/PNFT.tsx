@@ -10,6 +10,7 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 
 import {
   burnV1,
+  createProgrammableNft,
   createV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
@@ -17,7 +18,7 @@ import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
 /**
- * Creates a new Metaplex PNFT.
+ * Creates a new Metaplex PNFT (Non-Fungible Token).
  *
  * @param {Wallet} wallet - The wallet used for the transaction.
  * @param {Connection} connection - The connection to the Solana blockchain.
@@ -43,19 +44,23 @@ export const createPNFT = async ({
   umi.use(walletAdapterIdentity(wallet.adapter));
   const mint = generateSigner(umi);
   try {
-    const signature = await createV1(umi, {
+    const result = await createProgrammableNft(umi, {
       mint,
       name: title,
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
-      tokenStandard: TokenStandard.ProgrammableNonFungible,
     }).sendAndConfirm(umi);
+
     console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(signature.signature));
+    console.log("Signature: " + bs58.encode(result.signature));
+    if (result.signature) {
+      enqueueSnackbar("NFT created", { variant: "success" });
+    }
     return mint.publicKey;
   } catch (error) {
-    enqueueSnackbar("Error creating PNFT: " + error, { variant: "error" });
-    return "Error creating PNFT: " + error;
+    enqueueSnackbar("Error creating NFT: " + error, { variant: "error" });
+    console.log(error);
+    return "Error creating NFT: " + error;
   }
 };
 

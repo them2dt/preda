@@ -1,0 +1,20 @@
+/* 
+    const createResult = await createV1(umi, {
+      mint: mint.publicKey,
+      authority: umi.identity,
+      name: title,
+      uri: metadata,
+      sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+      tokenStandard: TokenStandard.NonFungible,
+    }).sendAndConfirm(umi);
+
+    const mintResult = await mintV1(umi, {
+      mint: mint.publicKey,
+      authority: umi.identity,
+      tokenOwner: umi.identity.publicKey,
+      amount: 1,
+      tokenStandard: TokenStandard.NonFungible,
+    }).sendAndConfirm(umi);
+    console.log("Mint: " + mint.publicKey);
+    console.log("Signature: " + bs58.encode(mintResult.signature));
+    return mint.publicKey; */

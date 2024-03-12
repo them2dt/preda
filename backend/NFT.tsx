@@ -10,7 +10,9 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 
 import {
   burnV1,
+  createNft,
   createV1,
+  mintV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
@@ -43,18 +45,22 @@ export const createNFT = async ({
   umi.use(walletAdapterIdentity(wallet.adapter));
   const mint = generateSigner(umi);
   try {
-    const signature = await createV1(umi, {
+    const result = await createNft(umi, {
       mint,
       name: title,
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
-      tokenStandard: TokenStandard.NonFungible,
     }).sendAndConfirm(umi);
+
     console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(signature.signature));
+    console.log("Signature: " + bs58.encode(result.signature));
+    if (result.signature) {
+      enqueueSnackbar("NFT created", { variant: "success" });
+    }
     return mint.publicKey;
   } catch (error) {
     enqueueSnackbar("Error creating NFT: " + error, { variant: "error" });
+    console.log(error);
     return "Error creating NFT: " + error;
   }
 };
