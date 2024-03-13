@@ -55,8 +55,8 @@ export default function Home() {
           </motion.div>
 
           {type == 0 && <NFTPanel />}
-          {type == 1 && <CNFTPanel />}
-          {type == 2 && <PNFTPanel />}
+          {type == 1 && <PNFTPanel />}
+          {type == 2 && <CNFTPanel />}
           {type == 3 && <SPL20Panel />}
           {type == 4 && <Token2022Panel />}
         </div>
