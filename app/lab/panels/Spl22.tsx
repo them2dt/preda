@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
-import { AnimatePresence, motion as m } from "framer-motion";
 import { validateImage } from "@/backend/General";
+import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
+import { useState } from "react";
 
 export default function Panel() {
   //sets the title of Token.
@@ -40,9 +40,9 @@ export default function Panel() {
           transition={{ duration: 0.1 }}
         >
           {/**Every operation is done in here.*/}
-          <div className="flex-column-center-center   ">
-            <div className="flex-row-center-center">
-              <div className="flex-column-center-center">
+          <div className="flex-column-center-center form-container">
+            <div className="flex-row-center-start form">
+              <div className="flex-column-center-center text-inputs">
                 <input
                   type="text"
                   name="title"
@@ -93,7 +93,7 @@ export default function Panel() {
                   }}
                 />
               </div>
-              <div className="flex-column-center-center">
+              <div className="flex-column-center-center image-input">
                 <m.div
                   className="image"
                   onClick={() => {
@@ -129,29 +129,50 @@ export default function Panel() {
                 </m.div>
               </div>
             </div>
-            <div className="flex-row-center-center">
-              <div className="extensions flex-column-center-start">
-                <div className="extension flex-column-center-start">
-                  <div className="extension-check flex-row-start-center">
-                    <input type="checkbox" name="burnable" id="burnable" />
-                    <label htmlFor="burnable">Frozen</label>
+            <div className="flex-row-center-center extensions-container">
+              <div className="extensions-column flex-column-center-center">
+                <div className="extensions flex-row-center-start">
+                  <div className="extension flex-column-center-center">
+                    <div className="extension-check flex-column-center-center">
+                      <label htmlFor="burnable">Frozen</label>
+                      <input type="checkbox" name="burnable" id="burnable" />
+                    </div>
+                  </div>
+                  <div className="extension flex-column-center-center">
+                    <label htmlFor="burnable">Transfer tax (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      defaultValue={0}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
+                  </div>
+                  <div className="extension flex-column-center-center">
+                    <label htmlFor="burnable">Interest (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      defaultValue={0}
+                      prefix={"%"}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
                   </div>
                 </div>
-                <div className="extension flex-column-center-start">
-                  <div className="extension-check flex-row-start-center">
-                    <input type="checkbox" name="burnable" id="burnable" />
-                    <label htmlFor="burnable">Transfer tax (%)</label>
+                <div className="extensions flex-row-center-start">
+                  <div className="extension flex-column-center-center">
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="authority"
+                      className="extension-input font-text-small"
+                    />
                   </div>
-                  <input
-                    type="number"
-                    name="burnable"
-                    min={0}
-                    max={100}
-                    defaultValue={0}
-                    prefix={"%"}
-                    placeholder="Transfer tax"
-                    className="extension-input font-text-small"
-                  />
                 </div>
               </div>
             </div>
