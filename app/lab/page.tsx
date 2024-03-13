@@ -9,15 +9,14 @@ import { motion } from "framer-motion";
 import NFTPanel from "./panels/Nft";
 import CNFTPanel from "./panels/Cnft";
 import PNFTPanel from "./panels/Pnft";
-import SPL20Panel from "./panels/Spl20";
-import Token2022Panel from "./panels/Token2022";
+import SPL22Panel from "./panels/Spl22";
 
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
   const [type, setType] = useState(0);
 
-  const typeLabels = ["NFT", "pNFT", "cNFT", "SPL-20", "Token2022"];
+  const typeLabels = ["NFT", "pNFT", "cNFT", "SPL-22"];
 
   return (
     <motion.div
@@ -57,8 +56,7 @@ export default function Home() {
           {type == 0 && <NFTPanel />}
           {type == 1 && <PNFTPanel />}
           {type == 2 && <CNFTPanel />}
-          {type == 3 && <SPL20Panel />}
-          {type == 4 && <Token2022Panel />}
+          {type == 3 && <SPL22Panel />}
         </div>
       </div>
       <Navigation

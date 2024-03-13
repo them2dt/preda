@@ -1,0 +1,35 @@
+#lab-panel-spl .editor .form .extensions {
+    width: 300px;
+
+    padding: 10px;
+
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: var(--secondary-faded-2);
+}
+
+#lab-panel-spl .editor .form .extensions .extension {
+    gap: 10px;
+}
+
+#lab-panel-spl .editor .form .extensions .extension .extension-check {
+    gap: 10px;
+}
+
+#lab-panel-spl .editor .form .extensions .extension .extension-check input {
+    width: min-content;
+    height: min-content;
+
+    margin: 0;
+    padding: 0;
+}
+
+#lab-panel-spl .editor .form .extensions .extension .extension-input {
+
+    border: 1px solid var(--secondary-faded-4);
+    background-color: var(--secondary-faded-1);
+    box-sizing: border-box;
+
+    width: 280px;
+}
