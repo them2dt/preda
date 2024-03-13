@@ -1,0 +1,160 @@
+#lab-panel-spl .form-container {
+    gap: 5px;
+}
+
+#lab-panel-spl .form {
+    gap: 5px;
+}
+
+
+
+#lab-panel-spl .text-inputs {
+    gap: 5px;
+}
+
+#lab-panel-spl .text-inputs input,
+#lab-panel-spl .text-inputs textarea {
+    width: 300px;
+    height: 40px;
+    padding: 10px;
+
+    background-color: transparent;
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    font-family: "satoshi";
+    color: var(--primary);
+}
+
+#lab-panel-spl .form textarea {
+    height: 120px;
+    resize: none;
+}
+
+#lab-panel-spl .form textarea::-webkit-scrollbar {
+    display: none;
+}
+
+#lab-panel-spl .image-input .image {
+    width: 300px;
+    height: 300px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    color: var(--primary-faded-4);
+    cursor: pointer;
+}
+
+#lab-panel-spl .image-input .image img {
+
+    width: 300px;
+    height: 300px;
+}
+
+#lab-panel-spl .image-input .image:hover {
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-4);
+    color: var(--primary);
+}
+
+
+
+#lab-panel-spl .image-input .image #image-input {
+    display: none;
+}
+
+#lab-panel-spl .submit {
+    width: 605px;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: var(--secondary);
+
+    cursor: pointer;
+}
+
+#lab-panel-spl .submit:hover {
+    background-color: var(--secondary);
+    color: var(--accent);
+    transition-duration: 0.2s;
+}
+
+#lab-panel-spl .submit:not(:hover) {
+    transition-duration: 0.2s;
+}
+
+#lab-panel-spl .submit:disabled {
+    background-color: var(--accent-faded-4);
+    border: 2px dashed var(--accent-faded-2);
+    color: var(--accent-faded-2);
+    cursor: not-allowed;
+}
+
+#lab-panel-spl .extensions-container {
+    width: 605px;
+    padding: 10px;
+
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#lab-panel-spl .extensions {
+    gap: 20px;
+}
+
+#lab-panel-spl .extensions-column {
+    gap: 10px;
+}
+
+#lab-panel-spl .extension input[type="number"] {
+    width: 100px;
+    height: 40px;
+
+    padding: 10px;
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-4);
+    border-radius: 10px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    font-family: "satoshi";
+    color: var(--primary);
+}
+
+#lab-panel-spl .extension input[type="text"] {
+    width: 400px;
+    height: 40px;
+
+    padding: 10px;
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-4);
+    border-radius: 10px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    font-family: "satoshi";
+    color: var(--primary);
+}
