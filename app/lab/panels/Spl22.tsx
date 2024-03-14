@@ -1,8 +1,10 @@
 "use client";
-import { validateImage } from "@/backend/General";
+import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
+import { createSPL22 } from "@/backend/SPL22";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 export default function Panel() {
   //sets the title of Token.
@@ -11,20 +13,52 @@ export default function Panel() {
   const [symbol, setSymbol] = useState<string>();
   //sets the description of Token.
   const [description, setDescription] = useState<string>();
+  //sets the total supply of Token.
+  const [supply, setSupply] = useState<number>(0);
+  //sets the decimals of the Token.
+  const [decimals, setDecimal] = useState<number>(0);
   //sets the image of Token.
   const [image, setImage] = useState();
-  //sets the image-preview of Token.
+  //sets the image-preview of Token.<
   const [imagePreview, setImagePreview] = useState();
-  // a hook with the type of an array of objects, which contains the key and value of the attribute.
+  //token extensions
+  const [frozen, setFrozen] = useState<boolean>(false);
+  const [transferTax, setTransferTax] = useState<number>(0);
+  const [interest, setInterest] = useState<number>(0);
+  const [authority, setAuthority] = useState<string>();
 
-  const run = () => {
-    if (!title || !symbol || !description || !image) {
+  const { wallet } = useWallet();
+  const { connection } = useConnection();
+  const run = async () => {
+    if (!wallet || !connection || !title || !symbol || !description || !image) {
       enqueueSnackbar("Fill out the empty fields.", {
         variant: "error",
       });
     } else {
-      console.log("Creating the NFT function.");
-      //TODO
+      console.log("Creating the SPL22.");
+
+      enqueueSnackbar("Uploading image...", { variant: "info" });
+      const imageUri = await uploadFileToIrys({
+        wallet: wallet,
+        connection: connection,
+        file: image,
+      });
+
+      const res = await createSPL22({
+        wallet: wallet,
+        connection: connection,
+        name: title,
+        symbol: symbol,
+        decimals: 0,
+        uri: imageUri,
+      });
+
+      if (res) {
+        enqueueSnackbar("Token created.", { variant: "success" });
+        console.log(res);
+      } else {
+        enqueueSnackbar("Error creating token.", { variant: "error" });
+      }
     }
   };
 
@@ -135,7 +169,14 @@ export default function Panel() {
                   <div className="extension flex-column-center-center">
                     <div className="extension-check flex-column-center-center">
                       <label htmlFor="burnable">Frozen</label>
-                      <input type="checkbox" name="burnable" id="burnable" />
+                      <input
+                        type="checkbox"
+                        name="burnable"
+                        id="burnable"
+                        onChange={(e) => {
+                          setFrozen(e.target.checked);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="extension flex-column-center-center">
@@ -145,7 +186,10 @@ export default function Panel() {
                       name="burnable"
                       min={0}
                       max={100}
-                      defaultValue={0}
+                      value={transferTax}
+                      onChange={(e) => {
+                        setTransferTax(Number(e.target.value));
+                      }}
                       placeholder="Transfer tax"
                       className="extension-input font-text-small"
                     />
@@ -157,8 +201,10 @@ export default function Panel() {
                       name="burnable"
                       min={0}
                       max={100}
-                      defaultValue={0}
-                      prefix={"%"}
+                      value={interest}
+                      onChange={(e) => {
+                        setInterest(Number(e.target.value));
+                      }}
                       placeholder="Transfer tax"
                       className="extension-input font-text-small"
                     />
@@ -171,6 +217,10 @@ export default function Panel() {
                       name="burnable"
                       placeholder="authority"
                       className="extension-input font-text-small"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
                     />
                   </div>
                 </div>
