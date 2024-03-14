@@ -8,6 +8,10 @@ import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { WebIrys } from "@irys/sdk";
 import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
+// umi
+import { publicKey } from "@metaplex-foundation/umi";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
 
 //NOTIZ: DAS FUNKTIONIERT - LUEG BI /TEST
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
@@ -111,3 +115,24 @@ export async function uploadFileToIrys({
 
   return "https://arweave.net/" + upload.id;
 } //function which takes a file and uploads it to the arweave network using the irys-sdk
+
+export async function loadNFTs({
+  wallet,
+  endpoint,
+}: {
+  wallet: Wallet;
+  endpoint: string;
+}): Promise<any> {
+  // { imageUri: String; name: string; supply: number; pubkey: string }[]
+  const umi = createUmi(endpoint).use(dasApi());
+  if (wallet.adapter.publicKey) {
+    const owner = publicKey("wallet.adapter.publicKey.toBase58()");
+
+    const rawassets = await umi.rpc.getAssetsByOwner({ owner, limit: 10 });
+    const assets = rawassets;
+    //for loop logging out assets
+    for (let i = 0; i < assets.items.length; i++) {
+      console.log("ID: " + assets.items[i].id);
+    }
+  }
+}
