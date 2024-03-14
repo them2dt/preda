@@ -19,7 +19,7 @@ export default function Panel() {
   const [decimals, setDecimal] = useState<number>(0);
   //sets the image of Token.
   const [image, setImage] = useState();
-  //sets the image-preview of Token.<
+  //sets the image-preview of Token.
   const [imagePreview, setImagePreview] = useState();
   //token extensions
   const [frozen, setFrozen] = useState<boolean>(false);

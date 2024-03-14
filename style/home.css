@@ -1,0 +1,39 @@
+#home {
+    width: 100vw;
+    height: 100vh;
+}
+
+#home .home-title {
+    color: var(--accent-1);
+}
+
+#home .home-description {
+    margin-bottom: 100px;
+}
+
+#home .links {
+    gap: 20px;
+}
+
+#home .links .anchor {
+    width: 400px;
+    height: 100px;
+    padding: 20px;
+
+    background-color: var(--accent-4);
+    border: 2px dashed var(--accent-1);
+    border-radius: 10px;
+}
+
+#home .links .anchor .anchor-title {
+    color: var(--accent-1);
+}
+
+#home .links .anchor .anchor-description {
+    color: var(--white-1);
+}
+
+#home .links .anchor:hover {
+
+    border: 2px solid var(--accent-3);
+}
