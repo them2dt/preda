@@ -8,11 +8,9 @@ import "../style/profile.css";
 import "../style/leaderboard.css";
 import "../style/gallery.css";
 //
+import "../style/panels/panel.css";
 import "../style/panels/nft.css";
-import "../style/panels/cnft.css";
-import "../style/panels/pnft.css";
-import "../style/panels/spl20.css";
-import "../style/panels/token2022.css";
+import "../style/panels/spl.css";
 
 // imports
 import { useMemo } from "react";
