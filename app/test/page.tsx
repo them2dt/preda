@@ -7,35 +7,12 @@ import { validateImage, uploadFileToIrys } from "../../backend/General";
  * A page to test and play with the code
  * @returns JSX.Element
  */
-export default function page() {
+export default function Home() {
   const [image, setImage] = useState<File>();
-  const wallet = useWallet();
+  const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  // onload of the page log the wallet adress and the connection endpoint
-  useEffect(() => {
-    if (wallet.connected) {
-      console.log("Wallet: " + wallet.publicKey?.toBase58());
-    } else {
-      console.log("Wallet not connected");
-    }
-    console.log("RPC URL: " + connection.rpcEndpoint);
-  }, [wallet, connection]);
-
-  // function to be tested
-  const testingFunction = async () => {
-    console.log("Function 1 executed");
-    console.log("Image name: " + (image?.name || "No image selected"));
-    if (image) {
-      if (wallet.wallet) {
-        await uploadFileToIrys(wallet.wallet, connection, image);
-      } else {
-        console.log("Wallet is null");
-      }
-    } else {
-      console.log("No image selected");
-    }
-  };
+  const testingFunction = async () => {};
   return (
     <>
       <div className="testfield flex-column-center-center">

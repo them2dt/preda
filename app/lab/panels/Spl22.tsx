@@ -138,7 +138,7 @@ export default function Panel() {
                   }}
                 >
                   {image ? (
-                    <img src={imagePreview} />
+                    <img src={imagePreview}  alt="image-preview"/>
                   ) : (
                     <div className="placeholder font-text-small">
                       click here to import an image
