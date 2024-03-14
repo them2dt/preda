@@ -31,11 +31,8 @@ export default function RootLayout({
 }>) {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(
-    () =>
-      "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc",
-    [network]
-  );
+  const endpoint =
+    "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc";
   const wallets = useMemo(() => [], [network]);
 
   //custom snackbar
