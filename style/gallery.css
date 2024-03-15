@@ -66,6 +66,12 @@
     background-color: rgb(102, 185, 102);
     border-radius: 9px;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+#gallery .gallery-image img {
+    width: 220px;
+    height: 220px;
 }
 
 #gallery .gallery-info {

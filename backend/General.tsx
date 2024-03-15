@@ -116,23 +116,71 @@ export async function uploadFileToIrys({
   return "https://arweave.net/" + upload.id;
 } //function which takes a file and uploads it to the arweave network using the irys-sdk
 
+async function getAsset(url: string, pubkeys: string[]) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: "my-id",
+      method: "getAssetBatch",
+      params: {
+        ids: pubkeys,
+      },
+    }),
+  });
+  const { result } = await response.json();
+  console.log("Assets: ", result);
+}
 export async function loadNFTs({
   wallet,
   endpoint,
 }: {
-  wallet: Wallet;
-  endpoint: string;
-}): Promise<any> {
-  // { imageUri: String; name: string; supply: number; pubkey: string }[]
-  const umi = createUmi(endpoint).use(dasApi());
-  if (wallet.adapter.publicKey) {
-    const owner = publicKey("wallet.adapter.publicKey.toBase58()");
+  wallet: string;
+  endpoint: string; 
+}): Promise<
+  {
+    name: string;
+    mint: string;
+    imageUri: string;
+    updateAuthority: string;
+    attributes: { trait_type: string; value: string }[];
+    tokenStandard: string;
+  }[]
+> {
+  console.log("Loading NFTs...");
+  const options = {
+    method: "GET",
+    headers: { accept: "application/json" },
+  };
 
-    const rawassets = await umi.rpc.getAssetsByOwner({ owner, limit: 10 });
-    const assets = rawassets;
-    //for loop logging out assets
-    for (let i = 0; i < assets.items.length; i++) {
-      console.log("ID: " + assets.items[i].id);
-    }
+  const response = await fetch(
+    "https://api-devnet.magiceden.dev/v2/wallets/" + wallet + "/tokens",
+    options
+  );
+  const data = await response.json();
+  const arrayResponse = Array.isArray(data) ? data : [];
+  const resultArray: {
+    name: string;
+    mint: string;
+    imageUri: string;
+    updateAuthority: string;
+    attributes: { trait_type: string; value: string }[];
+    tokenStandard: string;
+  }[] = [];
+  for (let i = 0; i < arrayResponse.length; i++) {
+    const item = {
+      name: arrayResponse[i].name,
+      mint: arrayResponse[i].mintAddress,
+      imageUri: arrayResponse[i].image,
+      updateAuthority: arrayResponse[i].updateAuthority,
+      attributes: arrayResponse[i].attributes,
+      tokenStandard: arrayResponse[i].tokenStandard || 0,
+    };
+    resultArray.push(item);
   }
+  console.log(resultArray);
+  return resultArray;
 }
