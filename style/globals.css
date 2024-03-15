@@ -230,6 +230,13 @@ a {
     align-items: center;
 }
 
+.flex-row-between-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .flex-row-center-end {
     display: flex;
     flex-direction: row;

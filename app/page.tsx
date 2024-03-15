@@ -17,7 +17,7 @@ export default function Home() {
             <div className="anchor flex-column-start-start">
               <div className="anchor-title font-h4">The Lab</div>
               <div className="anchor-description font-text">
-                Create tokens within seconds.
+                Create tokens within minutes, through an intuitive design.
               </div>
             </div>
           </Link>
