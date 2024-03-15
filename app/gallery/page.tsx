@@ -95,10 +95,10 @@ export default function Home() {
         <div className="gallery-header flex-row-between-center">
           <div className="token-types flex-row-center-center">
             <div className="token-type flex-row-center-center font-text">
-              NFT's
+              NFTs
             </div>
             <div className="token-type flex-row-center-center font-text">
-              SPL's
+              SPLs
             </div>
           </div>
           <div className="view-types flex-row-center-center">
