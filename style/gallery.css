@@ -56,6 +56,7 @@
     flex-wrap: wrap;
     overflow-y: scroll;
 
+
 }
 
 #gallery .gallery-item {
@@ -92,7 +93,7 @@
     padding: 10px;
 
     background-color: var(--secondary-faded-3);
-    border-radius: 9px;
+    border-radius: 10px;
     box-sizing: border-box;
 }
 
@@ -105,7 +106,8 @@
     padding: 10px 20px;
 
     background-color: var(--secondary-faded-2);
-    border-radius: 9px;
+    border: none;
+    border-radius: 10px;
     box-sizing: border-box;
     cursor: pointer;
 }
@@ -120,4 +122,156 @@
 
 #gallery .gallery-operation:last-child {
     background-color: rgb(255, 56, 83);
+}
+
+.item-backdrop {
+    width: 100vw;
+    height: 100vh;
+    gap: 20px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    background-color: transparent;
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.item-backdrop .close {
+    width: 50px;
+    height: 50px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    color: var(--primary);
+    border-radius: 120px;
+    cursor: pointer;
+}
+
+.item-backdrop .close:hover {
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+}
+
+.item-panel {
+    width: fit-content;
+    height: fit-content;
+
+    padding: 10px;
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.item-panel .specs {
+    gap: 10px;
+}
+
+.item-panel .specs-row {
+    gap: 20px;
+}
+
+.item-panel .image {
+    width: 200px;
+    height: 200px;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.item-panel .image img {
+    width: 200px;
+    height: 200px;
+}
+
+.item-panel .item-description {
+    color: var(--primary-faded-4);
+}
+
+.item-panel .item-attributes {
+    height: 600px;
+    overflow-y: scroll;
+    gap: 5px;
+}
+
+.item-panel .attribute {
+    width: fit-content;
+    height: fit-content;
+
+    gap: 10px;
+
+    padding: 5px 10px;
+    background-color: var(--accent-faded-4);
+    border: 1px solid var(--accent-faded-3);
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.item-panel .item-specs {
+
+    padding: 0;
+
+
+}
+
+.item-panel .item-spec {
+    width: 250px;
+    height: fit-content;
+
+    padding: 2.5px 5px;
+    box-sizing: border-box;
+}
+
+
+
+
+
+.item-panel .item-operations {
+    gap: 5px;
+}
+
+.item-panel .item-operation {
+    width: 150px;
+    height: fit-content;
+    padding: 10px;
+
+    gap: 10px;
+
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+    color: var(--primary);
+}
+
+.item-panel .item-operation:hover {
+    background-color: var(--secondary-faded-1);
+    border-color: var(--secondary-faded-2);
+}
+
+.item-panel .item-operation:first-child {
+    background-color: rgb(255, 88, 88);
+    border: 1px solid rgb(228, 73, 73);
+    color: var(--white);
+}
+
+.item-panel .item-operation:first-child:hover {
+    background-color: rgb(255, 128, 128);
+    border: 1px solid rgb(228, 93, 93);
+}
+
+.item-panel .item-operation:nth-child(2) {
+    background-color: rgb(0, 199, 123);
+    border: 1px solid rgb(0, 155, 95);
+}
+
+.item-panel .item-operation:nth-child(2):hover {
+    background-color: rgb(0, 229, 143);
+    border: 1px solid rgb(0, 175, 107);
 }
