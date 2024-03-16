@@ -65,6 +65,7 @@ export const createNFT = async ({
   }
 };
 
+//TODO: Validate if the burnNFT function works
 /**
  * Burns Metaplex Standard NFT (Non-Fungible Token).
  * @param {Wallet} wallet - The wallet used for the transaction.
