@@ -2,23 +2,11 @@ import { Wallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
-
-import { none, percentAmount } from "@metaplex-foundation/umi";
-import {
-  mintV1,
-  createTree,
-  fetchMerkleTree,
-} from "@metaplex-foundation/mpl-bubblegum";
+import { none } from "@metaplex-foundation/umi";
+import { mintV1, createTree } from "@metaplex-foundation/mpl-bubblegum";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { publicKey, generateSigner } from "@metaplex-foundation/umi";
+import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-
-import {
-  burnV1,
-  createV1,
-  mplTokenMetadata,
-} from "@metaplex-foundation/mpl-token-metadata";
-import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
 /**
@@ -69,7 +57,7 @@ export const createCNFT = async ({
     metadata: {
       name: title,
       uri: metadata,
-      sellerFeeBasisPoints: sellerFeeBasisPoints*100, // 5%
+      sellerFeeBasisPoints: sellerFeeBasisPoints * 100, // 5%
       collection: none(),
       creators: [
         { address: umi.identity.publicKey, verified: false, share: 100 },
@@ -81,3 +69,7 @@ export const createCNFT = async ({
   console.log("Mint Signature: " + bs58.encode(mintTXResult.signature));
   //log the signature
 };
+
+//TODO: Add a function to duplicate an NFT, which takes a wallet object and a connection object and the publickey of the NFT to burn.
+
+//TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.

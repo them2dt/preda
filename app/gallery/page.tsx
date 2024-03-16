@@ -22,6 +22,7 @@ export default function Home() {
   const { connection } = useConnection();
   //hooks
   const [theme, setTheme] = useState(0);
+  const [type, setType] = useState(true); //true for NFTs, false for SPLs
 
   const [nftItems, setnftItems] = useState<
     {
@@ -58,32 +59,16 @@ export default function Home() {
     }
   }
   useEffect(() => {
-    async function loadAssets() {
-      if (wallet) {
-        setTimeout(() => {
-          console.log("waiting...");
-        }, 500);
-        if (wallet.adapter.connected) {
-          if (wallet.adapter.publicKey) {
-            const result = await loadNFTs({
-              wallet: wallet.adapter.publicKey.toBase58(),
-              endpoint: connection.rpcEndpoint,
-            });
-            setnftItems(result);
-          } else {
-            enqueueSnackbar("Pubkey not found", { variant: "error" });
-          }
-        } else {
-          enqueueSnackbar("Wallet not connected", { variant: "error" });
-        }
-      } else {
-        enqueueSnackbar("Wallet not found", { variant: "error" });
-      }
-    }
-
     loadAssets().catch(console.error);
   }, [walletParent.connected]);
 
+  useEffect(() => {
+    if (walletParent.connected) {
+      loadAssets();
+    } else {
+      setnftItems([]);
+    }
+  }, [walletParent.connected]);
   return (
     <motion.div
       id="skeleton"
@@ -94,12 +79,24 @@ export default function Home() {
       <div id="gallery" className="flex-column-center-center">
         <div className="gallery-header flex-row-between-center">
           <div className="token-types flex-row-center-center">
-            <div className="token-type flex-row-center-center font-text">
+            <button
+              className="token-type flex-row-center-center font-text"
+              onClick={() => {
+                setType(true);
+                loadAssets();
+              }}
+            >
               NFTs
-            </div>
-            <div className="token-type flex-row-center-center font-text">
+            </button>
+            <button
+              className="token-type flex-row-center-center font-text"
+              onClick={() => {
+                setType(false);
+                //TODO: Add the function to load SPLs
+              }}
+            >
               SPLs
-            </div>
+            </button>
           </div>
           <div className="view-types flex-row-center-center">
             <div className="view-type flex-row-center-center font-text">
@@ -110,51 +107,84 @@ export default function Home() {
             </div>
             <button
               className="view-type flex-row-center-center font-text"
-              onClick={loadAssets}
+              onClick={
+                type
+                  ? loadAssets
+                  : () => {
+                      console.log("Loading SPLs");
+                    }
+              }
             >
               <FontAwesomeIcon icon={faRotateLeft} />
             </button>
           </div>
         </div>
-        <div className="gallery-container flex-row-start-start">
-          {nftItems.map((item, index) => (
-            <div className="gallery-item flex-column-center-center" key={index}>
-              <div className="gallery-image">
-                <img src={item.imageUri} alt="couldn't find the image" />
-              </div>
-              <div className="gallery-info">
-                <div className="gallery-title font-text-small-bold">
-                  {item.name}
+        {type && nftItems.length > 0 && walletParent.connected && (
+          <div className="gallery-container flex-row-start-start">
+            {nftItems.map((item, index) => (
+              <div
+                className="gallery-item flex-column-center-center"
+                key={index}
+              >
+                <div className="gallery-image">
+                  <img src={item.imageUri} alt="couldn't find the image" />
                 </div>
-                <div className="gallery-supply font-text-small">
-                  {item.mint[0] +
-                    item.mint[1] +
-                    item.mint[2] +
-                    "..." +
-                    item.mint[item.mint.length - 3] +
-                    item.mint[item.mint.length - 2] +
-                    item.mint[item.mint.length - 1]}
-                </div>
-              </div>
-              <div className="gallery-operations first flex-row-between-center">
-                <Tooltip title="Duplicate" arrow>
-                  <div className="gallery-operation flex-row-center-center">
-                    <FontAwesomeIcon icon={faCopy} />
+                <div className="gallery-info">
+                  <div className="gallery-title font-text-small-bold">
+                    {item.name}
                   </div>
-                </Tooltip>
-                <div className="gallery-operation flex-row-center-center">
-                  <FontAwesomeIcon icon={faEllipsis} />
+                  <div className="gallery-supply font-text-small">
+                    {item.mint[0] +
+                      item.mint[1] +
+                      item.mint[2] +
+                      "..." +
+                      item.mint[item.mint.length - 3] +
+                      item.mint[item.mint.length - 2] +
+                      item.mint[item.mint.length - 1]}
+                  </div>
                 </div>
+                <div className="gallery-operations first flex-row-between-center">
+                  <Tooltip title="Duplicate" arrow>
+                    <div className="gallery-operation flex-row-center-center">
+                      <FontAwesomeIcon icon={faCopy} />
+                    </div>
+                  </Tooltip>
+                  <div className="gallery-operation flex-row-center-center">
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </div>
 
-                <Tooltip title="Burn" arrow>
-                  <div className="gallery-operation flex-row-center-center">
-                    <FontAwesomeIcon icon={faFireFlameCurved} />
-                  </div>
-                </Tooltip>
+                  <Tooltip title="Burn" arrow>
+                    <div className="gallery-operation flex-row-center-center">
+                      <FontAwesomeIcon icon={faFireFlameCurved} />
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
+            ))}
+          </div>
+        )}
+        {type && nftItems.length == 0 && walletParent.connected && (
+          <div className="gallery-container flex-row-center-center">
+            <div className="gallery-empty font-text-small">
+              No NFTs found in your wallet.
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+        {type && walletParent.connected == false && (
+          <div className="gallery-container flex-row-center-center">
+            <div className="gallery-empty font-text-small">
+              Connect your wallet to see your assets.
+            </div>
+          </div>
+        )}
+        {!type && (
+          <div className="gallery-container flex-row-center-center">
+            <div className="gallery-empty font-text-small">
+              SPLs can't be shown at this time. Have patience while we're
+              working on it.
+            </div>
+          </div>
+        )}
       </div>
       <Navigation
         theme={theme}

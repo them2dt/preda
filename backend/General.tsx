@@ -13,7 +13,6 @@ import { publicKey } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
 
-//NOTIZ: DAS FUNKTIONIERT - LUEG BI /TEST
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
   input: File,
@@ -134,6 +133,8 @@ async function getAsset(url: string, pubkeys: string[]) {
   const { result } = await response.json();
   console.log("Assets: ", result);
 }
+
+// TODO: Replace current functionality with metaplex/js module (https://solanacookbook.com/references/nfts.html#how-to-get-nft-metadata)
 export async function loadNFTs({
   wallet,
   endpoint,

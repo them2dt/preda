@@ -70,9 +70,9 @@ export const createSPL22 = async ({
     return "Error creating Token: " + error;
   }
 };
-//update the SPL-22 token
-export async function updateSPL22({}: any): Promise<any> {}
-//mint the SPL-22 token
+
+//TODO: implement the following functions
+//mint a given amount of an SPL-22 token
 export async function mintSPL22({}: any): Promise<any> {}
-//burn the SPL-22 token
+//burn a given amount of the SPL-22 token
 export async function burnSPL22({}: any): Promise<any> {}

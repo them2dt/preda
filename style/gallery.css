@@ -25,11 +25,22 @@
 
 #gallery .view-type,
 #gallery .token-type {
+    width: fit-content;
+
+    height: 40px;
     padding: 10px;
 
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-2);
     border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#gallery .view-type:hover,
+#gallery .token-type:hover {
+    background-color: var(--secondary-faded-1);
+
 }
 
 #gallery .gallery-container {
