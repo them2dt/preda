@@ -51,7 +51,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
           <m.div
             className="navigation-button flex-row-center-center"
             onClick={() => {
-              setNavModal(navModal == 2 ? 2 : 2);
+              setNavModal(navModal == 2 ? 0 : 2);
             }}
           >
             <FontAwesomeIcon icon={faGear} />
