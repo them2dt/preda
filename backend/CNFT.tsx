@@ -79,13 +79,13 @@ export const createCNFT = async ({
 export const duplicateNFT = async (
   wallet: Wallet,
   connection: Connection,
-  nftPublicKey: string
+  nftPublicKey: PublicKey
 ): Promise<any> => {
   enqueueSnackbar("Initializing umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
 
-  const nftMetadata = await connection.getAccountInfo(new PublicKey(nftPublicKey));
+  const nftMetadata = await connection.getAccountInfo(nftPublicKey);
 
   if (!nftMetadata) {
     throw new Error("NFT metadata not found");
@@ -93,8 +93,13 @@ export const duplicateNFT = async (
 
   const metadata = JSON.parse(nftMetadata.data.toString()) as any;
 
-  const duplicateNFT = await createCNFT(wallet, connection, metadata.name, metadata.seller_fee_basis_points, metadata, nftPublicKey, metadata.creators[0].address);
-
-  return duplicateNFT;
-} 
+  //create new CNFT with same metadata as original
+  return createCNFT({
+    wallet,
+    connection,
+    title: metadata.name,
+    sellerFeeBasisPoints: metadata.seller_fee_basis_points,
+    metadata: metadata.uri,
+  });
+};
 //TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.
