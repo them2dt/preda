@@ -130,7 +130,11 @@ export default function Home() {
               </div>
               <div className="view-types flex-row-center-center">
                 <button
-                  className="view-type flex-row-center-center font-text"
+                  className={
+                    view
+                      ? "view-type active flex-row-center-center font-text"
+                      : "view-type flex-row-center-center font-text"
+                  }
                   onClick={() => {
                     setView(true);
                   }}
@@ -138,7 +142,11 @@ export default function Home() {
                   <FontAwesomeIcon icon={faImage} />
                 </button>
                 <button
-                  className="view-type flex-row-center-center font-text"
+                  className={
+                    !view
+                      ? "view-type active flex-row-center-center font-text"
+                      : "view-type flex-row-center-center font-text"
+                  }
                   onClick={() => {
                     setView(false);
                   }}
@@ -227,7 +235,7 @@ export default function Home() {
               <div className="gallery-container list flex-column-start-center">
                 {nftItems.map((item, index) => (
                   <motion.div
-                    className="gallery-item flex-column-center-center"
+                    className="list-item flex-row-between-center"
                     key={index}
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -237,42 +245,54 @@ export default function Home() {
                       delay: index * 0.1 < 1 ? index * 0.1 : 0.4,
                     }}
                   >
-                    <div className="gallery-image">
-                      <img src={item.imageUri} alt="couldn't find the image" />
-                    </div>
-                    <div className="gallery-info">
-                      <div className="gallery-title font-text-small-bold">
-                        {item.name}
+                    <div className="left flex-row-start-center">
+                      <div className="image flex-row-center-center">
+                        <img
+                          src={item.imageUri}
+                          alt="couldn't find the image"
+                        />
                       </div>
-                      <div className="gallery-supply font-text-small">
-                        {item.mint[0] +
-                          item.mint[1] +
-                          item.mint[2] +
-                          "..." +
-                          item.mint[item.mint.length - 3] +
-                          item.mint[item.mint.length - 2] +
-                          item.mint[item.mint.length - 1]}
+                      <div className="info flex-column-center-start">
+                        <div className="title font-text-small">
+                          {"Metaplex Standard NFT"}
+                        </div>
+                        <div className="title font-h4">{item.name}</div>
+                        <div className="additional-details flex-row-center-center">
+                          <div className="additional-detail flex-row-center-center">
+                            <div className="detail-key font-text-tiny-bold">
+                              Frozen
+                            </div>
+                            <div className="detail-line"></div>
+                            <div className="detail-value font-text-tiny">
+                              true
+                            </div>
+                          </div>
+                          <div className="additional-detail flex-row-center-center">
+                            <div className="detail-key font-text-tiny-bold">
+                              Frozen
+                            </div>
+                            <div className="detail-line"></div>
+                            <div className="detail-value font-text-tiny">
+                              true
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="gallery-operations first flex-row-between-center">
+                    <div className="operations flex-column-center-center">
                       <Tooltip title="Duplicate" arrow>
-                        <button className="gallery-operation flex-row-center-center">
+                        <button className="operation flex-row-center-center">
                           <FontAwesomeIcon icon={faCopy} />
                         </button>
                       </Tooltip>
-                      <button
-                        className="gallery-operation flex-row-center-center"
-                        onClick={() => {
-                          setItem(item);
-                          setItemPanel(true);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faEllipsis} />
-                      </button>
-
-                      <Tooltip title="Burn" arrow>
-                        <button className="gallery-operation flex-row-center-center">
+                      <Tooltip title="Duplicate" arrow>
+                        <button className="operation flex-row-center-center">
                           <FontAwesomeIcon icon={faFireFlameCurved} />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title="Duplicate" arrow>
+                        <button className="operation flex-row-center-center">
+                          <FontAwesomeIcon icon={faPaperPlane} />
                         </button>
                       </Tooltip>
                     </div>
@@ -361,7 +381,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className="item-panel flex-column-center-center">
+                <div className="item-panel flex-row-center-center">
                   <div className="specs flex-row-center-start">
                     <div className="specs-row flex-column-center-start">
                       <Link href={item.imageUri} target="_blank">
@@ -473,7 +493,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="item-operations flex-row-center-center">
+                  <div className="item-operations flex-column-center-center">
                     <div className="item-operation flex-row-center-start">
                       <div className="operation-icon flex-row-center-center">
                         <FontAwesomeIcon icon={faFireFlameCurved} />

@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
+import { set } from "@metaplex-foundation/umi/serializers";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -127,21 +128,32 @@ export default function Navigation({ theme, toggleTheme }: any) {
           )}
           {navModal == 3 && (
             <m.div
-              className="nav-modal nav-modal-help flex-row-center-center"
+              className="help-window flex-row-center-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => {
+                setNavModal(0);
+              }}
             >
-              <m.div
-                className="modal-content"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <h1>Help</h1>
-                <p>Coming soon</p>
-              </m.div>
+              <div className="help-container flex-row-center-center">
+                <div className="help-panel flex-column-center-center">
+                  <div className="font-h4">The Lab</div>
+                  <div className="font-text">
+                    The lab is an intuitive panel to create tokens on Solana. We
+                    currently support Standard NFT's, compressed NFT's,
+                    programmable NFT's.
+                  </div>
+                </div>
+                <div className="help-panel flex-column-center-center">
+                  <div className="font-h4">The Gallery</div>
+                  <div className="font-text">
+                    The gallery is a place to get a clean overview of your
+                    assets and maintain them.
+                  </div>
+                </div>
+              </div>
             </m.div>
           )}
         </m.div>

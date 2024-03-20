@@ -51,11 +51,15 @@ a {
     --black-4: #4D4D4D;
     --black-5: #666666;
 
+    --black-transparent: rgba(0, 0, 0, 0.5);
+
     --white-1: #FFFFFF;
     --white-2: #F2F2F2;
     --white-3: #E5E5E5;
     --white-4: #D9D9D9;
     --white-5: #CCCCCC;
+
+    --white-transparent: rgba(255, 255, 255, 0.5);
 
     --accent-1: #B763FF;
     --accent-2: #C17DFF;
@@ -79,11 +83,15 @@ a {
     --primary-faded-3: var(--black-4);
     --primary-faded-4: var(--black-5);
 
+    --primary-transparent: var(--black-transparent);
+
     --secondary: var(--white-1);
     --secondary-faded-1: var(--white-2);
     --secondary-faded-2: var(--white-3);
     --secondary-faded-3: var(--white-4);
     --secondary-faded-4: var(--white-5);
+
+    --secondary-transparent: var(--white-transparent);
 
     --accent: var(--accent-1);
     --accent-faded-1: var(--accent-2);
@@ -99,11 +107,15 @@ a {
     --primary-faded-3: var(--white-4);
     --primary-faded-4: var(--white-5);
 
+    --primary-transparent: var(--white-transparent);
+
     --secondary: var(--black-1);
     --secondary-faded-1: var(--black-2);
     --secondary-faded-2: var(--black-3);
     --secondary-faded-3: var(--black-4);
     --secondary-faded-4: var(--black-5);
+
+    --secondary-transparent: var(--black-transparent);
 
     --accent: var(--accent-1);
     --accent-faded-1: var(--accent-2);

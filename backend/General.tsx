@@ -8,13 +8,7 @@ import {
   WalletAdapter,
   walletAdapterIdentity,
 } from "@metaplex-foundation/js";
-import {
-  Keypair,
-  PublicKey,
-  Connection,
-  clusterApiUrl,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
+import { PublicKey, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 //Irys
 import { WebIrys } from "@irys/sdk";
@@ -139,7 +133,7 @@ export async function loadNFTs({
     tokenStandard: string;
   }[]
 > {
-  console.log("Loading NFTs");
+  enqueueSnackbar("Loading NFTs...", { variant: "info" });
   const ts = ["NFT", "PNFT", "CNFT"];
   const connection = new Connection(endpoint, "confirmed");
   const metaplex = new Metaplex(connection);
@@ -154,13 +148,7 @@ export async function loadNFTs({
 
   for (let i = 0; i < nfts.length; i++) {
     const response = await axios.get(nfts[i].uri);
-    console.log(response);
     const data = response.data;
-    const jsonObject = JSON.stringify(data);
-
-    console.log("--------------------");
-    console.log(jsonObject);
-    console.log("--------------------");
     const formattedItem = {
       name: nfts[i].name,
       mint: nfts[i].address.toBase58(),
@@ -170,9 +158,8 @@ export async function loadNFTs({
       tokenStandard: ts[nfts[i].tokenStandard || 0],
     };
     array.push(formattedItem);
-    console.log(formattedItem);
+    console.log("NFT " + i.toString() + " - " + formattedItem.mint);
   }
-  console.log(array);
   return array;
 }
 
