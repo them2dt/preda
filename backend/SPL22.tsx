@@ -8,7 +8,6 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 
-
 import {
   burnV1,
   createV1,
@@ -23,9 +22,9 @@ import { enqueueSnackbar } from "notistack";
  * @param {Object} rawData - The raw data for the NFT.
  * @returns {string} The JSON string of the metadata.
  */
-const stringifyMetadata = (rawData: Object): string => {
-  return JSON.stringify(rawData);
-};
+//const stringifyMetadata = (rawData: Object): string => {
+  //return JSON.stringify(rawData);
+//};
 
 
 /**
@@ -46,16 +45,16 @@ export const createToken22 = async ({
     name,
     symbol,
     decimals,
-    uri,
-    rawData,
+    metadata,
+    sellerFeeBasisPoints,
   }: {
     wallet: Wallet;
     connection: Connection;
     name: string;
     symbol: string;
     decimals: number;
-    uri: string;
-    rawData: any;
+    metadata: string;
+    sellerFeeBasisPoints: number;
   }): Promise<string> =>{
     enqueueSnackbar("initialize umi", { variant: "info" });
     const umi = createUmi(connection.rpcEndpoint);
@@ -64,7 +63,7 @@ export const createToken22 = async ({
     const mint = generateSigner(umi);
 
     // Convert raw data into a JSON string
-    const metadataJsonString = stringifyMetadata(rawData);
+    //const metadataJsonString = stringifyMetadata(metadata);
 
 
     try {
@@ -73,9 +72,11 @@ export const createToken22 = async ({
         name,
         symbol,
         decimals,
-        uri: metadataJsonString,
-        sellerFeeBasisPoints: percentAmount(0), // Add sellerFeeBasisPoints with a value of 0
+        uri: metadata,
+        sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints), // Add sellerFeeBasisPoints with a value of 0
       }).sendAndConfirm(umi);
+
+      console.log("Transaction hash: " + bs58.encode(result.signature));
   
       console.log("Mint: " + mint.publicKey);
       console.log("Signature: " + bs58.encode(result.signature));
@@ -88,7 +89,7 @@ export const createToken22 = async ({
       console.log(error);
       return "Error creating Token: " + error;
     }
-  }
+  };
 /**
  * Burns a Token22 (fungible token).
  * @param {Wallet} wallet - The wallet used for the transaction.
@@ -126,5 +127,3 @@ export const burnToken22 = async ({
       return "Error burning Token22: " + error;
     }
   };
-  );
-}

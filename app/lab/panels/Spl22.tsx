@@ -5,8 +5,9 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { CustomSlider } from "@/components/ui/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
-import { createToken22, burnToken22 } from "@/backend/Token22";
+import { createToken22, burnToken22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { string } from "@metaplex-foundation/umi/serializers";
 
 export default function Panel() {
   const { wallet } = useWallet();
@@ -16,7 +17,7 @@ export default function Panel() {
   //rerenders the attribute-modal on every change.
   const [renderHook, setRenderHook] = useState<number>(0);
   //sets the title of NFT.
-  const [title, setTitle] = useState<string>();
+  const [name, setName] = useState<string>();
   //sets the symbol of NFT. 
   const [symbol, setSymbol] = useState<string>();
   //sets the description of NFT.
@@ -48,7 +49,7 @@ export default function Panel() {
   };
 
   const run = async () => {
-    if (!wallet || !connection || !title || !symbol || !description || !image) {
+    if (!wallet || !connection || !name || !symbol || !description || !image) {
       enqueueSnackbar("Fill out the empty fields.", {
         variant: "error",
       });
@@ -59,23 +60,60 @@ export default function Panel() {
         connection: connection,
         file: image,
       });
-      
-      const rawData = {
-        seller_fee_basis_points: sliderValue,
-      };
 
       if (imageUri) {
-        const tokenMintAddress = await createToken22({
+        const tokenMintAddress = await uploadFileToIrys({
           wallet,
           connection: connection,
-          name: title,
-          symbol: symbol,
-          decimals: 9, // Set the number of decimals
-          uri: imageUri, // Use the image URL as the token's URI
-          rawData,
+          file: image,
         });
 
-        if (tokenMintAddress) {
+        const metadata = {
+          name: name,
+          symbol: symbol,
+          description: description,
+          seller_fee_basis_points: sliderValue,
+          image: imageUri,
+          external_url: "emptea.xyz",
+          properties: {
+            files: [{ uri: imageUri, type: "image/png" }],
+            category: "image",
+            creators: [
+              {
+                address:
+                  wallet.adapter.publicKey?.toBase58() ||
+                  "DFoRBzY3odkJ53FgCeSj26Ps6Bk7tuZ5kaV47QsyrqnV",
+                share: 100,
+              },
+            ],
+            supply: 1,
+            decimals: 9,
+          },
+          collection: {},
+        };
+        const metadataFile = new File(
+          [JSON.stringify(metadata)],
+          "metadata.json",
+          { type: "application/json" }
+        );
+        const metadataUri = await uploadFileToIrys({
+          wallet: wallet,
+          connection: connection,
+          file: metadataFile,
+        });
+
+        if (metadataUri) {
+          const mint = await createToken22({
+            wallet: wallet,
+            connection: connection,
+            name: "Your Token Name",
+            symbol: "YTN",
+            decimals: 9,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+          });
+
+        if (mint) {
           enqueueSnackbar("Token created!", { variant: "success" });
         } else {
           enqueueSnackbar("Error creating token.", { variant: "error" });
@@ -85,185 +123,40 @@ export default function Panel() {
       }
     }
   };
-
-  return (
-    <>
-      <AnimatePresence>
-        <m.div
-          id="lab-panel-spl"
-          className="panel create"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
-        >
-          {/**Every operation is done in here.*/}
-          <div className="flex-column-center-center form-container">
-            <div className="flex-row-center-start form">
-              <div className="flex-column-center-center text-inputs">
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Name"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                  }}
-                />
-                <input
-                  type="text"
-                  name="symbol"
-                  placeholder="Symbol"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setSymbol(e.target.value);
-                  }}
-                />
-                <textarea
-                  //type="text"
-                  name="description"
-                  placeholder="Description"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                />
-                <input
-                  type="number"
-                  name="supply"
-                  min={0}
-                  max={1000000000000}
-                  placeholder="Supply"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setSymbol(e.target.value);
-                  }}
-                />
-                <input
-                  type="number"
-                  name="decimals"
-                  min={0}
-                  max={18}
-                  placeholder="Decimals"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setSymbol(e.target.value);
-                  }}
-                />
-              </div>
-              <div className="flex-column-center-center image-input">
-                <m.div
-                  className="image"
-                  onClick={() => {
-                    const imageInput = document.getElementById("image-input");
-                    if (imageInput) {
-                      imageInput.click();
-                    }
-                  }}
-                >
-                  {image ? (
-                    <img src={imagePreview}  alt="image-preview"/>
-                  ) : (
-                    <div className="placeholder font-text-small">
-                      click here to import an image
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    name="cover"
-                    id="image-input"
-                    accept="image/png"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        validateImage(
-                          e.target.files[0],
-                          setImage,
-                          setImagePreview
-                        );
-                        console.log(e.target.files[0].name);
-                      }
-                    }}
-                  />
-                </m.div>
-              </div>
-            </div>
-            <div className="flex-row-center-center extensions-container">
-              <div className="extensions-column flex-column-center-center">
-                <div className="extensions flex-row-center-start">
-                  <div className="extension flex-column-center-center">
-                    <div className="extension-check flex-column-center-center">
-                      <label htmlFor="burnable">Frozen</label>
-                      <input
-                        type="checkbox"
-                        name="burnable"
-                        id="burnable"
-                        onChange={(e) => {
-                          setFrozen(e.target.checked);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="extension flex-column-center-center">
-                    <label htmlFor="burnable">Transfer tax (%)</label>
-                    <input
-                      type="number"
-                      name="burnable"
-                      min={0}
-                      max={100}
-                      value={transferTax}
-                      onChange={(e) => {
-                        setTransferTax(Number(e.target.value));
-                      }}
-                      placeholder="Transfer tax"
-                      className="extension-input font-text-small"
-                    />
-                  </div>
-                  <div className="extension flex-column-center-center">
-                    <label htmlFor="burnable">Interest (%)</label>
-                    <input
-                      type="number"
-                      name="burnable"
-                      min={0}
-                      max={100}
-                      value={interest}
-                      onChange={(e) => {
-                        setInterest(Number(e.target.value));
-                      }}
-                      placeholder="Transfer tax"
-                      className="extension-input font-text-small"
-                    />
-                  </div>
-                </div>
-                <div className="extensions flex-row-center-start">
-                  <div className="extension flex-column-center-center">
-                    <input
-                      type="text"
-                      name="burnable"
-                      placeholder="authority"
-                      className="extension-input font-text-small"
-                      value={authority}
-                      onChange={(e) => {
-                        setAuthority(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <m.div className="content">
-              <button
-                className="submit font-text-bold"
-                disabled={!title || !symbol || !description || !image}
-                onClick={run}
-              >
-                {!title || !symbol || !description || !image
-                  ? "fill out missing fields"
-                  : "create"}
-              </button>
-            </m.div>
-          </div>
-        </m.div>
-      </AnimatePresence>
-    </>
-  );
 }
+
+return (
+  <div>
+    <h1>Create NFT Panel</h1>
+    <input
+      type="text"
+      placeholder="Name"
+      onChange={(e) => setName(e.target.value)}
+    />
+    <input
+      type="text"
+      placeholder="Symbol"
+      onChange={(e) => setSymbol(e.target.value)}
+    />
+    <textarea
+      placeholder="Description"
+      onChange={(e) => setDescription(e.target.value)}
+    />
+    <CustomSlider value={sliderValue} setValue={setSliderValue} />
+    <div style={{ width: '200px', height: '200px', overflow: 'hidden' }}>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0]
+            setImage(file);
+            setImagePreview(URL.createObjectURL(file));
+          }
+        }}
+      />
+      {imagePreview && <img src={imagePreview} alt="preview" style={{ maxWidth: '100%', maxHeight: '100%' }} />}
+    </div>
+    <button onClick={run}>Create NFT</button>
+  </div>
+);}

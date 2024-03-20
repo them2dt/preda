@@ -12,6 +12,9 @@ import { enqueueSnackbar } from "notistack";
 import { publicKey } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
+import { PublicKey } from "@solana/web3.js";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
+
 
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
@@ -134,54 +137,105 @@ async function getAsset(url: string, pubkeys: string[]) {
   console.log("Assets: ", result);
 }
 
-// TODO: Replace current functionality with metaplex/js module (https://solanacookbook.com/references/nfts.html#how-to-get-nft-metadata)
-export async function loadNFTs({
-  wallet,
-  endpoint,
-}: {
-  wallet: string;
-  endpoint: string; 
-}): Promise<
-  {
+type TokenMetadata = {
+  name: string;
+  symbol: string;
+  uri: string;
+  sellerFeeBasisPoints: number;
+  creators: {
+    address: string;
+    verified: boolean;
+    share: number;
+  }[];
+  collection: {
+    verified: boolean;
     name: string;
-    mint: string;
-    imageUri: string;
-    updateAuthority: string;
-    attributes: { trait_type: string; value: string }[];
-    tokenStandard: string;
-  }[]
-> {
-  console.log("Loading NFTs...");
-  const options = {
-    method: "GET",
-    headers: { accept: "application/json" },
-  };
+  } | null;
+  uses: number;
+  primarySaleHappened: boolean;
+  isMutable: boolean;
+  editionNonce: number;
+  tokenStandard: string;
+};
 
-  const response = await fetch(
-    "https://api-devnet.magiceden.dev/v2/wallets/" + wallet + "/tokens",
-    options
-  );
-  const data = await response.json();
-  const arrayResponse = Array.isArray(data) ? data : [];
-  const resultArray: {
-    name: string;
-    mint: string;
-    imageUri: string;
-    updateAuthority: string;
-    attributes: { trait_type: string; value: string }[];
-    tokenStandard: string;
-  }[] = [];
-  for (let i = 0; i < arrayResponse.length; i++) {
-    const item = {
-      name: arrayResponse[i].name,
-      mint: arrayResponse[i].mintAddress,
-      imageUri: arrayResponse[i].image,
-      updateAuthority: arrayResponse[i].updateAuthority,
-      attributes: arrayResponse[i].attributes,
-      tokenStandard: arrayResponse[i].tokenStandard || 0,
-    };
-    resultArray.push(item);
+/**
+ * Loads NFTs for a given wallet address.
+ * @param {Connection} connection - The connection to the Solana blockchain.
+ * @param {PublicKey} walletAddress - The address of the wallet to load NFTs for.
+ * @returns {Promise<TokenMetadata[]>} The NFT metadata for the wallet.
+ */
+export const loadNFTs = async (
+  connection: Connection,
+  walletAddress: PublicKey
+): Promise<TokenMetadata[]> => {
+  enqueueSnackbar("Loading NFTs...", { variant: "info" });
+
+  try {
+    const associatedTokenAddresses = await getAssociatedTokens(connection, walletAddress);
+    const nftMetadatas: TokenMetadata[] = [];
+
+    for (const associatedTokenAddress of associatedTokenAddresses) {
+      const nftMetadataAddress = await getMetadataAddress(associatedTokenAddress);
+      const nftMetadata = await connection.getAccountInfo(nftMetadataAddress);
+      if (!nftMetadata) {
+        continue;
+      }
+
+      const metadata = JSON.parse(nftMetadata.data.toString()) as any;
+      if (metadata.tokenStandard !== "NonFungible") {
+        continue;
+      }
+
+      const nftMint = metadata.mint;
+      const nftName = metadata.name;
+      const nftImageUri = metadata.uri;
+      const nftUpdateAuthority = metadata.updateAuthority;
+      const nftAttributes = metadata.attributes;
+      const nftTokenStandard = metadata.tokenStandard;
+
+      const nft: TokenMetadata = {
+        name: nftName,
+        symbol: metadata.symbol,
+        uri: nftImageUri,
+        sellerFeeBasisPoints: metadata.sellerFeeBasisPoints,
+        creators: metadata.creators,
+        collection: metadata.collection,
+        uses: metadata.uses,
+        primarySaleHappened: metadata.primarySaleHappened,
+        isMutable: metadata.isMutable,
+        editionNonce: metadata.editionNonce,
+        tokenStandard: nftTokenStandard,
+      };
+      nftMetadatas.push(nft);
+    }
+
+    enqueueSnackbar("Loaded NFTs", { variant: "success" });
+    return nftMetadatas;
+  } catch (error) {
+    enqueueSnackbar("Error loading NFTs: " + error, { variant: "error" });
+    console.log(error);
+    return [];
   }
-  console.log(resultArray);
-  return resultArray;
+};
+
+/**
+ * Gets the associated token addresses for a given wallet address.
+ * @param {Connection} connection - The connection to the Solana blockchain.
+ * @param {PublicKey} walletAddress - The address of the wallet to get associated token addresses for.
+ * @returns {Promise<PublicKey[]>} The associated token addresses for the wallet.
+ */
+async function getAssociatedTokens(
+  connection: Connection,
+  walletAddress: PublicKey
+): Promise<PublicKey[]> {
+  const associatedTokenAddressPromises = [];
+  const tokenProgramId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5d5aW7L8f");
+  const tokenAccounts = await connection.getParsedProgramAccounts(tokenProgramId);
+  for (const tokenAccount of tokenAccounts) {
+    if (tokenAccount.account && "data" in tokenAccount.account && Buffer.isBuffer(tokenAccount.account.data)) {
+      const associatedTokenAddress = getAssociatedTokenAddress(tokenAccount.pubkey!, walletAddress, tokenProgramId);
+      associatedTokenAddressPromises.push(associatedTokenAddress);
+    }
+  }
+  return Promise.all(associatedTokenAddressPromises);
 }

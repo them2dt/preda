@@ -8,6 +8,11 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
+import { Metaplex } from "@metaplex-foundation/js";
+import { PublicKey } from "@solana/web3.js";
+
+
+
 
 /**
  * Creates a new Metaplex PNFT.
@@ -71,5 +76,25 @@ export const createCNFT = async ({
 };
 
 //TODO: Add a function to duplicate an NFT, which takes a wallet object and a connection object and the publickey of the NFT to burn.
+export const duplicateNFT = async (
+  wallet: Wallet,
+  connection: Connection,
+  nftPublicKey: string
+): Promise<any> => {
+  enqueueSnackbar("Initializing umi", { variant: "info" });
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(walletAdapterIdentity(wallet.adapter));
 
+  const nftMetadata = await connection.getAccountInfo(new PublicKey(nftPublicKey));
+
+  if (!nftMetadata) {
+    throw new Error("NFT metadata not found");
+  }
+
+  const metadata = JSON.parse(nftMetadata.data.toString()) as any;
+
+  const duplicateNFT = await createCNFT(wallet, connection, metadata.name, metadata.seller_fee_basis_points, metadata, nftPublicKey, metadata.creators[0].address);
+
+  return duplicateNFT;
+} 
 //TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.
