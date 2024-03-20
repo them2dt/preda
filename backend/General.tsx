@@ -8,6 +8,14 @@ import {
   WalletAdapter,
   walletAdapterIdentity,
 } from "@metaplex-foundation/js";
+import {
+  fetchAllDigitalAssetByOwner,
+  fetchAllDigitalAssetByUpdateAuthority,
+  mplTokenMetadata,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity as umiWalletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+
 import { PublicKey, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 //Irys
@@ -15,6 +23,8 @@ import { WebIrys } from "@irys/sdk";
 import { Adapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
 import axios from "axios";
+import { percentAmount, publicKey } from "@metaplex-foundation/umi";
+import bs58 from "bs58";
 
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
@@ -163,35 +173,29 @@ export async function loadNFTs({
   return array;
 }
 
-export async function loadTokenAccounts({
+export const loadAssets = async ({
   wallet,
   connection,
 }: {
-  wallet: string;
+  wallet: Wallet;
   connection: Connection;
-}) {
-  const owner = new PublicKey(wallet);
-  const response = await connection.getParsedTokenAccountsByOwner(owner, {
-    programId: TOKEN_PROGRAM_ID,
-  });
-  console.log("--------------------");
-  console.log("--------------------");
-  console.log("--------------------");
-  response.value.forEach((accountInfo) => {
-    console.log(`pubkey: ${accountInfo.pubkey.toBase58()}`);
-    console.log(`mint: ${accountInfo.account.data["parsed"]["info"]["mint"]}`);
-    console.log(
-      `owner: ${accountInfo.account.data["parsed"]["info"]["owner"]}`
+}): Promise<string> => {
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(mplTokenMetadata());
+  umi.use(umiWalletAdapterIdentity(wallet.adapter));
+  try {
+    const assets = await fetchAllDigitalAssetByOwner(
+      umi,
+      publicKey(wallet.adapter.publicKey?.toBase58() || "")
     );
-    console.log(
-      `decimals: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["decimals"]}`
-    );
-    console.log(
-      `amount: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["amount"]}`
-    );
-    console.log("====================");
-  });
-  console.log("--------------------");
-  console.log("--------------------");
-  console.log("--------------------");
-}
+    if (assets) {
+      for (let i = 0; i < assets.length; i++) {
+        console.log("Asset " + i.toString() + " - " + assets[i].mint.publicKey);
+      }
+    }
+  } catch (error) {
+    enqueueSnackbar("Error loading assets: " + error, { variant: "error" });
+  }
+
+  return "";
+};

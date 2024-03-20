@@ -15,7 +15,7 @@ import {
   faImage,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
-import { loadNFTs, loadTokenAccounts } from "@/backend/General";
+import { loadNFTs, loadAssets } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { enqueueSnackbar } from "notistack";
 import { Tooltip } from "@mui/material";
@@ -49,7 +49,7 @@ export default function Home() {
     }[]
   >([]);
 
-  async function loadAssets() {
+  async function loadNonFungibles() {
     if (wallet) {
       setTimeout(() => {
         console.log("waiting...");
@@ -72,13 +72,37 @@ export default function Home() {
       enqueueSnackbar("Wallet not found", { variant: "error" });
     }
   }
+  async function loadFungibles() {
+    if (wallet) {
+      setTimeout(() => {
+        console.log("waiting...");
+      }, 500);
+      if (wallet.adapter.connected) {
+        if (wallet.adapter.publicKey) {
+          const result = await loadAssets({
+            wallet: wallet,
+            connection: connection,
+          })
+            .then((response) => console.log(response))
+            .catch((err) => enqueueSnackbar(err, { variant: "error" }));
+        } else {
+          enqueueSnackbar("Pubkey not found", { variant: "error" });
+        }
+      } else {
+        enqueueSnackbar("Wallet not connected", { variant: "error" });
+      }
+    } else {
+      enqueueSnackbar("Wallet not found", { variant: "error" });
+    }
+  }
+
   useEffect(() => {
-    loadAssets().catch(console.error);
+    loadNonFungibles().catch(console.error);
   }, [walletParent.connected]);
 
   useEffect(() => {
     if (walletParent.connected) {
-      loadAssets();
+      loadNonFungibles();
     } else {
       setnftItems([]);
     }
@@ -109,7 +133,7 @@ export default function Home() {
                   }
                   onClick={() => {
                     setType(true);
-                    loadAssets();
+                    loadNonFungibles();
                   }}
                 >
                   NFTs
@@ -120,9 +144,9 @@ export default function Home() {
                       ? "token-type active flex-row-center-center font-text"
                       : "token-type flex-row-center-center font-text"
                   }
-                  onClick={() => {
+                  onClick={async () => {
                     setType(false);
-                    //TODO: Add the function to load SPLs
+                    await loadFungibles();
                   }}
                 >
                   SPLs
@@ -158,10 +182,6 @@ export default function Home() {
                   onClick={
                     async () => {
                       if (walletParent.publicKey) {
-                        await loadTokenAccounts({
-                          wallet: walletParent.publicKey.toBase58(),
-                          connection: connection,
-                        });
                       } else
                         console.log(
                           "Wallet not connected. Please connect your wallet."
