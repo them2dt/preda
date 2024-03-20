@@ -8,7 +8,6 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
-import { Metaplex } from "@metaplex-foundation/js";
 import { PublicKey } from "@solana/web3.js";
 
 
@@ -101,5 +100,8 @@ export const duplicateNFT = async (
     sellerFeeBasisPoints: metadata.seller_fee_basis_points,
     metadata: metadata.uri,
   });
+  
 };
+
+
 //TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.
