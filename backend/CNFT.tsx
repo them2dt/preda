@@ -1,8 +1,8 @@
 import { Wallet } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
+import { Connection, Transaction } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
-import { none } from "@metaplex-foundation/umi";
+import { none,PublicKey as UmiPublicKey } from "@metaplex-foundation/umi";
 import { mintV1, createTree } from "@metaplex-foundation/mpl-bubblegum";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { generateSigner } from "@metaplex-foundation/umi";
@@ -10,10 +10,6 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
 import { PublicKey } from "@solana/web3.js";
 import { SystemProgram } from "@solana/web3.js";
-
-
-
-
 
 /**
  * Creates a new Metaplex PNFT.
@@ -36,7 +32,7 @@ export const createCNFT = async ({
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
-  nftPublicKey?: PublicKey;
+  nftPublicKey?: UmiPublicKey;
 }): Promise<any> => {
   enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
@@ -78,17 +74,17 @@ export const createCNFT = async ({
   //log the signature
 };
 
-//TODO: Add a function to duplicate an NFT, which takes a wallet object and a connection object and the publickey of the NFT to burn.
+//TODO: Validate if the duplicateNFT function works
 export const duplicateNFT = async (
   wallet: Wallet,
   connection: Connection,
-  nftPublicKey: PublicKey
+  nftPublicKey: UmiPublicKey
 ): Promise<any> => {
   enqueueSnackbar("Initializing umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
 
-  const nftMetadata = await connection.getAccountInfo(nftPublicKey);
+  const nftMetadata = await connection.getAccountInfo(new PublicKey(nftPublicKey));
 
   if (!nftMetadata) {
     throw new Error("NFT metadata not found");
@@ -105,11 +101,10 @@ export const duplicateNFT = async (
     metadata: metadata.uri,
     nftPublicKey,
   });
-  
 };
 
-
-//TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.
+//TODO: Fix bugs & Validate if the burnNFT function works
+//fix bugs
 export const burnNFT = async (
   wallet: Wallet,
   connection: Connection,
@@ -134,10 +129,12 @@ export const burnNFT = async (
 
   const transaction = new Transaction().add(burnInstruction);
 
-  const signature = await connection.sendRawTransaction(transaction, { skipPreflight: true, signers: [umi.identity.payer] });
+  const signature = await connection.sendRawTransaction(transaction, {
+    skipPreflight: true,
+    signers: [umi.identity.payer],
+  });
   await transaction.confirm(connection, "confirmed");
-  
- //console.log("Burn Signature: " + bs58.encode(signature));
- console.log("Burn Signature: " + Buffer.from(signature, "base64"));
 
+  //console.log("Burn Signature: " + bs58.encode(signature));
+  console.log("Burn Signature: " + Buffer.from(signature, "base64"));
 };
