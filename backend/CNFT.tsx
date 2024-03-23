@@ -9,6 +9,8 @@ import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
 import { PublicKey } from "@solana/web3.js";
+import { SystemProgram } from "@solana/web3.js";
+
 
 
 
@@ -27,12 +29,14 @@ export const createCNFT = async ({
   title,
   sellerFeeBasisPoints,
   metadata,
+  nftPublicKey,
 }: {
   wallet: Wallet;
   connection: Connection;
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
+  nftPublicKey?: PublicKey;
 }): Promise<any> => {
   enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
@@ -56,7 +60,7 @@ export const createCNFT = async ({
   // create "mint CNFT" transaction
   console.log("Minting CNFT...");
   const mintTX = mintV1(umi, {
-    leafOwner: umi.identity.publicKey,
+    leafOwner: nftPublicKey || umi.identity.publicKey, // use nftPublicKey if it's provided, otherwise use the identity public key
     merkleTree: merkleTree.publicKey,
     metadata: {
       name: title,
@@ -99,9 +103,41 @@ export const duplicateNFT = async (
     title: metadata.name,
     sellerFeeBasisPoints: metadata.seller_fee_basis_points,
     metadata: metadata.uri,
+    nftPublicKey,
   });
   
 };
 
 
 //TODO: Add a function to burn an NFT, which takes a wallet object and a connection object and the publickey of the NFT to duplicate.
+export const burnNFT = async (
+  wallet: Wallet,
+  connection: Connection,
+  nftPublicKey: PublicKey
+): Promise<void> => {
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(walletAdapterIdentity(wallet.adapter));
+
+  const nftAccount = await connection.getAccountInfo(nftPublicKey);
+
+  if (!nftAccount) {
+    throw new Error("NFT account not found");
+  }
+
+  const metadata = JSON.parse(nftAccount.data.toString()) as any;
+
+  const burnInstruction = SystemProgram.transfer({
+    fromPubkey: nftPublicKey,
+    toPubkey: SystemProgram.programId,
+    lamports: nftAccount.lamports,
+  });
+
+  const transaction = new Transaction().add(burnInstruction);
+
+  const signature = await connection.sendRawTransaction(transaction, { skipPreflight: true, signers: [umi.identity.payer] });
+  await transaction.confirm(connection, "confirmed");
+  
+ //console.log("Burn Signature: " + bs58.encode(signature));
+ console.log("Burn Signature: " + Buffer.from(signature, "base64"));
+
+};
