@@ -60,6 +60,8 @@ const mintToTokenAccount = async (wallet: any, mintAddress: string, tokenAccount
   }
 };
 
+//TODO: Add token extensions.
+// reference: https://developers.metaplex.com/token-metadata/token-2022
 export const createToken22 = async ({
   wallet,
   connection,
