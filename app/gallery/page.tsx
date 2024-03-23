@@ -20,6 +20,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { enqueueSnackbar } from "notistack";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
+import SingleItemView from "./SingleItemView";
 
 export default function Home() {
   const walletParent = useWallet();
@@ -394,156 +395,13 @@ export default function Home() {
           </div>
           <AnimatePresence>
             {itemPanel && item && walletParent.publicKey && (
-              <motion.div
-                className="item-backdrop flex-column-center-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="item-panel flex-row-center-center">
-                  <div className="specs flex-row-center-start">
-                    <div className="specs-row flex-column-center-start">
-                      <Link href={item.imageUri} target="_blank">
-                        <Tooltip title="Open image in full size" arrow>
-                          <div className="image">
-                            <img src={item.imageUri} alt="the image" />
-                          </div>
-                        </Tooltip>
-                      </Link>
-                      <div className="item-info flex-column-center-start">
-                        <div className="item-name font-h4">{item.name}</div>
-                        <div className="item-pubkey font-text-small">
-                          {item.mint[0] +
-                            item.mint[1] +
-                            item.mint[2] +
-                            "..." +
-                            item.mint[item.mint.length - 3] +
-                            item.mint[item.mint.length - 2] +
-                            item.mint[item.mint.length - 1]}
-                        </div>
-                      </div>
-
-                      <div className="item-specs flex-column-start-end">
-                        <div className="item-spec flex-column-center-start">
-                          <div className="spec-name font-text-small-bold">
-                            Owner
-                          </div>
-                          <div className="spec-value font-text-small">
-                            {walletParent.publicKey?.toBase58()[0] +
-                              walletParent.publicKey?.toBase58()[1] +
-                              walletParent.publicKey?.toBase58()[2] +
-                              "..." +
-                              walletParent.publicKey?.toBase58()[
-                                walletParent.publicKey?.toBase58().length - 3
-                              ] +
-                              walletParent.publicKey?.toBase58()[
-                                walletParent.publicKey?.toBase58().length - 2
-                              ] +
-                              walletParent.publicKey?.toBase58()[
-                                walletParent.publicKey?.toBase58().length - 1
-                              ]}
-                          </div>
-                        </div>
-                        <div className="item-spec flex-column-center-start">
-                          <div className="spec-name font-text-small-bold">
-                            Token Standard
-                          </div>
-                          <div className="spec-value font-text-small">NFT</div>
-                        </div>
-
-                        <div className="item-spec flex-column-center-start">
-                          <div className="spec-name font-text-small-bold">
-                            Update authority
-                          </div>
-                          <div className="spec-value font-text-small">
-                            {item.updateAuthority[0] +
-                              item.updateAuthority[1] +
-                              item.updateAuthority[2] +
-                              "..." +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 3
-                              ] +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 2
-                              ] +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 1
-                              ]}
-                          </div>
-                        </div>
-                        <div className="item-spec flex-column-center-start">
-                          <div className="spec-name font-text-small-bold">
-                            Freeze authority
-                          </div>
-                          <div className="spec-value font-text-small">
-                            {item.updateAuthority[0] +
-                              item.updateAuthority[1] +
-                              item.updateAuthority[2] +
-                              "..." +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 3
-                              ] +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 2
-                              ] +
-                              item.updateAuthority[
-                                item.updateAuthority.length - 1
-                              ]}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="specs-row flex-column-center-end">
-                      <div className="item-attributes flex-column-start-end">
-                        {item.attributes.map((attribute, index) => (
-                          <div
-                            className="attribute flex-row-center-center"
-                            key={index}
-                          >
-                            <div className="attribute-name font-text-tiny-bold">
-                              {attribute.trait_type}
-                            </div>
-                            <div className="attribute-value font-text-tiny">
-                              {attribute.value}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="item-operations flex-column-center-center">
-                    <div className="item-operation flex-row-center-start">
-                      <div className="operation-icon flex-row-center-center">
-                        <FontAwesomeIcon icon={faFireFlameCurved} />
-                      </div>
-                      <div className="operation-name font-text-small-bold">
-                        Burn
-                      </div>
-                    </div>
-                    <div className="item-operation flex-row-center-start">
-                      <div className="operation-icon flex-row-center-center">
-                        <FontAwesomeIcon icon={faCopy} />
-                      </div>
-                      <div className="operation-name font-text-small-bold">
-                        Duplicate
-                      </div>
-                    </div>
-                    <div className="item-operation flex-row-center-start">
-                      <div className="operation-icon flex-row-center-center">
-                        <FontAwesomeIcon icon={faPaperPlane} />
-                      </div>
-                      <div className="operation-name font-text-small-bold">
-                        Transfer
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button className="close" onClick={() => setItemPanel(false)}>
-                  <FontAwesomeIcon icon={faClose} />
-                </button>
-              </motion.div>
+              <SingleItemView
+                owner={walletParent.publicKey.toBase58()}
+                item={item}
+                closePanel={() => {
+                  setItemPanel(false);
+                }}
+              />
             )}
           </AnimatePresence>
 
