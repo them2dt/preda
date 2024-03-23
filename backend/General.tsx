@@ -26,6 +26,7 @@ import axios from "axios";
 import { percentAmount, publicKey } from "@metaplex-foundation/umi";
 import bs58 from "bs58";
 
+
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
   input: File,
@@ -199,3 +200,4 @@ export const loadAssets = async ({
 
   return "";
 };
+
