@@ -8,9 +8,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { motion as m } from "framer-motion";
+import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
+import { set } from "@metaplex-foundation/umi/serializers";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -40,7 +41,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
           <m.div
             className="navigation-button flex-row-center-center"
             onClick={() => {
-              setNavModal(navModal == 0 ? 1 : 0);
+              setNavModal(navModal == 1 ? 0 : 1);
             }}
           >
             <FontAwesomeIcon
@@ -51,7 +52,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
           <m.div
             className="navigation-button flex-row-center-center"
             onClick={() => {
-              setNavModal(navModal == 0 ? 2 : 0);
+              setNavModal(navModal == 2 ? 0 : 2);
             }}
           >
             <FontAwesomeIcon icon={faGear} />
@@ -59,7 +60,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
           <m.div
             className="navigation-button flex-row-center-center"
             onClick={() => {
-              setNavModal(navModal == 0 ? 3 : 0);
+              setNavModal(navModal == 3 ? 0 : 3);
             }}
           >
             <FontAwesomeIcon icon={faQuestion} />
@@ -74,56 +75,89 @@ export default function Navigation({ theme, toggleTheme }: any) {
           </m.div>
         </m.div>
       </m.div>
-
-      <div
-        className="nav-modal-container flex-row-center-center"
-        data-theme={theme == 0 ? "light" : "dark"}
-      >
-        {navModal == 1 && (
-          <m.div className="nav-modal nav-modal-wallet flex-row-center-center">
+      <AnimatePresence>
+        <m.div
+          className="nav-modal-container flex-row-center-center"
+          data-theme={theme == 0 ? "light" : "dark"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          {navModal == 1 && (
             <m.div
-              className="modal-content"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <WalletMultiButtonDynamic />
-            </m.div>
-          </m.div>
-        )}
-        {navModal == 2 && (
-          <m.div className="nav-modal nav-modal-settings flex-column-center-center">
-            <m.div
-              className="modal-content flex-column-center-center"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
+              className="nav-modal nav-modal-wallet flex-row-center-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
             >
               <m.div
-                className="button flex-row-center-center"
-                onClick={toggleTheme}
+                className="modal-content"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
-                <FontAwesomeIcon icon={faLightbulb} />
-                {theme == 0 ? "Light" : "Dark"} mode
+                <WalletMultiButtonDynamic />
               </m.div>
             </m.div>
-          </m.div>
-        )}
-
-        {navModal == 3 && (
-          <m.div className="nav-modal nav-modal-help flex-row-center-center">
+          )}
+          {navModal == 2 && (
             <m.div
-              className="modal-content"
-              onClick={(e) => {
-                e.stopPropagation();
+              className="nav-modal nav-modal-settings flex-column-center-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <m.div
+                className="modal-content flex-column-center-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <m.div
+                  className="button flex-row-center-center"
+                  onClick={toggleTheme}
+                >
+                  <FontAwesomeIcon icon={faLightbulb} />
+                  {theme == 0 ? "Light" : "Dark"} mode
+                </m.div>
+              </m.div>
+            </m.div>
+          )}
+          {navModal == 3 && (
+            <m.div
+              className="help-window flex-row-center-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => {
+                setNavModal(0);
               }}
             >
-              <h1>Help</h1>
-              <p>Coming soon</p>
+              <div className="help-container flex-row-center-center">
+                <div className="help-panel flex-column-center-center">
+                  <div className="font-h4">The Lab</div>
+                  <div className="font-text">
+                    The lab is an intuitive panel to create tokens on Solana. We
+                    currently support Standard NFT's, compressed NFT's,
+                    programmable NFT's.
+                  </div>
+                </div>
+                <div className="help-panel flex-column-center-center">
+                  <div className="font-h4">The Gallery</div>
+                  <div className="font-text">
+                    The gallery is a place to get a clean overview of your
+                    assets and maintain them.
+                  </div>
+                </div>
+              </div>
             </m.div>
-          </m.div>
-        )}
-      </div>
+          )}
+        </m.div>
+      </AnimatePresence>
     </>
   );
 }

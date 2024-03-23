@@ -1,39 +1,48 @@
-#home {
-    width: 100vw;
+#home .section {
+    width: 100%;
     height: 100vh;
 }
 
-#home .home-title {
-    color: var(--accent-1);
+#home .section.text-container {
+    width: 40vw;
+    height: 60vh;
+    text-align: center;
 }
 
-#home .home-description {
-    margin-bottom: 100px;
+#home .section .container {
+    width: calc(100vw - 40px);
+    height: calc(100vh - 40px);
+
+    background: radial-gradient(#7724be, #B763FF);
+    border-radius: 40px;
+    box-sizing: border-box;
 }
 
-#home .links {
+
+#home .legend {
+    width: 40vw;
     gap: 20px;
 }
 
-#home .links .anchor {
-    width: 400px;
-    height: 100px;
-    padding: 20px;
-
-    background-color: var(--accent-4);
-    border: 2px dashed var(--accent-1);
-    border-radius: 10px;
+#home .legend .slogan {
+    color: white;
 }
 
-#home .links .anchor .anchor-title {
-    color: var(--accent-1);
+#home .legend .launcher {
+    padding: 10px 20px;
+    gap: 10px;
+
+    background: linear-gradient(#b159ff, #983ce9);
+    border: 1px solid #7229b3;
+    border-radius: 40px;
+    border-top-left-radius: 0px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+
+    color: white;
+    cursor: pointer;
 }
 
-#home .links .anchor .anchor-description {
-    color: var(--white-1);
-}
+#home .legend .launcher:hover {
+    background: linear-gradient(#b159ff, #983ce9);
 
-#home .links .anchor:hover {
-
-    border: 2px solid var(--accent-3);
 }

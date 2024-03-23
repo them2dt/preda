@@ -1,40 +1,54 @@
 "use client";
 
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <div id="home" className="flex-column-center-center">
-      <div id="home-container" className="flex-column-center-center">
-        <div className="home-title font-h1  flex-column-center-center">
-          Preda
-        </div>
-        <div className="home-description font-text flex-column-center-center">
-          One platform for every token. Built by Emptea Studios.
-        </div>
-        <div className="links flex-row-center-center">
-          <Link href="/lab" target="_blank">
-            <div className="anchor flex-column-start-start">
-              <div className="anchor-title font-h4">The Lab</div>
-              <div className="anchor-description font-text">
-                Create tokens within minutes, through an intuitive design.
+      <div className="section flex-row-center-center">
+        <div className="container flex-row-center-center">
+          <div className="legend flex-column-center-start">
+            <div className="slogan font-h1">
+              Operating tokens has never been this easy.
+            </div>
+            <Link href={"/lab"} target="_blank">
+              <div className="launcher flex-row-center-center font-h4">
+                Launch Preda
+                <FontAwesomeIcon icon={faArrowRight} />
               </div>
-            </div>
-          </Link>
-          <Link href="/gallery" target="_blank">
-            <div className="anchor flex-column-start-start">
-              <div className="anchor-title font-h4">Gallery</div>
-              <div className="anchor-description font-text">
-                Maintain your assets and view them in a beautiful gallery.
-              </div>
-            </div>
-          </Link>
-          <Link href="/profile" target="_blank">
-            <div className="anchor flex-column-start-start">
-              <div className="anchor-title font-h4">Profile</div>
-              <div className="anchor-description font-text">Coming soon.</div>
-            </div>
-          </Link>
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div className="section text-container flex-column-center-center">
+        <div className="font-h4">One platform for all your tokens.</div>
+        <div className="font-text">
+          Preda is a platform that allows you to operate tokens on multiple
+          blockchains. It is designed to be simple, secure and fast. Whether you
+          need to launch a Memecoin, a NFT for your Artwork or you just need to
+          get rid of some spams, Preda has the tools you need.
+        </div>
+      </div>
+      <div className="section text-container flex-column-center-center">
+        <div className="font-h4">Creator Studio</div>
+        <div className="font-text">
+          The creator studio is a powerhouse, designed to create any token
+          within seconds. With a intuitive interface, you can create SPLs, pNFTs
+          and cNFTs like a pro.
+        </div>
+      </div>
+      <div className="section text-container flex-column-center-center">
+        <div className="font-h4">Atelier</div>
+        <div className="font-text">
+          The Atelier offers you a great way to manage your tokens. Burn,
+          duplicate & transfer one or more tokens with one click.
+        </div>
+      </div>
+      <div className="section text-container flex-column-center-center">
+        <div className="font-text">
+          Preda is built througout the Colosseum Hackathon.
         </div>
       </div>
     </div>

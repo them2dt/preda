@@ -3,15 +3,28 @@
 import { Wallet } from "@solana/wallet-adapter-react";
 
 //solana
-import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  Metaplex,
+  WalletAdapter,
+  walletAdapterIdentity,
+} from "@metaplex-foundation/js";
+import {
+  fetchAllDigitalAssetByOwner,
+  fetchAllDigitalAssetByUpdateAuthority,
+  mplTokenMetadata,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity as umiWalletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+
+import { PublicKey, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 //Irys
 import { WebIrys } from "@irys/sdk";
-import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
+import { Adapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
-// umi
-import { publicKey } from "@metaplex-foundation/umi";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
+import axios from "axios";
+import { percentAmount, publicKey } from "@metaplex-foundation/umi";
+import bs58 from "bs58";
 
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
@@ -56,13 +69,13 @@ export async function validateImage(
   return false;
 }
 
-const getIrys = async ({
+async function getIrys({
   wallet,
   connection,
 }: {
   wallet: Wallet;
   connection: Connection;
-}) => {
+}) {
   const providerUrl = connection.rpcEndpoint;
   const useProvider = wallet?.adapter as Adapter;
   await useProvider.connect();
@@ -76,8 +89,7 @@ const getIrys = async ({
     config: { providerUrl }, // Optional provider URL, only required when using Devnet
   });
   return irys;
-};
-//function which takes a file and uploads it to the arweave network using the irys-sdk
+}
 export async function uploadFileToIrys({
   wallet,
   connection,
@@ -113,34 +125,14 @@ export async function uploadFileToIrys({
   );
 
   return "https://arweave.net/" + upload.id;
-} //function which takes a file and uploads it to the arweave network using the irys-sdk
-
-async function getAsset(url: string, pubkeys: string[]) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "my-id",
-      method: "getAssetBatch",
-      params: {
-        ids: pubkeys,
-      },
-    }),
-  });
-  const { result } = await response.json();
-  console.log("Assets: ", result);
 }
 
-// TODO: Replace current functionality with metaplex/js module (https://solanacookbook.com/references/nfts.html#how-to-get-nft-metadata)
 export async function loadNFTs({
   wallet,
   endpoint,
 }: {
-  wallet: string;
-  endpoint: string; 
+  wallet: Wallet;
+  endpoint: string;
 }): Promise<
   {
     name: string;
@@ -151,37 +143,59 @@ export async function loadNFTs({
     tokenStandard: string;
   }[]
 > {
-  console.log("Loading NFTs...");
-  const options = {
-    method: "GET",
-    headers: { accept: "application/json" },
+  enqueueSnackbar("Loading NFTs...", { variant: "info" });
+  const ts = ["NFT", "PNFT", "CNFT"];
+  const connection = new Connection(endpoint, "confirmed");
+  const metaplex = new Metaplex(connection);
+  const walletAdapter: WalletAdapter = {
+    publicKey: wallet.adapter.publicKey,
   };
+  metaplex.use(walletAdapterIdentity(walletAdapter));
+  const nfts = await metaplex
+    .nfts()
+    .findAllByOwner({ owner: walletAdapter.publicKey || PublicKey.default });
+  const array = [];
 
-  const response = await fetch(
-    "https://api-devnet.magiceden.dev/v2/wallets/" + wallet + "/tokens",
-    options
-  );
-  const data = await response.json();
-  const arrayResponse = Array.isArray(data) ? data : [];
-  const resultArray: {
-    name: string;
-    mint: string;
-    imageUri: string;
-    updateAuthority: string;
-    attributes: { trait_type: string; value: string }[];
-    tokenStandard: string;
-  }[] = [];
-  for (let i = 0; i < arrayResponse.length; i++) {
-    const item = {
-      name: arrayResponse[i].name,
-      mint: arrayResponse[i].mintAddress,
-      imageUri: arrayResponse[i].image,
-      updateAuthority: arrayResponse[i].updateAuthority,
-      attributes: arrayResponse[i].attributes,
-      tokenStandard: arrayResponse[i].tokenStandard || 0,
+  for (let i = 0; i < nfts.length; i++) {
+    const response = await axios.get(nfts[i].uri);
+    const data = response.data;
+    const formattedItem = {
+      name: nfts[i].name,
+      mint: nfts[i].address.toBase58(),
+      imageUri: data.image || "",
+      updateAuthority: nfts[i].updateAuthorityAddress.toBase58(),
+      attributes: data.attributes,
+      tokenStandard: ts[nfts[i].tokenStandard || 0],
     };
-    resultArray.push(item);
+    array.push(formattedItem);
+    console.log("NFT " + i.toString() + " - " + formattedItem.mint);
   }
-  console.log(resultArray);
-  return resultArray;
+  return array;
 }
+
+export const loadAssets = async ({
+  wallet,
+  connection,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+}): Promise<string> => {
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(mplTokenMetadata());
+  umi.use(umiWalletAdapterIdentity(wallet.adapter));
+  try {
+    const assets = await fetchAllDigitalAssetByOwner(
+      umi,
+      publicKey(wallet.adapter.publicKey?.toBase58() || "")
+    );
+    if (assets) {
+      for (let i = 0; i < assets.length; i++) {
+        console.log("Asset " + i.toString() + " - " + assets[i].mint.publicKey);
+      }
+    }
+  } catch (error) {
+    enqueueSnackbar("Error loading assets: " + error, { variant: "error" });
+  }
+
+  return "";
+};
