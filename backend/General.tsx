@@ -3,17 +3,28 @@
 import { Wallet } from "@solana/wallet-adapter-react";
 
 //solana
-import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  Metaplex,
+  WalletAdapter,
+  walletAdapterIdentity,
+} from "@metaplex-foundation/js";
+import {
+  fetchAllDigitalAssetByOwner,
+  fetchAllDigitalAssetByUpdateAuthority,
+  mplTokenMetadata,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity as umiWalletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+
+import { PublicKey, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 //Irys
 import { WebIrys } from "@irys/sdk";
-import { Adapter, StandardWalletAdapter } from "@solana/wallet-adapter-base";
+import { Adapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
-// umi
-import { publicKey } from "@metaplex-foundation/umi";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
-import { PublicKey } from "@solana/web3.js";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
+import axios from "axios";
+import { percentAmount, publicKey } from "@metaplex-foundation/umi";
+import bs58 from "bs58";
 
 
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
@@ -59,13 +70,13 @@ export async function validateImage(
   return false;
 }
 
-const getIrys = async ({
+async function getIrys({
   wallet,
   connection,
 }: {
   wallet: Wallet;
   connection: Connection;
-}) => {
+}) {
   const providerUrl = connection.rpcEndpoint;
   const useProvider = wallet?.adapter as Adapter;
   await useProvider.connect();
@@ -79,8 +90,7 @@ const getIrys = async ({
     config: { providerUrl }, // Optional provider URL, only required when using Devnet
   });
   return irys;
-};
-//function which takes a file and uploads it to the arweave network using the irys-sdk
+}
 export async function uploadFileToIrys({
   wallet,
   connection,
@@ -116,126 +126,78 @@ export async function uploadFileToIrys({
   );
 
   return "https://arweave.net/" + upload.id;
-} //function which takes a file and uploads it to the arweave network using the irys-sdk
-
-async function getAsset(url: string, pubkeys: string[]) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "my-id",
-      method: "getAssetBatch",
-      params: {
-        ids: pubkeys,
-      },
-    }),
-  });
-  const { result } = await response.json();
-  console.log("Assets: ", result);
 }
 
-type TokenMetadata = {
-  name: string;
-  symbol: string;
-  uri: string;
-  sellerFeeBasisPoints: number;
-  creators: {
-    address: string;
-    verified: boolean;
-    share: number;
-  }[];
-  collection: {
-    verified: boolean;
+export async function loadNFTs({
+  wallet,
+  endpoint,
+}: {
+  wallet: Wallet;
+  endpoint: string;
+}): Promise<
+  {
     name: string;
-  } | null;
-  uses: number;
-  primarySaleHappened: boolean;
-  isMutable: boolean;
-  editionNonce: number;
-  tokenStandard: string;
-};
-
-/**
- * Loads NFTs for a given wallet address.
- * @param {Connection} connection - The connection to the Solana blockchain.
- * @param {PublicKey} walletAddress - The address of the wallet to load NFTs for.
- * @returns {Promise<TokenMetadata[]>} The NFT metadata for the wallet.
- */
-export const loadNFTs = async (
-  connection: Connection,
-  walletAddress: PublicKey
-): Promise<TokenMetadata[]> => {
+    mint: string;
+    imageUri: string;
+    updateAuthority: string;
+    attributes: { trait_type: string; value: string }[];
+    tokenStandard: string;
+  }[]
+> {
   enqueueSnackbar("Loading NFTs...", { variant: "info" });
+  const ts = ["NFT", "PNFT", "CNFT"];
+  const connection = new Connection(endpoint, "confirmed");
+  const metaplex = new Metaplex(connection);
+  const walletAdapter: WalletAdapter = {
+    publicKey: wallet.adapter.publicKey,
+  };
+  metaplex.use(walletAdapterIdentity(walletAdapter));
+  const nfts = await metaplex
+    .nfts()
+    .findAllByOwner({ owner: walletAdapter.publicKey || PublicKey.default });
+  const array = [];
 
-  try {
-    const associatedTokenAddresses = await getAssociatedTokens(connection, walletAddress);
-    const nftMetadatas: TokenMetadata[] = [];
-
-    for (const associatedTokenAddress of associatedTokenAddresses) {
-      const nftMetadataAddress = await getMetadataAddress(associatedTokenAddress);
-      const nftMetadata = await connection.getAccountInfo(nftMetadataAddress);
-      if (!nftMetadata) {
-        continue;
-      }
-
-      const metadata = JSON.parse(nftMetadata.data.toString()) as any;
-      if (metadata.tokenStandard !== "NonFungible") {
-        continue;
-      }
-
-      const nftMint = metadata.mint;
-      const nftName = metadata.name;
-      const nftImageUri = metadata.uri;
-      const nftUpdateAuthority = metadata.updateAuthority;
-      const nftAttributes = metadata.attributes;
-      const nftTokenStandard = metadata.tokenStandard;
-
-      const nft: TokenMetadata = {
-        name: nftName,
-        symbol: metadata.symbol,
-        uri: nftImageUri,
-        sellerFeeBasisPoints: metadata.sellerFeeBasisPoints,
-        creators: metadata.creators,
-        collection: metadata.collection,
-        uses: metadata.uses,
-        primarySaleHappened: metadata.primarySaleHappened,
-        isMutable: metadata.isMutable,
-        editionNonce: metadata.editionNonce,
-        tokenStandard: nftTokenStandard,
-      };
-      nftMetadatas.push(nft);
-    }
-
-    enqueueSnackbar("Loaded NFTs", { variant: "success" });
-    return nftMetadatas;
-  } catch (error) {
-    enqueueSnackbar("Error loading NFTs: " + error, { variant: "error" });
-    console.log(error);
-    return [];
+  for (let i = 0; i < nfts.length; i++) {
+    const response = await axios.get(nfts[i].uri);
+    const data = response.data;
+    const formattedItem = {
+      name: nfts[i].name,
+      mint: nfts[i].address.toBase58(),
+      imageUri: data.image || "",
+      updateAuthority: nfts[i].updateAuthorityAddress.toBase58(),
+      attributes: data.attributes,
+      tokenStandard: ts[nfts[i].tokenStandard || 0],
+    };
+    array.push(formattedItem);
+    console.log("NFT " + i.toString() + " - " + formattedItem.mint);
   }
+  return array;
+}
+
+export const loadAssets = async ({
+  wallet,
+  connection,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+}): Promise<string> => {
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(mplTokenMetadata());
+  umi.use(umiWalletAdapterIdentity(wallet.adapter));
+  try {
+    const assets = await fetchAllDigitalAssetByOwner(
+      umi,
+      publicKey(wallet.adapter.publicKey?.toBase58() || "")
+    );
+    if (assets) {
+      for (let i = 0; i < assets.length; i++) {
+        console.log("Asset " + i.toString() + " - " + assets[i].mint.publicKey);
+      }
+    }
+  } catch (error) {
+    enqueueSnackbar("Error loading assets: " + error, { variant: "error" });
+  }
+
+  return "";
 };
 
-/**
- * Gets the associated token addresses for a given wallet address.
- * @param {Connection} connection - The connection to the Solana blockchain.
- * @param {PublicKey} walletAddress - The address of the wallet to get associated token addresses for.
- * @returns {Promise<PublicKey[]>} The associated token addresses for the wallet.
- */
-async function getAssociatedTokens(
-  connection: Connection,
-  walletAddress: PublicKey
-): Promise<PublicKey[]> {
-  const associatedTokenAddressPromises = [];
-  const tokenProgramId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5d5aW7L8f");
-  const tokenAccounts = await connection.getParsedProgramAccounts(tokenProgramId);
-  for (const tokenAccount of tokenAccounts) {
-    if (tokenAccount.account && "data" in tokenAccount.account && Buffer.isBuffer(tokenAccount.account.data)) {
-      const associatedTokenAddress = getAssociatedTokenAddress(tokenAccount.pubkey!, walletAddress, tokenProgramId);
-      associatedTokenAddressPromises.push(associatedTokenAddress);
-    }
-  }
-  return Promise.all(associatedTokenAddressPromises);
-}
