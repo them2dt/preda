@@ -11,7 +11,9 @@ import { burnV1, createV1, mplTokenMetadata } from "@metaplex-foundation/mpl-tok
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
+
 const createTokenAccount = async (wallet: any, mintAddress: string): Promise<string> => {
+  
   try {
     // const connection = new Connection('https://api.mainnet-beta.solana.com'); // Use this for mainnet
     const connection = new Connection('https://api.devnet.solana.com');
@@ -101,13 +103,35 @@ export const createToken22 = async ({
     console.log("Mint: " + mint.publicKey);
     console.log("Signature: " + bs58.encode(result.signature));
 
+   
+   
+   
     if (result.signature) {
       enqueueSnackbar("Token created", { variant: "success" });
-      const tokenAccount = await createTokenAccount(wallet, mint.publicKey);
-      console.log("Token account: " + tokenAccount);
-      const mintResult = await mintToTokenAccount(wallet, mint.publicKey, tokenAccount, amount);
-      console.log("Mint result: " + mintResult);
+      if (!mint.publicKey || !wallet) {
+        console.error('mint.publicKey or wallet is undefined');
+        return;
+      }
+      try {
+        const tokenAccount = await createTokenAccount(wallet, mint.publicKey);
+        if (!tokenAccount) {
+          console.error('tokenAccount is undefined');
+          return;
+        }
+        console.log("Token account: " + tokenAccount);
+
+        const tokenAccountBuffer = bs58.decode(tokenAccount);
+        console.log("Token account buffer: " + tokenAccountBuffer);
+
+        const mintResult = await mintToTokenAccount(wallet, mint.publicKey, tokenAccount, amount);
+        console.log("Mint result: " + mintResult);
+      } catch (error) {
+        console.error('Error creating token account:', error);
+        return;
+      }
     }
+
+
     return mint.publicKey;
   } catch (error: any) {
     enqueueSnackbar("Error creating Token: " + error, { variant: "error" });
