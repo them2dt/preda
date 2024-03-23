@@ -8,6 +8,7 @@ import "../style/home.css";
 import "../style/profile.css";
 import "../style/leaderboard.css";
 import "../style/gallery.css";
+import "../style/singleItemView.css";
 //
 import "../style/panels/panel.css";
 import "../style/panels/nft.css";

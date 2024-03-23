@@ -26,7 +26,6 @@ import axios from "axios";
 import { percentAmount, publicKey } from "@metaplex-foundation/umi";
 import bs58 from "bs58";
 
-
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
   input: File,
@@ -137,11 +136,12 @@ export async function loadNFTs({
 }): Promise<
   {
     name: string;
+    description: string;
     mint: string;
     imageUri: string;
     updateAuthority: string;
     attributes: { trait_type: string; value: string }[];
-    tokenStandard: string;
+    tokenStandard: number;
   }[]
 > {
   enqueueSnackbar("Loading NFTs...", { variant: "info" });
@@ -160,13 +160,17 @@ export async function loadNFTs({
   for (let i = 0; i < nfts.length; i++) {
     const response = await axios.get(nfts[i].uri);
     const data = response.data;
+    console.log(data);
+    console.log("--------------------");
+    console.log(nfts[i]);
     const formattedItem = {
       name: nfts[i].name,
+      description: data.description || "-",
       mint: nfts[i].address.toBase58(),
       imageUri: data.image || "",
       updateAuthority: nfts[i].updateAuthorityAddress.toBase58(),
       attributes: data.attributes,
-      tokenStandard: ts[nfts[i].tokenStandard || 0],
+      tokenStandard: nfts[i].tokenStandard,
     };
     array.push(formattedItem);
     console.log("NFT " + i.toString() + " - " + formattedItem.mint);
@@ -200,4 +204,3 @@ export const loadAssets = async ({
 
   return "";
 };
-

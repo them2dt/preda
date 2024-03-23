@@ -33,20 +33,22 @@ export default function Home() {
   const [itemPanel, setItemPanel] = useState(false);
   const [item, setItem] = useState<{
     name: string;
+    description: string;
     mint: string;
     imageUri: string;
     updateAuthority: string;
     attributes: { trait_type: string; value: string }[];
-    tokenStandard: string;
+    tokenStandard: number;
   }>();
   const [nftItems, setnftItems] = useState<
     {
       name: string;
+      description: string;
       mint: string;
       imageUri: string;
       updateAuthority: string;
       attributes: { trait_type: string; value: string }[];
-      tokenStandard: string;
+      tokenStandard: number;
     }[]
   >([]);
 
@@ -57,7 +59,7 @@ export default function Home() {
       }, 500);
       if (wallet.adapter.connected) {
         if (wallet.adapter.publicKey) {
-          const result = await loadNFTs({
+          await loadNFTs({
             wallet: wallet,
             endpoint: connection.rpcEndpoint,
           })
@@ -97,6 +99,11 @@ export default function Home() {
     }
   }
 
+  //TODO: Implement the burnAsset function
+  //note: the asset which should be burned can be a NFT,PNFT,CNFT,SPL. So you probably need to pass the asset type as a parameter.
+  async function burnAsset(address: string) {
+    console.log("burning asset " + address);
+  }
   useEffect(() => {
     loadNonFungibles().catch(console.error);
   }, [walletParent.connected]);
@@ -243,7 +250,12 @@ export default function Home() {
                       </button>
 
                       <Tooltip title="Burn" arrow>
-                        <button className="gallery-operation flex-row-center-center">
+                        <button
+                          className="gallery-operation flex-row-center-center"
+                          onClick={() => {
+                            burnAsset(item.mint);
+                          }}
+                        >
                           <FontAwesomeIcon icon={faFireFlameCurved} />
                         </button>
                       </Tooltip>
@@ -396,6 +408,7 @@ export default function Home() {
           <AnimatePresence>
             {itemPanel && item && walletParent.publicKey && (
               <SingleItemView
+                theme={theme}
                 owner={walletParent.publicKey.toBase58()}
                 item={item}
                 closePanel={() => {
