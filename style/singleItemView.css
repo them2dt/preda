@@ -22,12 +22,39 @@
     border-radius: 20px;
 }
 
+#item-panel .close-button {
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    padding: 0;
+
+    background-color: var(--secondary-faded-1);
+    border: none;
+    cursor: pointer;
+}
+
 #item-panel .columns {
     gap: 20px;
 }
 
-#item-panel .column:first-child {
+#item-panel .column {
     gap: 20px;
+}
+
+#item-panel .column:nth-child(2) {
+    gap: 10px;
+}
+
+#item-panel .title {
+    width: 200px;
+    max-height: 100px;
+    overflow-y: scroll;
+}
+
+#item-panel .description {
+    width: 200px;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 #item-panel .image {
@@ -35,7 +62,6 @@
     height: 200px;
 
     background-color: var(--secondary-faded-2);
-    border: 1px solid var(--secondary-faded-3);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -48,7 +74,7 @@
 
 #item-panel .attributes {
     width: 400px;
-    min-height: 200px;
+    max-height: 200px;
     padding: 10px;
     gap: 5px;
 
@@ -65,4 +91,26 @@
 
     background-color: var(--secondary-faded-1);
     border-radius: 5px;
+}
+
+#item-panel .specs {
+    width: 400px;
+    height: 200px;
+    padding: 10px;
+    gap: 5px;
+    overflow-y: scroll;
+
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#item-panel .specs .spec {
+    padding: 10px;
+    width: 380px;
+
+    background-color: var(--secondary-faded-1);
+    border-radius: 5px;
+    box-sizing: border-box;
 }

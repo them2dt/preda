@@ -86,26 +86,32 @@ export default function Panel() {
           "metadata.json",
           { type: "application/json" }
         );
-
         const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
           file: metadataFile,
         });
-        if (!metadataUri) {
+
+        if (metadataUri) {
+          /* const mint = await createCNFT({
+            wallet: wallet,
+            connection: connection,
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+            foundMerkleTree: foundMerkleTree,
+            setFoundMerkleTree: setFoundMerkleTree,
+          });
+
+          if (mint) {
+            enqueueSnackbar("NFT created!", { variant: "success" });
+          } else {
+            enqueueSnackbar("NFT creation failed.", { variant: "error" });
+          } */
+        } else {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
           return;
         }
-
-        console.log("Creating CNFT...");
-        const mint = await createCNFT({
-          wallet: wallet,
-          connection: connection,
-          name: title,
-          symbol: symbol, // Add the missing symbol property
-          metadata: metadataUri,
-          sellerFeeBasisPoints: sliderValue,
-        });
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
         return;
@@ -130,7 +136,7 @@ export default function Panel() {
               <input
                 type="text"
                 name="title"
-                placeholder="Name"
+                placeholder="ji"
                 className="font-text-small"
                 onChange={(e) => {
                   setTitle(e.target.value);

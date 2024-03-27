@@ -19,8 +19,8 @@
     padding: 10px;
 
     background-color: transparent;
-    border: 1px solid var(--secondary-faded-2);
-    border-radius: 10px;
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 5px;
     outline: none;
 
     box-sizing: border-box;
@@ -48,7 +48,7 @@
 
     background-color: var(--secondary-faded-2);
     border: 1px solid var(--secondary-faded-3);
-    border-radius: 10px;
+    border-radius: 5px;
     box-sizing: border-box;
     overflow: hidden;
 
@@ -75,16 +75,13 @@
 }
 
 #lab-panel-spl .submit {
-    width: 605px;
-    height: 90px;
-
+    width: 450px;
+    height: 135px;
     display: flex;
-    align-items: center;
-    justify-content: center;
 
     background-color: var(--accent);
     border: 1px solid var(--secondary-faded-3);
-    border-radius: 10px;
+    border-radius: 5px;
     box-sizing: border-box;
     color: var(--secondary);
 
@@ -108,21 +105,30 @@
     cursor: not-allowed;
 }
 
-#lab-panel-spl .extensions-container {
-    width: 605px;
-    padding: 10px;
-
-    border: 1px solid var(--secondary-faded-2);
-    border-radius: 10px;
-    box-sizing: border-box;
+#lab-panel-spl .extensions-row {
+    gap: 5px;
 }
 
 #lab-panel-spl .extensions {
-    gap: 20px;
+    padding: 10px;
+    gap: 10px;
+
+    background-color: var(--secondary-faded-1);
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-#lab-panel-spl .extensions-column {
-    gap: 10px;
+#lab-panel-spl .extension {
+    gap: 5px;
+}
+
+#lab-panel-spl .extension label {
+    width: 120px;
+}
+
+#lab-panel-spl .extension .checkbox-container {
+    width: 100px;
+    box-sizing: border-box;
 }
 
 #lab-panel-spl .extension input[type="number"] {
@@ -133,28 +139,26 @@
 
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-4);
-    border-radius: 10px;
+    border-radius: 5px;
     outline: none;
 
     box-sizing: border-box;
 
-    font-family: "satoshi";
     color: var(--primary);
 }
 
 #lab-panel-spl .extension input[type="text"] {
-    width: 400px;
+    width: 200px;
     height: 40px;
 
     padding: 10px;
 
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-4);
-    border-radius: 10px;
+    border-radius: 5px;
     outline: none;
 
     box-sizing: border-box;
 
-    font-family: "satoshi";
     color: var(--primary);
 }

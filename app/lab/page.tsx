@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 //panels
 import NFTPanel from "./panels/Nft";
 import CNFTPanel from "./panels/Cnft";
+import MerkleTreePanel from "./panels/MerkleTree";
 import PNFTPanel from "./panels/Pnft";
 import SPL22Panel from "./panels/Spl22";
 
@@ -16,7 +17,13 @@ export default function Home() {
   const [theme, setTheme] = useState(0);
   const [type, setType] = useState(0);
 
-  const typeLabels = ["NFT", "pNFT", "cNFT", "SPL-22"];
+  const typeLabels = [
+    "NFT",
+    "pNFT",
+    "create a Merkle Tree(CNFT)",
+    "create CNFT's",
+    "SPL22",
+  ];
 
   return (
     <motion.div
@@ -26,15 +33,9 @@ export default function Home() {
     >
       <Header id={0} theme={theme} />
       <div id="mainboard" className="flex-row-center-center">
-        <div className="flex-row-center-start">
-          <motion.div
-            className="type-selector flex-column-center-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <motion.div className="type-options flex-column-center-start">
+        <div className="panel-box flex-column-center-center">
+          <motion.div className="type-selector flex-row-center-center">
+            <motion.div className="type-options flex-row-center-center">
               {typeLabels.map((label, index) => {
                 return (
                   <motion.div
@@ -55,8 +56,9 @@ export default function Home() {
 
           {type == 0 && <NFTPanel />}
           {type == 1 && <PNFTPanel />}
-          {type == 2 && <CNFTPanel />}
-          {type == 3 && <SPL22Panel />}
+          {type == 2 && <MerkleTreePanel />}
+          {type == 3 && <CNFTPanel />}
+          {type == 4 && <SPL22Panel />}
         </div>
       </div>
       <Navigation

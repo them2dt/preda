@@ -15,12 +15,13 @@ import {
   faImage,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
-import { loadNFTs, loadAssets } from "@/backend/General";
+import { loadNFTs } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { enqueueSnackbar } from "notistack";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import SingleItemView from "./SingleItemView";
+import { DasApiAssetAuthority, DasApiAssetCreator } from "@metaplex-foundation/digital-asset-standard-api";
 
 export default function Home() {
   const walletParent = useWallet();
@@ -32,23 +33,32 @@ export default function Home() {
   const [view, setView] = useState(true); //true for gallery, false for list
   const [itemPanel, setItemPanel] = useState(false);
   const [item, setItem] = useState<{
+    mint: string;
     name: string;
     description: string;
-    mint: string;
     imageUri: string;
-    updateAuthority: string;
     attributes: { trait_type: string; value: string }[];
-    tokenStandard: number;
+    authorities: DasApiAssetAuthority[];
+    compressed: boolean;
+    creators: DasApiAssetCreator[];
+    royalty: number;
+    tokenStandard: string;
+    type: string;
   }>();
   const [nftItems, setnftItems] = useState<
     {
+      
+      mint: string;
       name: string;
       description: string;
-      mint: string;
       imageUri: string;
-      updateAuthority: string;
       attributes: { trait_type: string; value: string }[];
-      tokenStandard: number;
+      authorities: DasApiAssetAuthority[];
+      compressed: boolean;
+      creators: DasApiAssetCreator[];
+      royalty: number;
+      tokenStandard: string;
+      type: string;
     }[]
   >([]);
 
@@ -62,31 +72,10 @@ export default function Home() {
           await loadNFTs({
             wallet: wallet,
             endpoint: connection.rpcEndpoint,
+            limit: 50,
+            page: 1,
           })
             .then((response) => setnftItems(response))
-            .catch((err) => enqueueSnackbar(err, { variant: "error" }));
-        } else {
-          enqueueSnackbar("Pubkey not found", { variant: "error" });
-        }
-      } else {
-        enqueueSnackbar("Wallet not connected", { variant: "error" });
-      }
-    } else {
-      enqueueSnackbar("Wallet not found", { variant: "error" });
-    }
-  }
-  async function loadFungibles() {
-    if (wallet) {
-      setTimeout(() => {
-        console.log("waiting...");
-      }, 500);
-      if (wallet.adapter.connected) {
-        if (wallet.adapter.publicKey) {
-          const result = await loadAssets({
-            wallet: wallet,
-            connection: connection,
-          })
-            .then((response) => console.log(response))
             .catch((err) => enqueueSnackbar(err, { variant: "error" }));
         } else {
           enqueueSnackbar("Pubkey not found", { variant: "error" });
@@ -154,7 +143,6 @@ export default function Home() {
                   }
                   onClick={async () => {
                     setType(false);
-                    await loadFungibles();
                   }}
                 >
                   SPLs

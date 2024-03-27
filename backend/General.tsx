@@ -25,6 +25,20 @@ import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { percentAmount, publicKey } from "@metaplex-foundation/umi";
 import bs58 from "bs58";
+import {
+  DasApiAssetAuthority,
+  DasApiAssetCompression,
+  DasApiAssetContent,
+  DasApiAssetCreator,
+  DasApiAssetGrouping,
+  DasApiAssetInterface,
+  DasApiAssetList,
+  DasApiAssetOwnership,
+  DasApiAssetRoyalty,
+  DasApiAssetSupply,
+  DasApiUses,
+  dasApi,
+} from "@metaplex-foundation/digital-asset-standard-api";
 
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
 export async function validateImage(
@@ -130,6 +144,89 @@ export async function uploadFileToIrys({
 export async function loadNFTs({
   wallet,
   endpoint,
+  limit,
+  page,
+}: {
+  wallet: Wallet;
+  endpoint: string;
+  limit: number;
+  page: number;
+}): Promise<
+  {
+    mint: string;
+    name: string;
+    description: string;
+    imageUri: string;
+    attributes: { trait_type: string; value: string }[];
+    authorities: DasApiAssetAuthority[];
+    compressed: boolean;
+    creators: DasApiAssetCreator[];
+    royalty: number;
+    tokenStandard: string;
+    type: string;
+  }[]
+> {
+  const umi = createUmi(endpoint);
+  umi.use(mplTokenMetadata());
+  umi.use(umiWalletAdapterIdentity(wallet.adapter));
+  umi.use(dasApi());
+
+  const rpcAssets: DasApiAssetList = await umi.rpc.getAssetsByOwner({
+    owner: publicKey(wallet.adapter.publicKey.toBase58()),
+    limit: limit || 50,
+    page: page || 1,
+  });
+  if (rpcAssets) {
+    console.log(rpcAssets);
+    const formattedItems: {
+      mint: string;
+      name: string;
+      description: string;
+      imageUri: string;
+      attributes: { trait_type: string; value: string }[];
+      authorities: DasApiAssetAuthority[];
+      compressed: boolean;
+      creators: DasApiAssetCreator[];
+      royalty: number;
+      tokenStandard: string;
+      type: string;
+    }[] = [];
+    for (let i = 0; i < rpcAssets.items.length; i++) {
+      try {
+        const formattedItem = {
+          mint: rpcAssets.items[i].id,
+          name: rpcAssets.items[i].content.metadata.name,
+          description: rpcAssets.items[i].content.metadata.description || "-",
+          imageUri:
+            rpcAssets.items[i].content.links["image"] || "",
+          attributes: rpcAssets.items[i].content.metadata.attributes.map(
+            (attribute) => ({
+              trait_type: attribute.trait_type || "",
+              value: attribute.value || "",
+            })
+          ),
+          authorities: rpcAssets.items[i].authorities,
+          compressed: rpcAssets.items[i].compression.compressed,
+          creators: rpcAssets.items[i].creators,
+          royalty: rpcAssets.items[i].royalty.basis_points,
+          tokenStandard: rpcAssets.items[i].content.metadata.token_standard,
+          type: rpcAssets.items[i].interface,
+        };
+        
+        formattedItems.push(formattedItem);
+      } catch (error) {
+        console.error("Error formatting item:", error);
+      }
+    }
+    return formattedItems;
+  }
+  return [];
+}
+
+/*
+export async function loadNFTs({
+  wallet,
+  endpoint,
 }: {
   wallet: Wallet;
   endpoint: string;
@@ -177,8 +274,9 @@ export async function loadNFTs({
   }
   return array;
 }
+*/
 
-export const loadAssets = async ({
+/* export const loadAssets = async ({
   wallet,
   connection,
 }: {
@@ -189,18 +287,10 @@ export const loadAssets = async ({
   umi.use(mplTokenMetadata());
   umi.use(umiWalletAdapterIdentity(wallet.adapter));
   try {
-    const assets = await fetchAllDigitalAssetByOwner(
-      umi,
-      publicKey(wallet.adapter.publicKey?.toBase58() || "")
-    );
-    if (assets) {
-      for (let i = 0; i < assets.length; i++) {
-        console.log("Asset " + i.toString() + " - " + assets[i].mint.publicKey);
-      }
-    }
   } catch (error) {
     enqueueSnackbar("Error loading assets: " + error, { variant: "error" });
   }
 
   return "";
-};
+} 
+*/
