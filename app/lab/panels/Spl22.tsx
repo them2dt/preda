@@ -57,7 +57,6 @@ export default function Panel() {
         sellerFeeBasisPoints: 0,
         amount: 0,
       }); 
-
       if (res) {
         enqueueSnackbar("Token created.", { variant: "success" });
         console.log(res);
@@ -261,3 +260,4 @@ export default function Panel() {
     </>
   );
 }
+
