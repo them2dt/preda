@@ -1,8 +1,7 @@
 import { Wallet } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
+import { Connection, Transaction } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
-
 import { PublicKey, none, percentAmount } from "@metaplex-foundation/umi";
 import {
   mintV1,
@@ -13,7 +12,6 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
-
 export const createMerkleTree = async ({
   connection, //
   wallet,
@@ -163,4 +161,5 @@ export const createCNFT = async ({
       }
     },5000);
   }
+
 };
