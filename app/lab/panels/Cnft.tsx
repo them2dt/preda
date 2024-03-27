@@ -31,7 +31,8 @@ export default function Panel() {
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
     useState<{ key: string; value: string }[]>();
-  //hooks to store the key and value of the attribute to be added.
+  const [foundMerkleTree, setFoundMerkleTree] = useState(false);
+
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -85,30 +86,26 @@ export default function Panel() {
           "metadata.json",
           { type: "application/json" }
         );
+
         const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
           file: metadataFile,
         });
-
-        if (metadataUri) {
-          const mint = await createCNFT({
-            wallet: wallet,
-            connection: connection,
-            title: title,
-            metadata: metadataUri,
-            sellerFeeBasisPoints: sliderValue,
-          });
-
-          if (mint) {
-            enqueueSnackbar("NFT created!", { variant: "success" });
-          } else {
-            enqueueSnackbar("NFT creation failed.", { variant: "error" });
-          }
-        } else {
+        if (!metadataUri) {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
           return;
         }
+
+        console.log("Creating CNFT...");
+        const mint = await createCNFT({
+          wallet: wallet,
+          connection: connection,
+          name: title,
+          symbol: symbol, // Add the missing symbol property
+          metadata: metadataUri,
+          sellerFeeBasisPoints: sliderValue,
+        });
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
         return;
@@ -205,7 +202,7 @@ export default function Panel() {
                 }}
               >
                 {image ? (
-                  <img src={imagePreview} alt="image-preview"/>
+                  <img src={imagePreview} alt="image-preview" />
                 ) : (
                   <div className="placeholder font-text-small">
                     click here to import an image

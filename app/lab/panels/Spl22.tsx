@@ -1,162 +1,263 @@
-import React, { useState } from "react";
-import { AnimatePresence, motion as m } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
-import { CustomSlider } from "@/components/ui/Slider";
+"use client";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
+import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
-import { createToken22, burnToken22 } from "@/backend/SPL22";
+import { useState } from "react";
+import { createToken22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { string } from "@metaplex-foundation/umi/serializers";
+import { create } from "domain";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faClose } from "@fortawesome/free-solid-svg-icons";
 
 export default function Panel() {
-  const { wallet } = useWallet();
-  const { connection } = useConnection();
-
-  const [attributeModal, setAttributeModal] = useState(false);
-  //rerenders the attribute-modal on every change.
-  const [renderHook, setRenderHook] = useState<number>(0);
-  //sets the title of NFT.
-  const [name, setName] = useState<string>();
-  //sets the symbol of NFT. 
+  //sets the title of Token.
+  const [title, setTitle] = useState<string>();
+  //sets the symbol of Token.
   const [symbol, setSymbol] = useState<string>();
-  //sets the description of NFT.
+  //sets the description of Token.
   const [description, setDescription] = useState<string>();
-  //sets the image of NFT.
-  const [image, setImage] = useState<File>();
-  //sets the image-preview of NFT.
-  const [imagePreview, setImagePreview] = useState<string>();
-  //sets the title of NFT.
-  const [sliderValue, setSliderValue] = useState<number>(0);
-  // hooks to store the key and value of the attribute to be added.
-  const [key, setKey] = useState<string>();
-  const [value, setValue] = useState<string>();
-  // a hook with the type of an array of objects, which contains the key and value of the attribute.
-  const [attributes, setAttributes] = useState<{ trait_type: string; value: string }[]>();
-
+  //sets the total supply of Token.
+  const [supply, setSupply] = useState<number>(0);
+  //sets the decimals of the Token.
+  const [decimals, setDecimal] = useState<number>(0);
+  //sets the image of Token.
+  const [image, setImage] = useState();
+  //sets the image-preview of Token.
+  const [imagePreview, setImagePreview] = useState();
+  //token extensions
   const [frozen, setFrozen] = useState<boolean>(false);
   const [transferTax, setTransferTax] = useState<number>(0);
   const [interest, setInterest] = useState<number>(0);
   const [authority, setAuthority] = useState<string>();
-  
-  //hooks to store the key and value of the attribute to be added.
-  const removeAttribute = (index: number) => {
-    const oldArray = attributes;
-    if (oldArray) {
-      oldArray.splice(index, 1);
-      console.log(oldArray);
-    }
-  };
 
+  const { wallet } = useWallet();
+  const { connection } = useConnection();
   const run = async () => {
-    if (!wallet || !connection || !name || !symbol || !description || !image) {
+    if (!wallet || !connection || !title || !symbol || !description || !image) {
       enqueueSnackbar("Fill out the empty fields.", {
         variant: "error",
       });
     } else {
+      console.log("Creating the SPL22.");
+
       enqueueSnackbar("Uploading image...", { variant: "info" });
       const imageUri = await uploadFileToIrys({
         wallet: wallet,
         connection: connection,
         file: image,
       });
+      
+      const res = await createToken22({
+        wallet: wallet,
+        connection: connection,
+        name: title,
+        symbol: symbol,
+        decimals: 0,
+        metadata: imageUri,
+        sellerFeeBasisPoints: 0,
+        amount: 0,
+      }); 
 
-      if (imageUri) {
-        const tokenMintAddress = await uploadFileToIrys({
-          wallet,
-          connection: connection,
-          file: image,
-        });
-
-        const metadata = {
-          name: name,
-          symbol: symbol,
-          description: description,
-          seller_fee_basis_points: sliderValue,
-          image: imageUri,
-          external_url: "emptea.xyz",
-          properties: {
-            files: [{ uri: imageUri, type: "image/png" }],
-            category: "image",
-            creators: [
-              {
-                address:
-                  wallet.adapter.publicKey?.toBase58() ||
-                  "DFoRBzY3odkJ53FgCeSj26Ps6Bk7tuZ5kaV47QsyrqnV",
-                share: 100,
-              },
-            ],
-            supply: 1,
-            decimals: 9,
-          },
-          collection: {},
-        };
-        const metadataFile = new File(
-          [JSON.stringify(metadata)],
-          "metadata.json",
-          { type: "application/json" }
-        );
-        const metadataUri = await uploadFileToIrys({
-          wallet: wallet,
-          connection: connection,
-          file: metadataFile,
-        });
-
-        if (metadataUri) {
-          const mint = await createToken22({
-            wallet: wallet,
-            connection: connection,
-            name: "Your Token Name",
-            symbol: "YTN",
-            decimals: 9,
-            metadata: metadataUri,
-            sellerFeeBasisPoints: sliderValue,
-          });
-
-        if (mint) {
-          enqueueSnackbar("Token created!", { variant: "success" });
-        } else {
-          enqueueSnackbar("Error creating token.", { variant: "error" });
-        }
+      if (res) {
+        enqueueSnackbar("Token created.", { variant: "success" });
+        console.log(res);
       } else {
-        enqueueSnackbar("Image upload failed.", { variant: "error" });
+        enqueueSnackbar("Error creating token.", { variant: "error" });
       }
     }
   };
-}
 
-return (
-  <div>
-    <h1>Create NFT Panel</h1>
-    <input
-      type="text"
-      placeholder="Name"
-      onChange={(e) => setName(e.target.value)}
-    />
-    <input
-      type="text"
-      placeholder="Symbol"
-      onChange={(e) => setSymbol(e.target.value)}
-    />
-    <textarea
-      placeholder="Description"
-      onChange={(e) => setDescription(e.target.value)}
-    />
-    <CustomSlider value={sliderValue} setValue={setSliderValue} />
-    <div style={{ width: '200px', height: '200px', overflow: 'hidden' }}>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0]
-            setImage(file);
-            setImagePreview(URL.createObjectURL(file));
-          }
-        }}
-      />
-      {imagePreview && <img src={imagePreview} alt="preview" style={{ maxWidth: '100%', maxHeight: '100%' }} />}
-    </div>
-    <button onClick={run}>Create NFT</button>
-  </div>
-);}
+  return (
+    <>
+      <AnimatePresence>
+        <m.div
+          id="lab-panel-spl"
+          className="panel create"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1 }}
+        >
+          {/**Every operation is done in here.*/}
+          <div className="flex-column-center-center form-container">
+            <div className="flex-row-center-start form">
+              <div className="flex-column-center-center text-inputs">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Name"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                />
+                <input
+                  type="text"
+                  name="symbol"
+                  placeholder="Symbol"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setSymbol(e.target.value);
+                  }}
+                />
+                <textarea
+                  //type="text"
+                  name="description"
+                  placeholder="Description"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                />
+                <input
+                  type="number"
+                  name="supply"
+                  min={0}
+                  max={1000000000000}
+                  placeholder="Supply"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setSymbol(e.target.value);
+                  }}
+                />
+                <input
+                  type="number"
+                  name="decimals"
+                  min={0}
+                  max={18}
+                  placeholder="Decimals"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setSymbol(e.target.value);
+                  }}
+                />
+              </div>
+
+              <div className="extensions-row flex-column-center-start">
+                <div className="extensions flex-column-center-start">
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Frozen</label>
+                    <div className="checkbox-container flex-row-center-center">
+                      <input
+                        type="checkbox"
+                        name="burnable"
+                        id="burnable"
+                        onChange={(e) => {
+                          setFrozen(e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Transfer tax (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      value={transferTax}
+                      onChange={(e) => {
+                        setTransferTax(Number(e.target.value));
+                      }}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Interest (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      value={interest}
+                      onChange={(e) => {
+                        setInterest(Number(e.target.value));
+                      }}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  className="submit font-text-bold flex-row-center-center"
+                  disabled={!title || !symbol || !description || !image}
+                  onClick={run}
+                >
+                  {!title || !symbol || !description || !image
+                    ? "Fill out the empty fields."
+                    : "Create SPL22"}
+                </button>
+              </div>
+              <div className="flex-column-center-center image-input">
+                <m.div
+                  className="image"
+                  onClick={() => {
+                    const imageInput = document.getElementById("image-input");
+                    if (imageInput) {
+                      imageInput.click();
+                    }
+                  }}
+                >
+                  {image ? (
+                    <img src={imagePreview} alt="image-preview" />
+                  ) : (
+                    <div className="placeholder font-text-small">
+                      click here to import an image
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    name="cover"
+                    id="image-input"
+                    accept="image/png"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        validateImage(
+                          e.target.files[0],
+                          setImage,
+                          setImagePreview
+                        );
+                        console.log(e.target.files[0].name);
+                      }
+                    }}
+                  />
+                </m.div>
+              </div>
+            </div>
+          </div>
+        </m.div>
+      </AnimatePresence>
+    </>
+  );
+}

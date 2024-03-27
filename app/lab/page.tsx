@@ -16,7 +16,12 @@ export default function Home() {
   const [theme, setTheme] = useState(0);
   const [type, setType] = useState(0);
 
-  const typeLabels = ["NFT", "pNFT", "cNFT", "SPL-22"];
+  const typeLabels = [
+    "NFT",
+    "PNFT",
+    "CNFT",
+    "SPL22",
+  ];
 
   return (
     <motion.div
@@ -26,15 +31,9 @@ export default function Home() {
     >
       <Header id={0} theme={theme} />
       <div id="mainboard" className="flex-row-center-center">
-        <div className="flex-row-center-start">
-          <motion.div
-            className="type-selector flex-column-center-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <motion.div className="type-options flex-column-center-start">
+        <div className="panel-box flex-column-center-center">
+          <motion.div className="type-selector flex-row-center-center">
+            <motion.div className="type-options flex-row-center-center">
               {typeLabels.map((label, index) => {
                 return (
                   <motion.div
