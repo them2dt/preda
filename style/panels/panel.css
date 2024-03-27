@@ -57,36 +57,29 @@
 }
 
 
-.type-selector .type-option:nth-child(3),
-.type-selector .type-option:nth-child(4) {
+.type-selector .type-option:nth-child(3){
     border-color: #58bbda;
     background-color: #b8eeff;
     color: #58bbda;
 }
 
-.type-selector .type-option:nth-child(3):hover,
-.type-selector .type-option:nth-child(4):hover {
+.type-selector .type-option:nth-child(3):hover{
     border-color: #58bbda;
     background-color: #58bbda;
     color: #b8eeff;
 }
 
-.type-selector .type-option:nth-child(3) {
-    width: fit-content;
-}
-
-
-.type-selector .type-option:nth-child(5) {
-    border-color: #da3e3e;
-    background-color: #ffc4c4;
-    color: #da3e3e;
+.type-selector .type-option:nth-child(4) {
+    border-color: #3eda65;
+    background-color: #c4ffd6;
+    color: #3eda65;
 
 }
 
-.type-selector .type-option:nth-child(5):hover {
-    border-color: #da3e3e;
-    background-color: #da3e3e;
-    color: #ffc4c4;
+.type-selector .type-option:nth-child(4):hover {
+    border-color: #3eda65;
+    background-color: #3eda65;
+    color: #c4ffd6;
 }
 
 .panel.create {

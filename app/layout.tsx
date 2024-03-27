@@ -44,8 +44,8 @@ export default function RootLayout({
       color: "#38254b",
     },
     "&.notistack-MuiContent-success": {
-      backgroundColor: "#D3B1FF",
-      color: "#38254b",
+      backgroundColor: "#c4ffd6",
+      color: "#3eda65",
     },
     "&.notistack-MuiContent-error": {
       backgroundColor: "#D3B1FF",

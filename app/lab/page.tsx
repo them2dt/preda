@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 //panels
 import NFTPanel from "./panels/Nft";
 import CNFTPanel from "./panels/Cnft";
-import MerkleTreePanel from "./panels/MerkleTree";
 import PNFTPanel from "./panels/Pnft";
 import SPL22Panel from "./panels/Spl22";
 
@@ -19,9 +18,8 @@ export default function Home() {
 
   const typeLabels = [
     "NFT",
-    "pNFT",
-    "create a Merkle Tree(CNFT)",
-    "create CNFT's",
+    "PNFT",
+    "CNFT",
     "SPL22",
   ];
 
@@ -56,9 +54,8 @@ export default function Home() {
 
           {type == 0 && <NFTPanel />}
           {type == 1 && <PNFTPanel />}
-          {type == 2 && <MerkleTreePanel />}
-          {type == 3 && <CNFTPanel />}
-          {type == 4 && <SPL22Panel />}
+          {type == 2 && <CNFTPanel />}
+          {type == 3 && <SPL22Panel />}
         </div>
       </div>
       <Navigation

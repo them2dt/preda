@@ -12,13 +12,6 @@ import {
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-
-import {
-  burnV1,
-  createV1,
-  mplTokenMetadata,
-} from "@metaplex-foundation/mpl-token-metadata";
-import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
 export const createMerkleTree = async ({
@@ -28,6 +21,7 @@ export const createMerkleTree = async ({
   connection: Connection; //
   wallet: Wallet;
 }): Promise<{ merkleTree: PublicKey; success: boolean }> => {
+  enqueueSnackbar("Creating Merkle Tree...", { variant: "info" });
   console.log("createMerkleTree() - started.");
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
@@ -60,6 +54,7 @@ export const findMerkleTree = async ({
   wallet: Wallet;
   merkleTree: PublicKey;
 }): Promise<boolean> => {
+  enqueueSnackbar("Fetching Merkle Tree...", { variant: "info" });
   //
   const umi = createUmi(connection.rpcEndpoint);
   console.log("findMerkleTree() - started.");
@@ -95,6 +90,7 @@ export const mintCNFT = async ({
   sellerFeeBasisPoints: number;
   metadata: string;
 }): Promise<Boolean> => {
+  enqueueSnackbar("Minting cNFT...", { variant: "info" });
   console.log("mintCNFT() - started.");
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
@@ -114,6 +110,7 @@ export const mintCNFT = async ({
   try {
     const mintTXResult = await mintTX.sendAndConfirm(umi);
     if (mintTXResult.result.context.slot) {
+      enqueueSnackbar("Minted cNFT!", { variant: "success" });
       console.log("mintCNFT() - Success!");
       console.log("Signature " + bs58.encode(mintTXResult.signature));
       return true;
@@ -164,6 +161,6 @@ export const createCNFT = async ({
           metadata: metadata,
         });
       }
-    }, 1000);
+    },5000);
   }
 };
