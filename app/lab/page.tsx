@@ -10,6 +10,7 @@ import NFTPanel from "./panels/Nft";
 import CNFTPanel from "./panels/Cnft";
 import PNFTPanel from "./panels/Pnft";
 import SPL22Panel from "./panels/Spl22";
+import MerkleTreePanel from "./panels/MerkleTree";
 
 export default function Home() {
   //hooks
@@ -17,10 +18,11 @@ export default function Home() {
   const [type, setType] = useState(0);
 
   const typeLabels = [
-    "NFT",
-    "PNFT",
-    "CNFT",
-    "SPL22",
+    "Create NFT",
+    "Create PNFT",
+    "Create Merkle Tree",
+    "Create CNFT",
+    "Create SPL22",
   ];
 
   return (
@@ -30,8 +32,8 @@ export default function Home() {
       data-theme={theme == 0 ? "light" : "dark"}
     >
       <Header id={0} theme={theme} />
-      <div id="mainboard" className="flex-row-center-center">
-        <div className="panel-box flex-column-center-center">
+      <div id="mainboard" className="flex-row-center-start">
+        <div className="panel-box flex-column-start-center">
           <motion.div className="type-selector flex-row-center-center">
             <motion.div className="type-options flex-row-center-center">
               {typeLabels.map((label, index) => {
@@ -54,8 +56,9 @@ export default function Home() {
 
           {type == 0 && <NFTPanel />}
           {type == 1 && <PNFTPanel />}
-          {type == 2 && <CNFTPanel />}
-          {type == 3 && <SPL22Panel />}
+          {type == 2 && <MerkleTreePanel />}
+          {type == 3 && <CNFTPanel />}
+          {type == 4 && <SPL22Panel />}
         </div>
       </div>
       <Navigation

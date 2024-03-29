@@ -10,9 +10,13 @@ import "../style/leaderboard.css";
 import "../style/gallery.css";
 import "../style/singleItemView.css";
 //
-import "../style/panels/panel.css";
-import "../style/panels/nft.css";
-import "../style/panels/spl.css";
+import "../style/panels/general.css";
+import "../style/panels/1_nft.css";
+import "../style/panels/2_pnft.css";
+import "../style/panels/3_merkleTree.css";
+import "../style/panels/4_cnft.css";
+import "../style/panels/4_cnft.css";
+import "../style/panels/5_spl.css";
 
 // imports
 import { useMemo } from "react";

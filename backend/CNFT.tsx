@@ -12,22 +12,44 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
+const sizeChart = [
+  { depth: 3, buffer: 8, amount: 8 },
+  { depth: 5, buffer: 8, amount: 32 },
+  { depth: 14, buffer: 64, amount: 16384 },
+  { depth: 15, buffer: 64, amount: 32768 },
+  { depth: 16, buffer: 64, amount: 65536 },
+  { depth: 17, buffer: 64, amount: 131072 },
+  { depth: 18, buffer: 64, amount: 262144 },
+  { depth: 19, buffer: 64, amount: 524288 },
+  { depth: 20, buffer: 64, amount: 1048576 },
+  { depth: 24, buffer: 64, amount: 16777216 },
+  { depth: 26, buffer: 512, amount: 67108864 },
+  { depth: 30, buffer: 512, amount: 1073741824 },
+];
 export const createMerkleTree = async ({
   connection, //
   wallet,
+  leafOwner,
+  size,
+  visibility,
 }: {
   connection: Connection; //
   wallet: Wallet;
+  leafOwner: string;
+  size: number;
+  visibility: boolean;
 }): Promise<{ merkleTree: PublicKey; success: boolean }> => {
-  enqueueSnackbar("Creating Merkle Tree...", { variant: "info" });
+  //compare the sizeParameter with the amount value of the sizeChart array and choose which value is the next highest value to the size
+  const sizeParameter = sizeChart.find((element) => element.amount >= size);
+  console.log(sizeParameter.amount);
   console.log("createMerkleTree() - started.");
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
   const merkleTree = generateSigner(umi);
   const treeTX = await createTree(umi, {
     merkleTree,
-    maxDepth: 3,
-    maxBufferSize: 8,
+    maxDepth: sizeParameter.depth,
+    maxBufferSize: sizeParameter.buffer,
   });
   try {
     const treeTXResult = await treeTX.sendAndConfirm(umi);
@@ -52,7 +74,6 @@ export const findMerkleTree = async ({
   wallet: Wallet;
   merkleTree: PublicKey;
 }): Promise<boolean> => {
-  enqueueSnackbar("Fetching Merkle Tree...", { variant: "info" });
   //
   const umi = createUmi(connection.rpcEndpoint);
   console.log("findMerkleTree() - started.");
@@ -70,7 +91,6 @@ export const findMerkleTree = async ({
     console.log("Error @ findMerkleTree()." + e);
     return false;
   }
-  return false;
 };
 
 export const mintCNFT = async ({
@@ -88,7 +108,6 @@ export const mintCNFT = async ({
   sellerFeeBasisPoints: number;
   metadata: string;
 }): Promise<Boolean> => {
-  enqueueSnackbar("Minting cNFT...", { variant: "info" });
   console.log("mintCNFT() - started.");
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
@@ -118,48 +137,4 @@ export const mintCNFT = async ({
     return false;
   }
   return false;
-};
-
-export const createCNFT = async ({
-  connection, //
-  wallet,
-  name,
-  symbol,
-  metadata,
-  sellerFeeBasisPoints,
-}: {
-  connection: Connection; //
-  wallet: Wallet;
-  name: string;
-  symbol: string;
-  metadata: string;
-  sellerFeeBasisPoints: number;
-}) => {
-  const mtCreation = await createMerkleTree({
-    wallet: wallet,
-    connection: connection,
-  });
-  if (mtCreation.success) {
-    console.log("Waiting...");
-    setTimeout(async () => {
-      console.log("Waiting done.");
-      const foundMerkleTree = await findMerkleTree({
-        connection: connection,
-        wallet: wallet,
-        merkleTree: mtCreation.merkleTree,
-      });
-      if (foundMerkleTree) {
-        console.log("Merkle Tree found.");
-        const mintResult = await mintCNFT({
-          wallet: wallet,
-          connection: connection,
-          merkleTree: mtCreation.merkleTree,
-          title: name,
-          sellerFeeBasisPoints: sellerFeeBasisPoints,
-          metadata: metadata,
-        });
-      }
-    },5000);
-  }
-
 };

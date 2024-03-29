@@ -1,0 +1,546 @@
+.panel-box {
+    gap: 10px;
+
+    border-radius: 20px;
+
+}
+
+.type-selector .type-options {
+    padding: 10px;
+
+    background-color: var(--secondary-faded-2);
+
+    border-radius: 10px;
+
+    gap: 5px;
+}
+
+.type-selector .type-option {
+    min-width: 180px;
+    padding: 10px;
+    background-color: var(--secondary-faded-3);
+    border: 2px dashed var(--secondary-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.type-selector .type-option.active {
+    border-color: #ff91d1;
+    font-weight: 1000;
+}
+
+.type-selector .type-option:nth-child(1) {
+    border-color: #ff91d1;
+    background-color: #ffc6e7;
+    color: #ff91d1;
+}
+
+.type-selector .type-option:nth-child(1):hover {
+    border-color: #a75283;
+    background-color: #ff91d1;
+    color: #ffc6e7;
+}
+
+
+.type-selector .type-option:nth-child(2) {
+    border-color: #d4af46;
+    background-color: #ffebb3;
+    color: #d4af46;
+
+}
+
+.type-selector .type-option:nth-child(2):hover {
+    border-color: #9c8034;
+    background-color: #d4af46;
+    color: #ffebb3;
+}
+
+
+.type-selector .type-option:nth-child(3),
+.type-selector .type-option:nth-child(4) {
+    border-color: #58bbda;
+    background-color: #b8eeff;
+    color: #58bbda;
+}
+
+.type-selector .type-option:nth-child(3):hover,
+.type-selector .type-option:nth-child(4):hover {
+    border-color: #418ea5;
+    background-color: #58bbda;
+    color: #b8eeff;
+}
+
+.type-selector .type-option:nth-child(5) {
+    border-color: #3eda65;
+    background-color: #c4ffd6;
+    color: #3eda65;
+
+}
+
+.type-selector .type-option:nth-child(5):hover {
+    border-color: #2b9c47;
+    background-color: #3eda65;
+    color: #c4ffd6;
+}
+
+.panel.create {
+    width: fit-content;
+    height: fit-content;
+
+    border: 1px solid var(--secondary-faded-4);
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 10px;
+    color: var(--primary);
+
+
+    backdrop-filter: blur(10px);
+}
+
+
+
+.panel.create .editor {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px;
+}
+
+
+.panel.create .editor .form {
+    gap: 5px;
+}
+
+.panel.create .editor .form input,
+.panel.create .editor .form textarea {
+    width: 300px;
+    height: 40px;
+    padding: 10px;
+
+    background-color: transparent;
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 5px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    font-family: "satoshi";
+    color: var(--primary);
+}
+
+.panel.create .editor .form textarea {
+    height: 140px;
+    resize: none;
+}
+
+.panel.create .editor .form textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.panel.create .visibility {
+    width: 300px;
+    height: fit-content;
+    padding: 10px;
+
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.panel.create .visibility input {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 10px;
+}
+
+.panel.create .editor .form .royalties {
+    width: 300px;
+    height: 115px;
+    padding: 20px;
+
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.panel.create .editor .form .royalties .slider-container {
+    width: 200px;
+}
+
+.panel.create .editor .form .royalties .legend {
+    gap: 10px;
+    width: 300px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    box-sizing: border-box;
+
+    color: var(--primary);
+    cursor: help;
+}
+
+
+.panel.create .editor .attributes-button {
+    width: 300px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+
+    box-sizing: border-box;
+    outline: none;
+
+    color: var(--primary-faded-4);
+
+    cursor: pointer;
+}
+
+
+
+.panel.create .editor .attributes-button:hover {
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    color: var(--primary);
+}
+
+.panel.create .editor .attributes-button:not(:hover) {
+
+    transition-duration: 0.2s;
+}
+
+.panel.create .preview {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+}
+
+.panel.create .preview .content {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px;
+}
+
+.panel.create .preview .content .image {
+    width: 300px;
+    height: 300px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    color: var(--primary-faded-4);
+    cursor: pointer;
+}
+
+.panel.create .preview .content .image img {
+
+    width: 300px;
+    height: 300px;
+}
+
+.panel.create .preview .content .image:hover {
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    color: var(--primary);
+}
+
+
+
+.panel.create .submit {
+    width: 300px;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: var(--secondary);
+
+    cursor: pointer;
+}
+
+.panel.create .submit:hover {
+    background-color: var(--secondary);
+    color: var(--accent);
+    transition-duration: 0.2s;
+}
+
+.panel.create .submit:not(:hover) {
+    transition-duration: 0.2s;
+}
+
+.panel.create .submit:disabled {
+    background-color: var(--accent-faded-4);
+    border: 2px dashed var(--accent-faded-2);
+    color: var(--accent-faded-2);
+    cursor: not-allowed;
+}
+
+#image-input {
+    display: none;
+}
+
+#attribute-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    background-color: var(--primary-foil);
+    backdrop-filter: blur(8px);
+
+    z-index: 100;
+}
+
+#attribute-modal .close-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    color: var(--primary);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 0.2s;
+
+}
+
+#attribute-modal .close-button:hover {
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+}
+
+#attribute-modal .modal {
+    position: relative;
+
+    width: fit-content;
+    height: fit-content;
+
+    padding: 20px;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 20px;
+}
+
+#attribute-modal .modal .create-attributes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#attribute-modal .modal .create-attributes form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 10px;
+}
+
+#attribute-modal .modal .create-attributes .input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#attribute-modal .modal .create-attributes input {
+    width: 300px;
+    height: 20px;
+
+    padding: 10px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    outline: none;
+    color: var(--primary);
+}
+
+#attribute-modal .modal .create-attributes .submit {
+
+    width: 654px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: var(--accent);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
+    outline: none;
+    color: var(--white);
+
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+
+#attribute-modal .modal .create-attributes .submit:disabled {
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-2);
+    color: var(--secondary);
+    cursor: not-allowed;
+    transition-duration: 0.2s;
+
+}
+
+#attribute-modal .modal .create-attributes .submit:not(:disabled):hover {
+    background-color: var(--accent-faded-1);
+}
+
+#attribute-modal .attributes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    max-width: 600px;
+    max-height: 400px;
+
+    flex-wrap: wrap;
+
+
+    overflow: scroll;
+}
+
+#attribute-modal .attributes .attribute {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    gap: 10px;
+
+    padding: 10px 20px;
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 50px;
+    cursor: pointer;
+    user-select: none;
+}
+
+#attribute-modal .attributes .attribute .line {
+    width: 1px;
+    height: 25px;
+    background-color: var(--secondary-faded-3);
+}
+
+#result-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+}
+
+#result-panel {
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 20px;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 4px var(--primary-transparent-1);
+    color: var(--primary);
+}
+
+#result-panel .headline {
+    gap: 10px;
+}
+
+
+#result-panel .buttons {
+    gap: 5px;
+}
+
+#result-panel .button-base {
+    padding: 5px;
+    background-color: var(--accent-faded-4);
+    border-radius: 7.5px;
+
+}
+
+#result-panel .button {
+    min-width: 150px;
+    padding: 10px;
+    background-color: var(--accent);
+    border: 1px solid var(--accent-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 4px var(--accent-faded-1);
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+#result-panel .button:hover {
+    background-color: var(--accent-faded-1);
+    border: 1px solid var(--accent-faded-2);
+    color: var(--secondary-faded-1);
+    transition-duration: 0.2s;
+}
+
+#result-panel .button:not(:hover) {
+    transition-duration: 0.2s;
+}
+
+#result-panel .button-base.close {
+    padding: 5px;
+    background-color: var(--primary-faded-3);
+    border-radius: 7.5px;
+}
+
+#result-panel .button.close {
+    background-color: var(--primary-faded-1);
+    border: 1px solid var(--primary-faded-2);
+    box-shadow: 0px 2px 4px var(--secondary-transparent-4);
+    color: var(--secondary-faded-1);
+}
+
+#result-panel .button.close:hover {
+    background-color: var(--primary);
+    border: 1px solid var(--primary-faded-1);
+    transition-duration: 0.2s;
+}
