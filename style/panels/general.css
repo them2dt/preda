@@ -8,8 +8,7 @@
 .type-selector .type-options {
     padding: 10px;
 
-    background-color: var(--secondary-faded-2);
-
+    border: 1px solid var(--secondary-faded-4);
     border-radius: 10px;
 
     gap: 5px;

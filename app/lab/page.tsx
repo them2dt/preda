@@ -16,14 +16,7 @@ export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
   const [type, setType] = useState(0);
-
-  const typeLabels = [
-    "Create NFT",
-    "Create PNFT",
-    "Create Merkle Tree",
-    "Create CNFT",
-    "Create SPL22",
-  ];
+  const [id, setId] = useState(0); //id for the header
 
   return (
     <motion.div
@@ -31,35 +24,13 @@ export default function Home() {
       className="skeleton"
       data-theme={theme == 0 ? "light" : "dark"}
     >
-      <Header id={0} theme={theme} />
+      <Header id={id} theme={theme} setId={setId} />
       <div id="mainboard" className="flex-row-center-start">
-        <div className="panel-box flex-column-start-center">
-          <motion.div className="type-selector flex-row-center-center">
-            <motion.div className="type-options flex-row-center-center">
-              {typeLabels.map((label, index) => {
-                return (
-                  <motion.div
-                    key={"to-" + index}
-                    className={
-                      type == index ? "type-option active" : "type-option"
-                    }
-                    onClick={() => {
-                      setType(index);
-                    }}
-                  >
-                    {label}
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </motion.div>
-
-          {type == 0 && <NFTPanel />}
-          {type == 1 && <PNFTPanel />}
-          {type == 2 && <MerkleTreePanel />}
-          {type == 3 && <CNFTPanel />}
-          {type == 4 && <SPL22Panel />}
-        </div>
+        {type == 0 && <NFTPanel />}
+        {type == 1 && <PNFTPanel />}
+        {type == 2 && <MerkleTreePanel />}
+        {type == 3 && <CNFTPanel />}
+        {type == 4 && <SPL22Panel />}
       </div>
       <Navigation
         theme={theme}

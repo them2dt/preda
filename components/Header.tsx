@@ -3,8 +3,16 @@ import { motion as m } from "framer-motion";
 import Link from "next/link";
 import { Tooltip } from "@mui/material";
 
-export default function Header({ id, theme }: { id: number; theme: number }) {
-  const labels = ["Laboratory", "Gallery"];
+export default function Header({
+  id,
+  theme,
+  setId,
+}: {
+  id: number;
+  theme: number;
+  setId: Function;
+}) {
+  const labels = ["NFT", "PNFT", "Merkle Tree", "CNFT", "SPL22", "Gallery"];
   return (
     <>
       <m.div
@@ -15,30 +23,19 @@ export default function Header({ id, theme }: { id: number; theme: number }) {
         <m.div className="logo font-h4">
           <Link href={"/"}>Preda</Link>
         </m.div>
-        {id == 0 && (
-          <Tooltip title={"Click to go to the " + labels[1]} placement="bottom">
-            <m.div
-              className="operator font-text-tiny"
+        <div className="flex-row-center-center">
+          {labels.map((item, index) => (
+            <button
+              className={id == index ? "operator active" : "operator"}
               onClick={() => {
-                window.location.href = "/gallery";
+                
+                setId(id);
               }}
             >
-              {labels[id]}
-            </m.div>
-          </Tooltip>
-        )}
-        {id == 1 && (
-          <Tooltip title={"Click to go to the " + labels[0]} placement="bottom">
-            <m.div
-              className="operator font-text-tiny"
-              onClick={() => {
-                window.location.href = "/lab";
-              }}
-            >
-              {labels[id]}
-            </m.div>
-          </Tooltip>
-        )}
+              {item}
+            </button>
+          ))}
+        </div>
       </m.div>
     </>
   );

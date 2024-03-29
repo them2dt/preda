@@ -26,18 +26,20 @@
 }
 
 #header .operator {
-    background-color: var(--secondary-faded-1);
-    border: 1px solid var(--secondary-faded-2);
     color: var(--primary);
     border-radius: 20px;
 
-    padding: 10px 20px;
+    padding: 5px 10px;
     cursor: pointer;
+    box-sizing: border-box;
+}
+
+#header .operator.active {
+    background-color: var(--secondary-faded-2);
 }
 
 #header .operator:hover {
-    background-color: var(--secondary-faded-2);
-    border: 1px solid var(--secondary-faded-3);
+    background-color: var(--secondary-faded-1);
 }
 
 #operator-catalog {
