@@ -2,13 +2,18 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faX,
+  faXmarkCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { CustomSlider } from "@/components/ui/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { createPNFT } from "@/backend/PNFT";
-
+import { Tooltip } from "@mui/material";
+import Link from "next/link";
 
 export default function Panel() {
   const [attributeModal, setAttributeModal] = useState(false);
@@ -33,6 +38,12 @@ export default function Panel() {
   const [attributes, setAttributes] =
     useState<{ key: string; value: string }[]>();
   //hooks to store the key and value of the attribute to be added.
+
+  const [resultAddress, setResultAddress] = useState<string>();
+
+  const [result, setResult] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -40,7 +51,6 @@ export default function Panel() {
       console.log(oldArray);
     }
   };
-
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
@@ -110,15 +120,24 @@ export default function Panel() {
 
           if (mint) {
             enqueueSnackbar("NFT created!", { variant: "success" });
+            setResultAddress(mint);
+            setSuccess(true);
+            setResult(true);
           } else {
             enqueueSnackbar("NFT creation failed.", { variant: "error" });
+            setSuccess(false);
+            setResult(true);
           }
         } else {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+          setSuccess(false);
+          setResult(true);
           return;
         }
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
+        setSuccess(false);
+        setResult(true);
         return;
       }
     }
@@ -128,7 +147,7 @@ export default function Panel() {
     <>
       <AnimatePresence>
         <m.div
-        id="lab-panel-nft"
+          id="lab-panel-nft"
           className="panel create"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -137,7 +156,7 @@ export default function Panel() {
         >
           {/**Every operation is done in here.*/}
           <m.div className="editor">
-            <m.div className="form">
+            <m.div className="form flex-column-center-start">
               <input
                 type="text"
                 name="title"
@@ -213,7 +232,7 @@ export default function Panel() {
                 }}
               >
                 {image ? (
-                  <img src={imagePreview}  alt="image-preview"/>
+                  <img src={imagePreview} alt="image-preview" />
                 ) : (
                   <div className="placeholder font-text-small">
                     click here to import an image
@@ -349,6 +368,87 @@ export default function Panel() {
             >
               <FontAwesomeIcon icon={faX} />
             </button>
+          </m.div>
+        )}
+
+        {result && success && (
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+            id="result-backdrop"
+            className="flex-row-center-center"
+          >
+            <div id="result-panel" className="flex-column-center-center">
+              <div className="headline flex-column-center-center">
+                <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
+                <div className="message font-h4">Success!</div>
+              </div>
+              <div className="buttons flex-column-center-center">
+                <div className="button-base">
+                  <Link
+                    href={"https://solana.fm/address/" + resultAddress}
+                    target="_blank"
+                  >
+                    <button className="button font-text-tiny-bold flex-row-center-center">
+                      Open in Explorer
+                    </button>
+                  </Link>
+                </div>
+                <div className="button-base">
+                  <Tooltip title={"Copy " + resultAddress}>
+                    <button
+                      className="button font-text-tiny-bold flex-row-center-center"
+                      onClick={() => {
+                        navigator.clipboard.writeText(resultAddress);
+                      }}
+                    >
+                      Copy Address
+                    </button>
+                  </Tooltip>
+                </div>
+                <div className="button-base close">
+                  <button
+                    className="button close font-text-tiny-bold flex-row-center-center"
+                    onClick={() => {
+                      setResult(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </m.div>
+        )}
+        {result && !success && (
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+            id="result-backdrop"
+            className="flex-row-center-center"
+          >
+            <div id="result-panel" className="flex-column-center-center">
+              <div className="headline flex-column-center-center">
+                <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
+                <div className="message font-h4">Something went wrong.</div>
+              </div>
+              <div className="buttons flex-column-center-center">
+                <div className="button-base close">
+                  <button
+                    className="button close font-text-tiny-bold flex-row-center-center"
+                    onClick={() => {
+                      setResult(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
           </m.div>
         )}
       </AnimatePresence>
