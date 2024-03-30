@@ -6,7 +6,7 @@ import {
   faCheckCircle,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { CustomSlider } from "@/components/ui/Slider";
+import { CustomSlider } from "@/components/Slider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { createMerkleTree } from "@/backend/CNFT";
 import { Tooltip } from "@mui/material";

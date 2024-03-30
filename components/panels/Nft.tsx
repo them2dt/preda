@@ -7,11 +7,11 @@ import {
   faX,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { CustomSlider } from "@/components/ui/Slider";
+import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
+import { createNFT } from "@/backend/NFT";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createPNFT } from "@/backend/PNFT";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 
@@ -36,7 +36,7 @@ export default function Panel() {
   const [value, setValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
-    useState<{ key: string; value: string }[]>();
+    useState<{ trait_type: string; value: string }[]>();
   //hooks to store the key and value of the attribute to be added.
 
   const [resultAddress, setResultAddress] = useState<string>();
@@ -70,12 +70,6 @@ export default function Panel() {
       });
 
       if (imageUri) {
-        const jsonUri = await uploadFileToIrys({
-          wallet: wallet,
-          connection: connection,
-          file: image,
-        });
-
         const metadata = {
           name: title,
           symbol: symbol,
@@ -110,7 +104,7 @@ export default function Panel() {
         });
 
         if (metadataUri) {
-          const mint = await createPNFT({
+          const mint = await createNFT({
             wallet: wallet,
             connection: connection,
             title: title,
@@ -132,13 +126,11 @@ export default function Panel() {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
           setSuccess(false);
           setResult(true);
-          return;
         }
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
         setSuccess(false);
         setResult(true);
-        return;
       }
     }
   };
@@ -147,7 +139,7 @@ export default function Panel() {
     <>
       <AnimatePresence>
         <m.div
-          id="lab-panel-nft"
+          id="panel-nft"
           className="panel create"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -302,7 +294,9 @@ export default function Panel() {
                       setRenderHook(renderHook + 1);
                     }}
                   >
-                    <div className="key font-text-bold">{attribute.key}</div>
+                    <div className="key font-text-bold">
+                      {attribute.trait_type}
+                    </div>
 
                     <div className="line"></div>
                     <div className="value font-text-light">
@@ -352,7 +346,7 @@ export default function Panel() {
                     onClick={() => {
                       setAttributes([
                         ...(attributes || []),
-                        { key: key || "", value: value || "" },
+                        { trait_type: key || "", value: value || "" },
                       ]);
                     }}
                   >

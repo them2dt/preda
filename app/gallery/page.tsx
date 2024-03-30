@@ -20,7 +20,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { enqueueSnackbar } from "notistack";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
-import SingleItemView from "./SingleItemView";
+import SingleItemView from "../../components/SingleItemView";
 import { DasApiAssetAuthority, DasApiAssetCreator } from "@metaplex-foundation/digital-asset-standard-api";
 
 export default function Home() {
@@ -112,7 +112,7 @@ export default function Home() {
           className="skeleton"
           data-theme={theme == 0 ? "light" : "dark"}
         >
-          <Header id={1} theme={theme} />
+          <Header id={5} theme={theme} />
           <div id="gallery" className="flex-column-center-center">
             <motion.div
               className="gallery-header flex-row-between-center"
