@@ -46,7 +46,7 @@ export default function Panel() {
         connection: connection,
         file: image,
       });
-      
+
       const res = await createToken22({
         wallet: wallet,
         connection: connection,
@@ -56,7 +56,7 @@ export default function Panel() {
         metadata: imageUri,
         sellerFeeBasisPoints: 0,
         amount: 0,
-      }); 
+      });
 
       if (res) {
         enqueueSnackbar("Token created.", { variant: "success" });
@@ -78,7 +78,6 @@ export default function Panel() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.1 }}
         >
-          {/**Every operation is done in here.*/}
           <div className="flex-column-center-center form-container">
             <div className="flex-row-center-start form">
               <div className="flex-column-center-center text-inputs">
@@ -132,93 +131,6 @@ export default function Panel() {
                   }}
                 />
               </div>
-
-              <div className="extensions-row flex-column-center-start">
-                <div className="extensions flex-column-center-start">
-                  <div className="extension flex-row-center-center">
-                    <label htmlFor="burnable">Frozen</label>
-                    <div className="checkbox-container flex-row-center-center">
-                      <input
-                        type="checkbox"
-                        name="burnable"
-                        id="burnable"
-                        onChange={(e) => {
-                          setFrozen(e.target.checked);
-                        }}
-                      />
-                    </div>
-                    <input
-                      type="text"
-                      name="burnable"
-                      placeholder="Authority"
-                      className="extension-input font-text-tiny"
-                      value={authority}
-                      onChange={(e) => {
-                        setAuthority(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="extension flex-row-center-center">
-                    <label htmlFor="burnable">Transfer tax (%)</label>
-                    <input
-                      type="number"
-                      name="burnable"
-                      min={0}
-                      max={100}
-                      value={transferTax}
-                      onChange={(e) => {
-                        setTransferTax(Number(e.target.value));
-                      }}
-                      placeholder="Transfer tax"
-                      className="extension-input font-text-small"
-                    />
-                    <input
-                      type="text"
-                      name="burnable"
-                      placeholder="Authority"
-                      className="extension-input font-text-tiny"
-                      value={authority}
-                      onChange={(e) => {
-                        setAuthority(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="extension flex-row-center-center">
-                    <label htmlFor="burnable">Interest (%)</label>
-                    <input
-                      type="number"
-                      name="burnable"
-                      min={0}
-                      max={100}
-                      value={interest}
-                      onChange={(e) => {
-                        setInterest(Number(e.target.value));
-                      }}
-                      placeholder="Transfer tax"
-                      className="extension-input font-text-small"
-                    />
-                    <input
-                      type="text"
-                      name="burnable"
-                      placeholder="Authority"
-                      className="extension-input font-text-tiny"
-                      value={authority}
-                      onChange={(e) => {
-                        setAuthority(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <button
-                  className="submit font-text-bold flex-row-center-center"
-                  disabled={!title || !symbol || !description || !image}
-                  onClick={run}
-                >
-                  {!title || !symbol || !description || !image
-                    ? "Fill out the empty fields."
-                    : "Create SPL22"}
-                </button>
-              </div>
               <div className="flex-column-center-center image-input">
                 <m.div
                   className="image"
@@ -254,6 +166,92 @@ export default function Panel() {
                   />
                 </m.div>
               </div>
+            </div>
+            <div className="extensions-row flex-column-center-start">
+              <div className="extensions flex-column-center-start">
+                <div className="extension flex-row-center-center">
+                  <label htmlFor="burnable">Frozen</label>
+                  <div className="checkbox-container flex-row-center-center">
+                    <input
+                      type="checkbox"
+                      name="burnable"
+                      id="burnable"
+                      onChange={(e) => {
+                        setFrozen(e.target.checked);
+                      }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    name="burnable"
+                    placeholder="Authority"
+                    className="extension-input font-text-tiny"
+                    value={authority}
+                    onChange={(e) => {
+                      setAuthority(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="extension flex-row-center-center">
+                  <label htmlFor="burnable">Transfer tax (%)</label>
+                  <input
+                    type="number"
+                    name="burnable"
+                    min={0}
+                    max={100}
+                    value={transferTax}
+                    onChange={(e) => {
+                      setTransferTax(Number(e.target.value));
+                    }}
+                    placeholder="Transfer tax"
+                    className="extension-input font-text-small"
+                  />
+                  <input
+                    type="text"
+                    name="burnable"
+                    placeholder="Authority"
+                    className="extension-input font-text-tiny"
+                    value={authority}
+                    onChange={(e) => {
+                      setAuthority(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="extension flex-row-center-center">
+                  <label htmlFor="burnable">Interest (%)</label>
+                  <input
+                    type="number"
+                    name="burnable"
+                    min={0}
+                    max={100}
+                    value={interest}
+                    onChange={(e) => {
+                      setInterest(Number(e.target.value));
+                    }}
+                    placeholder="Transfer tax"
+                    className="extension-input font-text-small"
+                  />
+                  <input
+                    type="text"
+                    name="burnable"
+                    placeholder="Authority"
+                    className="extension-input font-text-tiny"
+                    value={authority}
+                    onChange={(e) => {
+                      setAuthority(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              <button
+                className="submit font-text-bold flex-row-center-center"
+                disabled={!title || !symbol || !description || !image}
+                onClick={run}
+              >
+                {!title || !symbol || !description || !image
+                  ? "Fill out the empty fields."
+                  : "Create SPL22"}
+              </button>
             </div>
           </div>
         </m.div>

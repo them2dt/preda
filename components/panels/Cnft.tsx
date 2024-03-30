@@ -7,7 +7,7 @@ import {
   faX,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { CustomSlider } from "@/components/ui/Slider";
+import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";

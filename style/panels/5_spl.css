@@ -75,7 +75,7 @@
 }
 
 #lab-panel-spl .submit {
-    width: 450px;
+    width: 605px;
     height: 135px;
     display: flex;
 
@@ -148,7 +148,7 @@
 }
 
 #lab-panel-spl .extension input[type="text"] {
-    width: 200px;
+    width: 355px;
     height: 40px;
 
     padding: 10px;

@@ -6,17 +6,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import NFTPanel from "./panels/Nft";
-import CNFTPanel from "./panels/Cnft";
-import PNFTPanel from "./panels/Pnft";
-import SPL22Panel from "./panels/Spl22";
-import MerkleTreePanel from "./panels/MerkleTree";
+import NFTPanel from "../../components/panels/Cnft";
 
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
-  const [type, setType] = useState(0);
-  const [id, setId] = useState(0); //id for the header
+  const id = 3;
 
   return (
     <motion.div
@@ -24,13 +19,9 @@ export default function Home() {
       className="skeleton"
       data-theme={theme == 0 ? "light" : "dark"}
     >
-      <Header id={id} theme={theme} setId={setId} />
+      <Header id={id} theme={theme} />
       <div id="mainboard" className="flex-row-center-start">
-        {type == 0 && <NFTPanel />}
-        {type == 1 && <PNFTPanel />}
-        {type == 2 && <MerkleTreePanel />}
-        {type == 3 && <CNFTPanel />}
-        {type == 4 && <SPL22Panel />}
+        <NFTPanel />
       </div>
       <Navigation
         theme={theme}

@@ -52,7 +52,7 @@
 .navigation-button.logo {
   margin-left: 0;
 
-  background-image: url("../media/logo.png");
+  background-image: url("../media/emptea.png");
   /*background fills the shape*/
   background-size: cover;
   border-radius: 5px;
