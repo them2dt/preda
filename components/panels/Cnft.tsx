@@ -165,7 +165,9 @@ export default function Panel() {
             />
             <div className="button-base">
               <button
-                disabled={!wallet || !connection || !merkleTree}
+                disabled={
+                  !wallet.adapter.connected || !connection || !merkleTree
+                }
                 className="button flex-row-center-center font-text-tiny-bold"
                 onClick={async () => {
                   await validatePublicKey(merkleTree);

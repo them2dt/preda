@@ -45,11 +45,11 @@ a {
 
 :root {
 
-    --black-1: #000000;
-    --black-2: #1A1A1A;
-    --black-3: #333333;
-    --black-4: #4D4D4D;
-    --black-5: #666666;
+    --black-1: rgb(0, 0, 0);
+    --black-2: rgb(10, 10, 10);
+    --black-3: rgb(20, 20, 20);
+    --black-4: rgb(30, 30, 30);
+    --black-5: rgb(40, 40, 40);
 
     --black-transparent-1: rgba(0, 0, 0, 0.1);
     --black-transparent-2: rgba(0, 0, 0, 0.2);
