@@ -142,8 +142,8 @@ export default function Navigation({ theme, toggleTheme }: any) {
                   <div className="font-h4">The Lab</div>
                   <div className="font-text">
                     The lab is an intuitive panel to create tokens on Solana. We
-                    currently support Standard NFT's, compressed NFT's,
-                    programmable NFT's.
+                    currently support Standard NFT&apos;s, compressed NFT&apos;s,
+                    programmable NFT&apos;s.
                   </div>
                 </div>
                 <div className="help-panel flex-column-center-center">
