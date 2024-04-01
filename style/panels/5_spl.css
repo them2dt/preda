@@ -75,8 +75,8 @@
 }
 
 #lab-panel-spl .submit {
-    width: 605px;
-    height: 135px;
+    width: 570px;
+    height: 80px;
     display: flex;
 
     background-color: var(--accent);
@@ -114,6 +114,7 @@
     gap: 10px;
 
     background-color: var(--secondary-faded-1);
+
     border-radius: 5px;
     box-sizing: border-box;
 }
@@ -123,7 +124,7 @@
 }
 
 #lab-panel-spl .extension label {
-    width: 120px;
+    width: 95px;
 }
 
 #lab-panel-spl .extension .checkbox-container {
@@ -148,7 +149,7 @@
 }
 
 #lab-panel-spl .extension input[type="text"] {
-    width: 355px;
+    width: 345px;
     height: 40px;
 
     padding: 10px;

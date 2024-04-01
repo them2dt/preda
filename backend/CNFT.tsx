@@ -41,8 +41,10 @@ export const createMerkleTree = async ({
 }): Promise<{ merkleTree: PublicKey; success: boolean }> => {
   //compare the sizeParameter with the amount value of the sizeChart array and choose which value is the next highest value to the size
   const sizeParameter = sizeChart.find((element) => element.amount >= size);
+  
   console.log(sizeParameter.amount);
   console.log("createMerkleTree() - started.");
+
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(walletAdapterIdentity(wallet.adapter));
   const merkleTree = generateSigner(umi);
@@ -52,6 +54,8 @@ export const createMerkleTree = async ({
     maxBufferSize: sizeParameter.buffer,
   });
   try {
+    console.log("Merkle tree: "+merkleTree.publicKey);
+    console.log("Public key: "+wallet.adapter.publicKey.toBase58());
     const treeTXResult = await treeTX.sendAndConfirm(umi);
     if (treeTXResult) {
       console.log("createMerkleTree() - success!");

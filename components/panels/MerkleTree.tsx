@@ -11,6 +11,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { createMerkleTree } from "@/backend/CNFT";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
+import { enqueueSnackbar } from "notistack";
 
 export default function Panel() {
   const [leafOwner, setLeafOwner] = useState<string>();
@@ -43,6 +44,10 @@ export default function Panel() {
         }
       } catch (e) {
         console.log(e);
+        enqueueSnackbar(
+          "Transaction failed. Check your funds and connection.",
+          { variant: "error" }
+        );
       }
     }
   };

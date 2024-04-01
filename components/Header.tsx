@@ -5,8 +5,16 @@ import Image from "next/image";
 import appIcon from "../media/app-icon.png";
 
 export default function Header({ id, theme }: { id: number; theme: number }) {
-  const labels = ["NFT", "PNFT", "Merkle Tree", "CNFT", "SPL22", "Gallery"];
-  const pages = ["", "pnft", "merkletree", "cnft", "spl22", "gallery"];
+  const labels = [
+    "NFT",
+    "PNFT",
+    "Merkle Tree",
+    "CNFT",
+    "SPL20",
+    "SPL22",
+    "Gallery",
+  ];
+  const pages = ["", "pnft", "merkletree", "cnft", "spl20", "spl22", "gallery"];
   return (
     <>
       <m.div
