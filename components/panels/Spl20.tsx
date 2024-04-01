@@ -3,7 +3,7 @@ import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import { createSPL22 } from "@/backend/SPL22";
+import { createSPL20 } from "@/backend/SPL20";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { create } from "domain";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,7 +42,7 @@ export default function Panel() {
         file: image,
       });
 
-      const res = await createSPL22({
+      const res = await createSPL20({
         wallet: wallet,
         connection: connection,
         title: title,

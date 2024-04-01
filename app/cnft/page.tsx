@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import NFTPanel from "../../components/panels/Cnft";
+import Panel from "../../components/panels/Cnft";
 
 export default function Home() {
   //hooks
@@ -21,7 +21,7 @@ export default function Home() {
     >
       <Header id={id} theme={theme} />
       <div id="mainboard" className="flex-row-center-start">
-        <NFTPanel />
+        <Panel />
       </div>
       <Navigation
         theme={theme}

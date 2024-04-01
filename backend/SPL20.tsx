@@ -25,7 +25,7 @@ import { enqueueSnackbar } from "notistack";
  * @param {Object} rawData - The raw data for the NFT, which will be transformed into metadata.
  * @returns {Promise<string>} The publickey of the item.
  */
-export const createSPL22 = async ({
+export const createSPL20 = async ({
   wallet,
   connection,
   title,
@@ -54,10 +54,6 @@ export const createSPL22 = async ({
 
   const mint = generateSigner(umi);
 
-  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
-    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-  );
-
   try {
     await createAndMint(umi, {
       mint,
@@ -70,7 +66,6 @@ export const createSPL22 = async ({
       amount: supply,
       tokenOwner: umi.identity.publicKey,
       tokenStandard: TokenStandard.Fungible,
-      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
     })
       .sendAndConfirm(umi)
       .then((result) => {

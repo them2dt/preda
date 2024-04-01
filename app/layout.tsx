@@ -4,9 +4,7 @@ import "../style/globals.css";
 import "../style/skeleton.css";
 import "../style/navigation.css";
 import "../style/adapter.css";
-import "../style/home.css";
 import "../style/profile.css";
-import "../style/leaderboard.css";
 import "../style/gallery.css";
 import "../style/singleItemView.css";
 //

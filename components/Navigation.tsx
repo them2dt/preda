@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
-import { set } from "@metaplex-foundation/umi/serializers";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>

@@ -39,13 +39,14 @@
 
 #gallery .view-type.active,
 #gallery .token-type.active {
-    background-color: var(--secondary-faded-3);
-    border: 1px solid var(--secondary-faded-4);
+    color: white;
+    background-color: var(--accent);
 }
 
 #gallery .view-type:hover,
 #gallery .token-type:hover {
-    background-color: var(--secondary-faded-1);
+    background-color: var(--secondary-faded-2);
+    border-color: var(--secondary-faded-3);
 
 }
 
@@ -92,7 +93,7 @@
 }
 
 #gallery .gallery-image img {
-    max-width: 220px;
+    width: 220px;
     max-height: 220px;
 }
 
@@ -227,4 +228,3 @@
     color: rgb(94, 21, 31);
 
 }
-
