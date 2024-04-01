@@ -11,7 +11,7 @@ import Panel from "../../components/panels/Spl22";
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
-  const id = 4;
+  const id = 5;
 
   return (
     <motion.div

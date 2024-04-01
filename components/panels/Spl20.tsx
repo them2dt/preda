@@ -3,7 +3,7 @@ import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import { createToken22 } from "@/backend/SPL22";
+import { createSPL20 } from "@/backend/SPL20";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { create } from "domain";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +24,6 @@ export default function Panel() {
   const [image, setImage] = useState();
   //sets the image-preview of Token.
   const [imagePreview, setImagePreview] = useState();
-  const [authority, setAuthority] = useState<string>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
@@ -43,20 +42,20 @@ export default function Panel() {
         file: image,
       });
 
-      const res = await createToken22({
+      const res = await createSPL20({
         wallet: wallet,
         connection: connection,
-        name: title,
+        title: title,
         symbol: symbol,
-        decimals: 0,
+        decimals: 2,
         metadata: imageUri,
         sellerFeeBasisPoints: 0,
-        amount: 0,
+        supply: 5000000,
       });
 
-      if (res) {
+      if (res.success) {
         enqueueSnackbar("Token created.", { variant: "success" });
-        console.log(res);
+        console.log("Public Key: " + res.pubkey);
       } else {
         enqueueSnackbar("Error creating token.", { variant: "error" });
       }
@@ -112,7 +111,7 @@ export default function Panel() {
                   placeholder="Supply"
                   className="font-text-small"
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setSupply(Number(e.target.value));
                   }}
                 />
                 <input
@@ -123,7 +122,7 @@ export default function Panel() {
                   placeholder="Decimals"
                   className="font-text-small"
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setDecimal(Number(e.target.value));
                   }}
                 />
               </div>

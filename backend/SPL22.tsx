@@ -1,148 +1,98 @@
 import { Wallet } from "@solana/wallet-adapter-react";
+import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
-import { TOKEN_PROGRAM_ID, createMintToInstruction } from "@solana/spl-token";
-import { percentAmount } from "@metaplex-foundation/umi";
+//umi
+
+import { percentAmount, publicKey } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { publicKey, generateSigner } from "@metaplex-foundation/umi";
+import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { createAssociatedTokenAccount } from "@solana/spl-token";
-import { burnV1, createV1, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
+
+import {
+  createAndMint,
+  createNft,
+  mplTokenMetadata,
+} from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
-const createTokenAccount = async (wallet: any, mintAddress: string): Promise<string> => {
-  try {
-    // const connection = new Connection('https://api.mainnet-beta.solana.com'); // Use this for mainnet
-    const connection = new Connection('https://api.devnet.solana.com');
-    const tokenAccount = await createAssociatedTokenAccount(
-      connection,
-      wallet.owner,
-      new PublicKey(mintAddress),
-      wallet.owner,
-    );
-    console.log("Token account created: " + tokenAccount.toString());
-    return tokenAccount.toString();
-  } catch (error) {
-    enqueueSnackbar("Error creating token account: " + error, { variant: "error" });
-    return "Error creating token account: " + error;
-  }
-};
-
-const mintToTokenAccount = async (wallet: any, mintAddress: string, tokenAccountAddress: string, amount: number): Promise<string> => {
-  try {
-    // const connection = new Connection('https://api.mainnet-beta.solana.com'); // Use this for mainnet
-    const connection = new Connection('https://api.devnet.solana.com');
-    const tokenAccount = new PublicKey(tokenAccountAddress);
-    const mint = new PublicKey(mintAddress);
-    const authority = wallet.publicKey;
-    const recipient = tokenAccount;
-    const decimals = 0;
-
-    const instruction = createMintToInstruction(
-      mint,
-      recipient,
-      authority,
-      amount * Math.pow(10, decimals), 
-      [],
-      TOKEN_PROGRAM_ID
-    );
-
-    const transaction = new Transaction().add(instruction);
-
-    const signature = await wallet.signTransaction(transaction);
-    const result = await connection.sendRawTransaction(signature.serialize());
-    console.log("Minted tokens to token account: " + tokenAccount.toString());
-    return result;
-  } catch (error) {
-    enqueueSnackbar("Error minting tokens to token account: " + error, { variant: "error" });
-    return "Error minting tokens to token account: " + error;
-  }
-};
-
-//TODO: Add token extensions.
-// reference: https://developers.metaplex.com/token-metadata/token-2022
-export const createToken22 = async ({
+/**
+ * Creates a new Metaplex Standard NFT (Non-Fungible Token).
+ *
+ * @param {Wallet} wallet - The wallet used for the transaction.
+ * @param {Connection} connection - The connection to the Solana blockchain.
+ * @param {Object} rawData - The raw data for the NFT, which will be transformed into metadata.
+ * @returns {Promise<string>} The publickey of the item.
+ */
+export const createSPL22 = async ({
   wallet,
   connection,
-  name,
+  title,
   symbol,
-  decimals,
   metadata,
+  decimals,
+  supply,
   sellerFeeBasisPoints,
-  amount
 }: {
   wallet: Wallet;
   connection: Connection;
-  name: string;
+  title: string;
   symbol: string;
-  decimals: number;
+
   metadata: string;
+  decimals: number;
+  supply: number;
   sellerFeeBasisPoints: number;
-  amount: number;
-}): Promise<string> => {
+}): Promise<{ pubkey: string; success: boolean }> => {
   enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
+
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
+  umi.use(mplCandyMachine());
+
   const mint = generateSigner(umi);
 
+  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+  );
+
   try {
-    const result = await createV1(umi, {
-      mint: generateSigner(umi),
-      name,
-      symbol,
-      decimals,
+    await createAndMint(umi, {
+      mint,
+      authority: umi.identity,
+      name: title,
+      symbol: symbol,
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
-    }).sendAndConfirm(umi);
-
-    console.log("Transaction hash: " + bs58.encode(result.signature));
-    console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(result.signature));
-
-    if (result.signature) {
-      enqueueSnackbar("Token created", { variant: "success" });
-      const tokenAccount = await createTokenAccount(wallet, mint.publicKey);
-      console.log("Token account: " + tokenAccount);
-      const mintResult = await mintToTokenAccount(wallet, mint.publicKey, tokenAccount, amount);
-      console.log("Mint result: " + mintResult);
-    }
-    return mint.publicKey;
-  } catch (error: any) {
-    enqueueSnackbar("Error creating Token: " + error, { variant: "error" });
-    console.error(error);
-    throw new Error(`Error creating Token: ${error}`);
-  }
-};
-
-export const burnToken22 = async ({
-  wallet,
-  connection,
-  tokenMintAddress,
-  amount,
-}: {
-  wallet: Wallet;
-  connection: Connection;
-  tokenMintAddress: string;
-  amount: number;
-}): Promise<string> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  try {
-    const result = await burnV1(umi, {
-      mint: publicKey(tokenMintAddress),
-      tokenStandard: TokenStandard.Fungible,
-      amount,
+      decimals: decimals,
+      amount: supply,
       tokenOwner: umi.identity.publicKey,
-    }).sendAndConfirm(umi);
-    console.log("Mint: " + umi.identity.publicKey);
-    console.log("Signature: " + bs58.encode(result.signature));
-    return bs58.encode(result.signature);
-  } catch (error) {
-    enqueueSnackbar("Error burning Token22: " + error, { variant: "error" });
-    return "Error burning Token22: " + error;
+      tokenStandard: TokenStandard.Fungible,
+      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+    })
+      .sendAndConfirm(umi)
+      .then((result) => {
+        if (result.signature) {
+          console.log("Successfully created your SPL-20 token.");
+          return {
+            pubkey: mint.publicKey,
+            success: true,
+          };
+        } else {
+          console.log("Couldn't find transaction.");
+          return {
+            pubkey: mint.publicKey,
+            success: false,
+          };
+        }
+      });
+  } catch (e) {
+    console.log("Error @ CreateSPL20(): " + e);
   }
+  return {
+    pubkey: mint.publicKey,
+    success: true,
+  };
 };

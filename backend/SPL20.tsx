@@ -25,7 +25,7 @@ import { enqueueSnackbar } from "notistack";
  * @param {Object} rawData - The raw data for the NFT, which will be transformed into metadata.
  * @returns {Promise<string>} The publickey of the item.
  */
-export const createSPL20= async ({
+export const createSPL20 = async ({
   wallet,
   connection,
   title,
@@ -44,7 +44,7 @@ export const createSPL20= async ({
   decimals: number;
   supply: number;
   sellerFeeBasisPoints: number;
-}): Promise<string> => {
+}): Promise<{ pubkey: string; success: boolean }> => {
   enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
 
@@ -71,13 +71,23 @@ export const createSPL20= async ({
       .then((result) => {
         if (result.signature) {
           console.log("Successfully created your SPL-20 token.");
+          return {
+            pubkey: mint.publicKey,
+            success: true,
+          };
         } else {
           console.log("Couldn't find transaction.");
+          return {
+            pubkey: mint.publicKey,
+            success: false,
+          };
         }
       });
   } catch (e) {
     console.log("Error @ CreateSPL20(): " + e);
   }
-
-  return "";
+  return {
+    pubkey: mint.publicKey,
+    success: true,
+  };
 };

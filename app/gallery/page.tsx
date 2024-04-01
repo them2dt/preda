@@ -114,7 +114,7 @@ export default function Home() {
           className="skeleton"
           data-theme={theme == 0 ? "light" : "dark"}
         >
-          <Header id={5} theme={theme} />
+          <Header id={6} theme={theme} />
           <div id="mainboard" className="flex-column-center-center">
             <div id="gallery" className="flex-column-center-center">
               <motion.div

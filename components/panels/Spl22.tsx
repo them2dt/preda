@@ -3,7 +3,7 @@ import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import { createToken22 } from "@/backend/SPL22";
+import { createSPL22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { create } from "domain";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,11 +24,6 @@ export default function Panel() {
   const [image, setImage] = useState();
   //sets the image-preview of Token.
   const [imagePreview, setImagePreview] = useState();
-  //token extensions
-  const [frozen, setFrozen] = useState<boolean>(false);
-  const [transferTax, setTransferTax] = useState<number>(0);
-  const [interest, setInterest] = useState<number>(0);
-  const [authority, setAuthority] = useState<string>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
@@ -47,20 +42,20 @@ export default function Panel() {
         file: image,
       });
 
-      const res = await createToken22({
+      const res = await createSPL22({
         wallet: wallet,
         connection: connection,
-        name: title,
+        title: title,
         symbol: symbol,
-        decimals: 0,
+        decimals: 2,
         metadata: imageUri,
         sellerFeeBasisPoints: 0,
-        amount: 0,
+        supply: 5000000,
       });
 
-      if (res) {
+      if (res.success) {
         enqueueSnackbar("Token created.", { variant: "success" });
-        console.log(res);
+        console.log("Public Key: " + res.pubkey);
       } else {
         enqueueSnackbar("Error creating token.", { variant: "error" });
       }
@@ -116,7 +111,7 @@ export default function Panel() {
                   placeholder="Supply"
                   className="font-text-small"
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setSupply(Number(e.target.value));
                   }}
                 />
                 <input
@@ -127,7 +122,7 @@ export default function Panel() {
                   placeholder="Decimals"
                   className="font-text-small"
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setDecimal(Number(e.target.value));
                   }}
                 />
               </div>
@@ -168,81 +163,6 @@ export default function Panel() {
               </div>
             </div>
             <div className="extensions-row flex-column-center-start">
-              <div className="extensions flex-column-center-start">
-                <div className="extension flex-row-center-center">
-                  <label htmlFor="burnable">Frozen</label>
-                  <div className="checkbox-container flex-row-center-center">
-                    <input
-                      type="checkbox"
-                      name="burnable"
-                      id="burnable"
-                      onChange={(e) => {
-                        setFrozen(e.target.checked);
-                      }}
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    name="burnable"
-                    placeholder="Authority"
-                    className="extension-input font-text-tiny"
-                    value={authority}
-                    onChange={(e) => {
-                      setAuthority(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="extension flex-row-center-center">
-                  <label htmlFor="burnable">Transfer tax (%)</label>
-                  <input
-                    type="number"
-                    name="burnable"
-                    min={0}
-                    max={100}
-                    value={transferTax}
-                    onChange={(e) => {
-                      setTransferTax(Number(e.target.value));
-                    }}
-                    placeholder="Transfer tax"
-                    className="extension-input font-text-small"
-                  />
-                  <input
-                    type="text"
-                    name="burnable"
-                    placeholder="Authority"
-                    className="extension-input font-text-tiny"
-                    value={authority}
-                    onChange={(e) => {
-                      setAuthority(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="extension flex-row-center-center">
-                  <label htmlFor="burnable">Interest (%)</label>
-                  <input
-                    type="number"
-                    name="burnable"
-                    min={0}
-                    max={100}
-                    value={interest}
-                    onChange={(e) => {
-                      setInterest(Number(e.target.value));
-                    }}
-                    placeholder="Transfer tax"
-                    className="extension-input font-text-small"
-                  />
-                  <input
-                    type="text"
-                    name="burnable"
-                    placeholder="Authority"
-                    className="extension-input font-text-tiny"
-                    value={authority}
-                    onChange={(e) => {
-                      setAuthority(e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
               <button
                 className="submit font-text-bold flex-row-center-center"
                 disabled={!title || !symbol || !description || !image}
