@@ -3,16 +3,18 @@
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 //panels
-import Panel from "../components/panels/NFT_Create";
+import Panel from "../../components/panels/Spl22_Create";
+
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
-  const id = 0;
+  const id = 4;
 
   return (
-    <div
+    <motion.div
       id="skeleton"
       className="skeleton"
       data-theme={theme == 0 ? "light" : "dark"}
@@ -25,6 +27,6 @@ export default function Home() {
         theme={theme}
         toggleTheme={() => setTheme(theme == 0 ? 1 : 0)}
       />
-    </div>
+    </motion.div>
   );
 }

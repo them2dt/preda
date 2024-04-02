@@ -5,7 +5,7 @@ import Navigation from "@/components/Navigation";
 import { useState } from "react";
 
 //panels
-import Panel from "../components/panels/NFT_Create";
+import Panel from "../../components/panels/NFT_Create";
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);

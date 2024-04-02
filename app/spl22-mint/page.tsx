@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import Panel from "../../components/panels/Spl20";
+import Panel from "../../components/panels/Spl22_Mint";
 
 export default function Home() {
   //hooks

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,8 +11,7 @@ import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { findMerkleTree, mintCNFT } from "@/backend/CNFT";
-import { publicKey } from "@metaplex-foundation/umi";
+import { createPNFT } from "@/backend/PNFT";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 
@@ -38,11 +37,10 @@ export default function Panel() {
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
     useState<{ key: string; value: string }[]>();
-
-  const [merkleTree, setMerkleTree] = useState<string>();
-  const [foundMerkleTree, setFoundMerkleTree] = useState(false);
+  //hooks to store the key and value of the attribute to be added.
 
   const [resultAddress, setResultAddress] = useState<string>();
+
   const [result, setResult] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
@@ -56,6 +54,12 @@ export default function Panel() {
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
+
+  useEffect(() => {
+    if (wallet.adapter.connected) {
+      enqueueSnackbar("Wallet connected.", { variant: "success" });
+    } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
+  }, []);
 
   //run methode wo die hauptfunktionen drin sind
   const run = async () => {
@@ -72,6 +76,12 @@ export default function Panel() {
       });
 
       if (imageUri) {
+        const jsonUri = await uploadFileToIrys({
+          wallet: wallet,
+          connection: connection,
+          file: image,
+        });
+
         const metadata = {
           name: title,
           symbol: symbol,
@@ -99,203 +109,164 @@ export default function Panel() {
           "metadata.json",
           { type: "application/json" }
         );
-
         const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
           file: metadataFile,
         });
-        if (!metadataUri) {
+
+        if (metadataUri) {
+          const mint = await createPNFT({
+            wallet: wallet,
+            connection: connection,
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+          });
+
+          if (mint) {
+            enqueueSnackbar("NFT created!", { variant: "success" });
+            setResultAddress(mint);
+            setSuccess(true);
+            setResult(true);
+          } else {
+            enqueueSnackbar("NFT creation failed.", { variant: "error" });
+            setSuccess(false);
+            setResult(true);
+          }
+        } else {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+          setSuccess(false);
+          setResult(true);
           return;
-        }
-
-        console.log("Creating CNFT...");
-        const mint = await mintCNFT({
-          wallet: wallet,
-          connection: connection,
-          title: title,
-          metadata: metadataUri,
-          sellerFeeBasisPoints: sliderValue,
-          merkleTree: publicKey(merkleTree),
-        });
-
-        if (mint) {
-          enqueueSnackbar("Created cNFT successfully.", { variant: "success" });
         }
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
+        setSuccess(false);
+        setResult(true);
         return;
       }
     }
   };
 
-  const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      const found = await findMerkleTree({
-        connection: connection,
-        wallet: wallet,
-        merkleTree: publicKey(pubkey),
-      });
-      if (found) {
-        setFoundMerkleTree(true);
-        enqueueSnackbar("Found MerkleTree!", { variant: "success" });
-      }
-
-      return found;
-    } else {
-      enqueueSnackbar("Invalid public key.", { variant: "error" });
-      return false;
-    }
-  };
   return (
     <>
       <AnimatePresence>
-        <m.div className="cnft-panel-container flex-column-center-center">
-          <div className="fetcher flex-row-start-center">
-            <input
-              type="text"
-              name="title"
-              placeholder="Address of your merkle tree"
-              className="font-text-small"
-              onChange={(e) => {
-                setFoundMerkleTree(false);
-                setMerkleTree(e.target.value);
-              }}
-            />
-            <div className="button-base">
-              <button
-                disabled={!wallet || !connection || !merkleTree}
-                className="button flex-row-center-center font-text-tiny-bold"
-                onClick={async () => {
-                  await validatePublicKey(merkleTree);
-                }}
-              >
-                Verify Merkle Tree
-              </button>
-            </div>
-          </div>
-          <m.div
-            id="lab-panel-nft"
-            className={
-              foundMerkleTree ? "panel create" : "panel create disabled"
-            }
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          >
+        <m.div
+          className="panel-container flex-column-center-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1 }}
+        >
+          <div className="font-h3">Create a programmable NFT</div>
+          <m.div id="lab-panel-nft" className="panel flex-row-center-center">
             {/**Every operation is done in here.*/}
-            <m.div className="editor">
-              <m.div className="form flex-column-center-start">
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Name"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                  }}
-                />
-                <input
-                  type="text"
-                  name="symbol"
-                  placeholder="Symbol"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setSymbol(e.target.value);
-                  }}
-                />
-                <textarea
-                  //type="text"
-                  name="description"
-                  placeholder="Description"
-                  className="font-text-small"
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                />
-                <div className="royalties flex-column-center-center">
-                  <div className="legend flex-row-between-center">
-                    <div className="font-text-small">royalties</div>
-                    <div className="font-text-small-bold">
-                      {sliderValue.toString()}%
-                    </div>
-                  </div>
-                  <div className="slider-container">
-                    <CustomSlider
-                      min={0}
-                      max={20}
-                      step={1}
-                      value={sliderValue} // Fix: Change the type of sliderValue to number
-                      onChange={(
-                        event: Event,
-                        value: number | number[],
-                        activeThumb: number
-                      ) => {
-                        if (typeof value == "number") {
-                          setSliderValue(value);
-                        }
-                      }}
-                    />
+            <m.div className="form flex-column-center-start">
+              <input
+                type="text"
+                name="title"
+                placeholder="Name"
+                className="font-text-small"
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+              />
+              <input
+                type="text"
+                name="symbol"
+                placeholder="Symbol"
+                className="font-text-small"
+                onChange={(e) => {
+                  setSymbol(e.target.value);
+                }}
+              />
+              <textarea
+                //type="text"
+                name="description"
+                placeholder="Description"
+                className="font-text-small"
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+              />
+              <div className="royalties flex-column-center-center">
+                <div className="legend flex-row-between-center">
+                  <div className="font-text-small">royalties</div>
+                  <div className="font-text-small-bold">
+                    {sliderValue.toString()}%
                   </div>
                 </div>
-                <m.div
-                  className="attributes-button font-text"
-                  onClick={() => {
-                    setAttributeModal(true);
-                  }}
-                >
-                  add attributes
-                </m.div>
-              </m.div>
-            </m.div>
-            {/**Shows a preview of the NFT */}
-            <m.div className="preview">
-              <m.div className="content">
-                <m.div
-                  className="image"
-                  onClick={() => {
-                    const imageInput = document.getElementById("image-input");
-                    if (imageInput) {
-                      imageInput.click();
-                    }
-                  }}
-                >
-                  {image ? (
-                    <img src={imagePreview} alt="image-preview" />
-                  ) : (
-                    <div className="placeholder font-text-small">
-                      click here to import an image
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    name="cover"
-                    id="image-input"
-                    accept="image/png"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        validateImage(
-                          e.target.files[0],
-                          setImage,
-                          setImagePreview
-                        );
-                        console.log(e.target.files[0].name);
+                <div className="slider-container">
+                  <CustomSlider
+                    min={0}
+                    max={20}
+                    step={1}
+                    value={sliderValue} // Fix: Change the type of sliderValue to number
+                    onChange={(
+                      event: Event,
+                      value: number | number[],
+                      activeThumb: number
+                    ) => {
+                      if (typeof value == "number") {
+                        setSliderValue(value);
                       }
                     }}
                   />
-                </m.div>
-                <button
-                  className="submit font-text-bold"
-                  disabled={!title || !symbol || !description || !image}
-                  onClick={run}
-                >
-                  {!title || !symbol || !description || !image
-                    ? "fill out missing fields"
-                    : "create"}
-                </button>
+                </div>
+              </div>
+              <m.div
+                className="attributes-button font-text"
+                onClick={() => {
+                  setAttributeModal(true);
+                }}
+              >
+                add attributes
               </m.div>
+            </m.div>
+            <m.div className="form flex-column-center-start">
+              <m.div
+                className="image"
+                onClick={() => {
+                  const imageInput = document.getElementById("image-input");
+                  if (imageInput) {
+                    imageInput.click();
+                  }
+                }}
+              >
+                {image ? (
+                  <img src={imagePreview} alt="image-preview" />
+                ) : (
+                  <div className="placeholder font-text-small">
+                    click here to import an image
+                  </div>
+                )}
+                <input
+                  type="file"
+                  name="cover"
+                  id="image-input"
+                  accept="image/png"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      validateImage(
+                        e.target.files[0],
+                        setImage,
+                        setImagePreview
+                      );
+                      console.log(e.target.files[0].name);
+                    }
+                  }}
+                />
+              </m.div>
+              <button
+                className="submit font-text-bold"
+                disabled={!title || !symbol || !description || !image}
+                onClick={run}
+              >
+                {!title || !symbol || !description || !image
+                  ? "fill out missing fields"
+                  : "create"}
+              </button>
             </m.div>
           </m.div>
         </m.div>
@@ -402,6 +373,7 @@ export default function Panel() {
             </button>
           </m.div>
         )}
+
         {result && success && (
           <m.div
             initial={{ opacity: 0 }}

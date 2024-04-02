@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import Panel from "../../components/panels/Cnft";
+import Panel from "../../components/panels/SPL20_Mint";
 
 export default function Home() {
   //hooks

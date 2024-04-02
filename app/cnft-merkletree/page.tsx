@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import Panel from "../../components/panels/MerkleTree";
+import Panel from "../../components/panels/CNFT_MerkleTree";
 
 export default function Home() {
   //hooks

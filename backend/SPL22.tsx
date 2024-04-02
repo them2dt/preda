@@ -3,7 +3,7 @@ import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
 
-import { percentAmount, publicKey } from "@metaplex-foundation/umi";
+import { PublicKey, percentAmount, publicKey } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -12,19 +12,13 @@ import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
 import {
   createAndMint,
   createNft,
+  createV1,
+  mintV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 
-/**
- * Creates a new Metaplex Standard NFT (Non-Fungible Token).
- *
- * @param {Wallet} wallet - The wallet used for the transaction.
- * @param {Connection} connection - The connection to the Solana blockchain.
- * @param {Object} rawData - The raw data for the NFT, which will be transformed into metadata.
- * @returns {Promise<string>} The publickey of the item.
- */
 export const createSPL22 = async ({
   wallet,
   connection,
@@ -45,13 +39,10 @@ export const createSPL22 = async ({
   supply: number;
   sellerFeeBasisPoints: number;
 }): Promise<{ pubkey: string; success: boolean }> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
-
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
   umi.use(mplCandyMachine());
-
   const mint = generateSigner(umi);
 
   const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
@@ -59,7 +50,7 @@ export const createSPL22 = async ({
   );
 
   try {
-    await createAndMint(umi, {
+    await createV1(umi, {
       mint,
       authority: umi.identity,
       name: title,
@@ -67,15 +58,14 @@ export const createSPL22 = async ({
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
       decimals: decimals,
-      amount: supply,
-      tokenOwner: umi.identity.publicKey,
+      printSupply: { __kind: "Limited", fields: [supply] },
       tokenStandard: TokenStandard.Fungible,
       splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
     })
       .sendAndConfirm(umi)
       .then((result) => {
         if (result.signature) {
-          console.log("Successfully created your SPL-20 token.");
+          console.log("Success! Mint: " + mint.publicKey);
           return {
             pubkey: mint.publicKey,
             success: true,
@@ -93,6 +83,60 @@ export const createSPL22 = async ({
   }
   return {
     pubkey: mint.publicKey,
-    success: true,
+    success: false,
+  };
+};
+
+export const mintSPL22 = async ({
+  wallet,
+  connection,
+  mint,
+  amount,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+  mint: PublicKey;
+  amount: number;
+}): Promise<{ pubkey: string; success: boolean }> => {
+  const umi = createUmi(connection.rpcEndpoint);
+
+  umi.use(mplTokenMetadata());
+  umi.use(walletAdapterIdentity(wallet.adapter));
+  umi.use(mplCandyMachine());
+
+  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+  );
+
+  try {
+    await mintV1(umi, {
+      mint,
+      authority: umi.identity,
+      amount: amount,
+      tokenStandard: TokenStandard.Fungible,
+      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+    })
+      .sendAndConfirm(umi)
+      .then((result) => {
+        if (result.signature) {
+          console.log("Successfully minted" + amount + " SPL-22 token.");
+          return {
+            pubkey: mint,
+            success: true,
+          };
+        } else {
+          console.log("Couldn't find transaction.");
+          return {
+            pubkey: mint,
+            success: false,
+          };
+        }
+      });
+  } catch (e) {
+    console.log("Error @ CreateSPL20(): " + e);
+  }
+  return {
+    pubkey: mint,
+    success: false,
   };
 };
