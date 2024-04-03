@@ -2,7 +2,7 @@
 import React from "react";
 import Navigation from "@/components/Navigation";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createAndMintSPL22, findSPL22, mintSPL22 } from "@/backend/SPL22";
+import { createAndMintSPL22 } from "@/backend/SPL22";
 import { publicKey } from "@metaplex-foundation/umi";
 /**
  * A page to test and play with the code
@@ -12,12 +12,7 @@ export default function Home() {
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  const testingFunction = async () => {
-    await createAndMintSPL22({
-      wallet: wallet,
-      connection: connection,
-    });
-  };
+  const testingFunction = async () => {};
   return (
     <>
       <div className="testfield flex-column-center-center">
