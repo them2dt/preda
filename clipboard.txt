@@ -1,43 +1,87 @@
-/* 
-    const createResult = await createV1(umi, {
-      mint: mint.publicKey,
-      authority: umi.identity,
-      name: title,
-      uri: metadata,
-      sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
-      tokenStandard: TokenStandard.NonFungible,
-    }).sendAndConfirm(umi);
 
-    const mintResult = await mintV1(umi, {
-      mint: mint.publicKey,
-      authority: umi.identity,
-      tokenOwner: umi.identity.publicKey,
-      amount: 1,
-      tokenStandard: TokenStandard.NonFungible,
-    }).sendAndConfirm(umi);
-    console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(mintResult.signature));
-    return mint.publicKey; */
-
-      const tx_2 = mintV1(umi, {
-    leafOwner: umi.identity.publicKey,
-    merkleTree: merkleTree.publicKey,
-    metadata: {
-      name: title,
-      uri: metadata,
-      sellerFeeBasisPoints: sellerFeeBasisPoints, // 5%
-      collection: none(),
-      creators: [
-        { address: umi.identity.publicKey, verified: false, share: 100 },
-      ],
-    },
-  });
-
-  
-  const signature = await burnV1(umi, {
-    mint: publicKey(mintAdress),
-    tokenStandard: TokenStandard.ProgrammableNonFungible,
-    tokenOwner: umi.identity.publicKey,
-  }).sendAndConfirm(umi);
-  console.log("Mint: " + mint.publicKey);
-  console.log("Signature: " + bs58.encode(signature.signature));
+              <div className="extensions-row flex-column-center-start">
+                <div className="extensions flex-column-center-start">
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Frozen</label>
+                    <div className="checkbox-container flex-row-center-center">
+                      <input
+                        type="checkbox"
+                        name="burnable"
+                        id="burnable"
+                        onChange={(e) => {
+                          setFrozen(e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Transfer tax (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      value={transferTax}
+                      onChange={(e) => {
+                        setTransferTax(Number(e.target.value));
+                      }}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="extension flex-row-center-center">
+                    <label htmlFor="burnable">Interest (%)</label>
+                    <input
+                      type="number"
+                      name="burnable"
+                      min={0}
+                      max={100}
+                      value={interest}
+                      onChange={(e) => {
+                        setInterest(Number(e.target.value));
+                      }}
+                      placeholder="Transfer tax"
+                      className="extension-input font-text-small"
+                    />
+                    <input
+                      type="text"
+                      name="burnable"
+                      placeholder="Authority"
+                      className="extension-input font-text-tiny"
+                      value={authority}
+                      onChange={(e) => {
+                        setAuthority(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  className="submit font-text-bold flex-row-center-center"
+                  disabled={!title || !symbol || !description || !image}
+                  onClick={run}
+                >
+                  {!title || !symbol || !description || !image
+                    ? "Fill out the empty fields."
+                    : "Create SPL22"}
+                </button>
+              </div>

@@ -5,6 +5,7 @@ import {
   faUser,
   faSun,
   faLightbulb,
+  faPalette,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
@@ -54,7 +55,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
               setNavModal(navModal == 2 ? 0 : 2);
             }}
           >
-            <FontAwesomeIcon icon={faGear} />
+            <FontAwesomeIcon icon={faPalette} />
           </m.div>
           <m.div
             className="navigation-button flex-row-center-center"
@@ -63,14 +64,6 @@ export default function Navigation({ theme, toggleTheme }: any) {
             }}
           >
             <FontAwesomeIcon icon={faQuestion} />
-          </m.div>
-          <m.div
-            className="navigation-button flex-row-center-center"
-            onClick={() => {
-              //navigate to profile page
-            }}
-          >
-            <FontAwesomeIcon icon={faUser} />
           </m.div>
         </m.div>
       </m.div>
@@ -141,8 +134,8 @@ export default function Navigation({ theme, toggleTheme }: any) {
                   <div className="font-h4">The Lab</div>
                   <div className="font-text">
                     The lab is an intuitive panel to create tokens on Solana. We
-                    currently support Standard NFT&apos;s, compressed NFT&apos;s,
-                    programmable NFT&apos;s.
+                    currently support Standard NFT&apos;s, compressed
+                    NFT&apos;s, programmable NFT&apos;s.
                   </div>
                 </div>
                 <div className="help-panel flex-column-center-center">

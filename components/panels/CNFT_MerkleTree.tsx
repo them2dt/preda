@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,6 +24,11 @@ export default function Panel() {
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
+  useEffect(() => {
+    if (wallet.adapter.connected) {
+      enqueueSnackbar("Wallet connected.", { variant: "success" });
+    } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
+  }, []);
   const run = async () => {
     if (wallet) {
       try {
@@ -56,15 +61,14 @@ export default function Panel() {
     <>
       <AnimatePresence>
         <m.div
-          id="lab-panel-nft"
-          className="panel create"
+          className="panel-container flex-column-center-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.1 }}
         >
-          {/**Every operation is done in here.*/}
-          <m.div className="editor">
+          <div className="font-h3">Create a Merkle Tree</div>
+          <m.div id="lab-panel-nft" className="panel flex-row-center-center">
             <m.div className="form flex-column-center-center">
               <input
                 type="text"
@@ -128,6 +132,7 @@ export default function Panel() {
             </m.div>
           </m.div>
         </m.div>
+
         {result && success && (
           <m.div
             initial={{ opacity: 0 }}

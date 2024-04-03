@@ -25,11 +25,14 @@
 }
 
 #header .logo img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 #header .operator {
+    width: 100px;
+    height: 40px;
+
     color: var(--primary);
     background-color: var(--secondary);
     border: none;
@@ -39,9 +42,13 @@
     box-sizing: border-box;
 }
 
+#header .operator.font-text-small-bold {
+    border-right: 1px solid var(--secondary-faded-2);
+}
 
 #header .operator.active {
     color: var(--accent);
+    text-decoration: underline 4px;
 }
 
 #header .operator:hover {
@@ -49,31 +56,51 @@
 
 }
 
-#operator-catalog {
+
+#header .tabs {
     position: fixed;
-    top: 70px;
+    top: 60px;
     right: 20px;
 
-    gap: 20px;
+    opacity: 0;
 
+    padding: 5px;
+    gap: 5px;
     background-color: var(--secondary-faded-1);
     border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    border-top-right-radius: 0px;
+    box-sizing: border-box;
+}
+
+#header .tabs.active {
+    opacity: 1;
+}
+
+#header .tabs.section-0 {
+    right: 420px;
+}
+
+#header .tabs.section-1 {
+    right: 320px;
+}
+
+#header .tabs.section-2 {
+    right: 220px;
+}
+
+#header .tabs.section-3 {
+    right: 120px;
+}
+
+#header .tab {
+    width: 200px;
+    padding: 10px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
     color: var(--primary);
-    border-radius: 20px;
-
-    padding: 20px;
-}
-
-#operator-catalog .header-operations-topic-title {
-    color: var(--accent);
-}
-
-#operator-catalog .header-operation {
-    cursor: pointer;
-}
-
-#operator-catalog .header-operation:hover {
-    color: var(--primary-faded-4);
 }
 
 #mainboard {

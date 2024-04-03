@@ -163,3 +163,15 @@
 
     color: var(--primary);
 }
+
+#lab-panel-spl.mint-panel {
+    width: 605px;
+}
+
+#lab-panel-spl.mint-panel input {
+    width: 600px;
+}
+
+#lab-panel-spl.mint-panel .submit {
+    width: 600px;
+}

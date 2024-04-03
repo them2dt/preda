@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion as m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
+import { faL } from "@fortawesome/free-solid-svg-icons";
+import { enqueueSnackbar } from "notistack";
 
 export default function Header({ id, theme }: { id: number; theme: number }) {
-  const labels = [
-    "NFT",
-    "PNFT",
-    "Merkle Tree",
-    "CNFT",
-    "SPL20",
-    "SPL22",
-    "Gallery",
+  const [tab, setTab] = useState({ id: 0, open: false });
+  const [sectionId, setSectionId] = useState(0);
+  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22",];
+  const operations = [
+    ["Mint a NFT"],
+    ["Mint a pNFT"],
+    ["Create Merkle Tree", "Mint a cNFT"],
+    ["Create a SPL20-Token"],
+    ["Create a SPL22-Token"],
   ];
-  const pages = ["", "pnft", "merkletree", "cnft", "spl20", "spl22", "gallery"];
+  const pages = [
+    ["nft-create"],
+    ["pnft-create"],
+    ["cnft-merkletree", "cnft-create"],
+    ["spl20-create"],
+    ["spl22-create"],
+  ];
   return (
     <>
       <m.div
@@ -28,22 +37,58 @@ export default function Header({ id, theme }: { id: number; theme: number }) {
             <Link href={"/"}>Preda</Link>
           </m.div>
         </div>
-        <div className="flex-row-center-center">
+        <div className="flex-row-center-start">
           {labels.map((item, index) => (
-            <Link href={"/" + pages[index]} key={"headerbutton" + index}>
-              <button
+            <m.div
+              key={"operator-" + index}
+              className="flex-column-center-center"
+              onClick={() => {
+                setSectionId(index);
+                if (index == sectionId) {
+                  setTab({ id: index, open: !tab.open });
+                } else setTab({ id: index, open: true });
+              }}
+            >
+              <m.div
                 className={
-                  id == index
-                    ? "operator active font-text-small-bold"
-                    : "operator font-text-small"
+                  tab.open == true && sectionId == index
+                    ? "operator flex-row-end-center font-text-small-bold " +
+                      (id == index && "active")
+                    : "operator flex-row-end-center font-text-small " +
+                      (id == index && "active")
                 }
-                onClick={() => {
-                  console.log(index);
-                }}
               >
                 {item}
-              </button>
-            </Link>
+              </m.div>
+              {tab.open == true && (
+                <m.div
+                  className={
+                    sectionId == index
+                      ? "tabs active flex-column-end-end section-" +
+                        sectionId.toString()
+                      : "tabs flex-column-end-end section-" +
+                        sectionId.toString()
+                  }
+                >
+                  {operations[sectionId].map((item, index) => (
+                    <Link
+                      href={"/" + pages[sectionId][index]}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      key={
+                        "operation-" +
+                        sectionId.toString() +
+                        "-" +
+                        index.toString()
+                      }
+                    >
+                      <m.div className="tab flex-row-end-center">{item}</m.div>
+                    </Link>
+                  ))}
+                </m.div>
+              )}
+            </m.div>
           ))}
         </div>
       </m.div>

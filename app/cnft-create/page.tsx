@@ -6,12 +6,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import Panel from "../../components/panels/Cnft";
+import Panel from "../../components/panels/CNFT_Mint";
 
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
-  const id = 3;
+  const id = 2;
 
   return (
     <motion.div

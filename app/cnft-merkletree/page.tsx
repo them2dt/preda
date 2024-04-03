@@ -6,12 +6,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 //panels
-import Panel from "../../components/panels/Spl20";
+import Panel from "../../components/panels/CNFT_MerkleTree";
 
 export default function Home() {
   //hooks
   const [theme, setTheme] = useState(0);
-  const id = 4;
+  const id = 2;
 
   return (
     <motion.div
