@@ -3,7 +3,7 @@ import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import { createSPL22 } from "@/backend/SPL22";
+import { createAndMintSPL22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PassThrough } from "stream";
 import { CustomSlider } from "../Slider";
@@ -64,25 +64,27 @@ export default function Panel() {
           connection: connection,
           file: metadataFile,
         });
-        const res = await createSPL22({
+        await createAndMintSPL22({
           wallet: wallet,
           connection: connection,
-          title: title,
+          name: title,
           symbol: symbol,
           metadata: metadataUri,
           decimals: decimals,
           sellerFeeBasisPoints: 0,
-          supply: supply * 10 ** decimals,
+          supply: supply,
+        }).then((res) => {
+          console.log("Status: " + res.status);
+          console.log("Pubkey: " + res.pubkey);
+          if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(res.pubkey)) {
+            setSuccess(true);
+            setResult(res.pubkey);
+            setResultPanel(true);
+          } else {
+            setSuccess(false);
+            setResultPanel(true);
+          }
         });
-
-        if (res.success) {
-          setSuccess(true);
-          setResult(res.pubkey);
-          setResultPanel(true);
-        } else {
-          setSuccess(false);
-          setResultPanel(true);
-        }
       } catch (e) {
         console.log("Error at creating a SPL22: " + e);
         setSuccess(false);

@@ -9,22 +9,20 @@ import { enqueueSnackbar } from "notistack";
 export default function Header({ id, theme }: { id: number; theme: number }) {
   const [tab, setTab] = useState({ id: 0, open: false });
   const [sectionId, setSectionId] = useState(0);
-  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22", "Gallery"];
+  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22",];
   const operations = [
     ["Mint a NFT"],
     ["Mint a pNFT"],
     ["Create Merkle Tree", "Mint a cNFT"],
-    ["Create a SPL20-Token", "Mint a SPL20-Token"],
-    ["Create a SPL22-Token", "Mint a SPL22-Token"],
-    ["Open Gallery"],
+    ["Create a SPL20-Token"],
+    ["Create a SPL22-Token"],
   ];
   const pages = [
     ["nft-create"],
     ["pnft-create"],
     ["cnft-merkletree", "cnft-create"],
-    ["spl20-create", "spl20-mint"],
-    ["spl22-create", "spl22-mint"],
-    ["gallery"],
+    ["spl20-create"],
+    ["spl22-create"],
   ];
   return (
     <>
