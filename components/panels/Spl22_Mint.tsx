@@ -3,27 +3,21 @@ import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { createSPL22 } from "@/backend/SPL22";
+import { createSPL22, findSPL22, mintSPL22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { create } from "domain";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faClose } from "@fortawesome/free-solid-svg-icons";
+import { publicKey } from "@metaplex-foundation/umi";
+import { findMerkleTree } from "@/backend/CNFT";
 
 export default function Panel() {
-  //sets the title of Token.
-  const [title, setTitle] = useState<string>();
-  //sets the symbol of Token.
-  const [symbol, setSymbol] = useState<string>();
-  //sets the description of Token.
-  const [description, setDescription] = useState<string>();
-  //sets the total supply of Token.
   const [supply, setSupply] = useState<number>(0);
-  //sets the decimals of the Token.
-  const [decimals, setDecimal] = useState<number>(0);
-  //sets the image of Token.
-  const [image, setImage] = useState();
-  //sets the image-preview of Token.
-  const [imagePreview, setImagePreview] = useState();
+  const [receipent, setReceipent] = useState<string>();
+
+  //Adress validator
+  const [validatorInput, setValidatorInput] = useState<string>();
+  const [inputValid, setInputValid] = useState<boolean>(false);
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
@@ -34,29 +28,18 @@ export default function Panel() {
   }, []);
 
   const run = async () => {
-    if (!wallet || !connection || !title || !symbol || !description || !image) {
+    if (!wallet || !connection || !supply || !receipent) {
       enqueueSnackbar("Fill out the empty fields.", {
         variant: "error",
       });
     } else {
-      console.log("Creating the SPL22.");
-
-      enqueueSnackbar("Uploading image...", { variant: "info" });
-      const imageUri = await uploadFileToIrys({
+      console.log("Minting the SPL22.");
+      console.log("Mint: " + publicKey(validatorInput));
+      const res = await mintSPL22({
         wallet: wallet,
         connection: connection,
-        file: image,
-      });
-
-      const res = await createSPL22({
-        wallet: wallet,
-        connection: connection,
-        title: title,
-        symbol: symbol,
-        decimals: decimals,
-        metadata: imageUri,
-        sellerFeeBasisPoints: 0,
-        supply: supply * 10 ** decimals,
+        mint: publicKey(validatorInput),
+        amount: supply,
       });
 
       if (res.success) {
@@ -68,6 +51,26 @@ export default function Panel() {
     }
   };
 
+  const validatePublicKey = async (pubkey: string) => {
+    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
+      const found = await findSPL22({
+        connection: connection,
+        wallet: wallet,
+        metadata: publicKey(pubkey),
+      });
+      if (found.status == 200) {
+        setInputValid(true);
+        enqueueSnackbar("Found Account!", { variant: "success" });
+        return true;
+      } else {
+        enqueueSnackbar("Couldn't find account!", { variant: "error" });
+        return false;
+      }
+    } else {
+      enqueueSnackbar("Invalid public key.", { variant: "error" });
+      return false;
+    }
+  };
   return (
     <>
       <AnimatePresence>
@@ -79,35 +82,43 @@ export default function Panel() {
           transition={{ duration: 0.1 }}
         >
           <div className="font-h3">Mint SPL22-Tokens</div>
-          <m.div id="lab-panel-spl" className="panel flex-row-center-center">
+          <div className="address-validator flex-row-start-center">
+            <input
+              type="text"
+              name="title"
+              placeholder="Address of your merkle tree"
+              className="font-text-small"
+              onChange={(e) => {
+                setInputValid(false);
+                setValidatorInput(e.target.value);
+              }}
+            />
+            <div className="button-base">
+              <button
+                disabled={!wallet || !connection || !validatorInput}
+                className="button flex-row-center-center font-text-tiny-bold"
+                onClick={async () => {
+                  await validatePublicKey(validatorInput);
+                }}
+              >
+                Verify Merkle Tree
+              </button>
+            </div>
+          </div>
+          <m.div
+            id="lab-panel-spl"
+            className="panel mint-panel flex-row-center-center"
+          >
             <div className="flex-column-center-center form-container">
               <div className="flex-row-center-start form">
                 <div className="flex-column-center-center text-inputs">
                   <input
                     type="text"
-                    name="title"
-                    placeholder="Name"
+                    name="receipent"
+                    placeholder="Receipent"
                     className="font-text-small"
                     onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    name="symbol"
-                    placeholder="Symbol"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setSymbol(e.target.value);
-                    }}
-                  />
-                  <textarea
-                    //type="text"
-                    name="description"
-                    placeholder="Description"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setDescription(e.target.value);
+                      setReceipent(e.target.value);
                     }}
                   />
                   <input
@@ -121,61 +132,15 @@ export default function Panel() {
                       setSupply(Number(e.target.value));
                     }}
                   />
-                  <input
-                    type="number"
-                    name="decimals"
-                    min={0}
-                    max={18}
-                    placeholder="Decimals"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setDecimal(Number(e.target.value));
-                    }}
-                  />
-                </div>
-                <div className="flex-column-center-center image-input">
-                  <m.div
-                    className="image"
-                    onClick={() => {
-                      const imageInput = document.getElementById("image-input");
-                      if (imageInput) {
-                        imageInput.click();
-                      }
-                    }}
-                  >
-                    {image ? (
-                      <img src={imagePreview} alt="image-preview" />
-                    ) : (
-                      <div className="placeholder font-text-small">
-                        click here to import an image
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      name="cover"
-                      id="image-input"
-                      accept="image/png"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          validateImage(
-                            e.target.files[0],
-                            setImage,
-                            setImagePreview
-                          );
-                          console.log(e.target.files[0].name);
-                        }
-                      }}
-                    />
-                  </m.div>
                 </div>
               </div>
               <div className="extensions-row flex-column-center-start">
                 <button
                   className="submit font-text-bold flex-row-center-center"
-                  disabled={!title || !symbol || !description || !image}
+                  disabled={!supply || !receipent || !inputValid}
                   onClick={run}
                 >
-                  {!title || !symbol || !description || !image
+                  {!supply || !receipent || !inputValid
                     ? "Fill out the empty fields."
                     : "Create SPL22"}
                 </button>
