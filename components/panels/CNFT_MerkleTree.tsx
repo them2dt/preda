@@ -24,11 +24,8 @@ export default function Panel() {
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
-  useEffect(() => {
-    if (wallet.adapter.connected) {
-      enqueueSnackbar("Wallet connected.", { variant: "success" });
-    } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
-  }, []);
+  useEffect(() => {}, []);
+  
   const run = async () => {
     if (wallet) {
       try {

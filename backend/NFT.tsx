@@ -3,7 +3,7 @@ import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
 
-import { keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
+import { percentAmount } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -11,12 +11,9 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   burnV1,
   createNft,
-  createV1,
-  mintV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
-import { enqueueSnackbar } from "notistack";
 
 /**
  * Creates a new Metaplex Standard NFT (Non-Fungible Token).
@@ -39,7 +36,6 @@ export const createNFT = async ({
   sellerFeeBasisPoints: number;
   metadata: string;
 }): Promise<string> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
@@ -55,11 +51,9 @@ export const createNFT = async ({
     console.log("Mint: " + mint.publicKey);
     console.log("Signature: " + bs58.encode(result.signature));
     if (result.signature) {
-      enqueueSnackbar("NFT created", { variant: "success" });
     }
     return mint.publicKey;
   } catch (error) {
-    enqueueSnackbar("Error creating NFT: " + error, { variant: "error" });
     console.log(error);
     return "Error creating NFT: " + error;
   }
@@ -81,7 +75,6 @@ export const burnNFT = async ({
   connection: Connection;
   mintAdress: string;
 }): Promise<string> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
@@ -96,7 +89,6 @@ export const burnNFT = async ({
     console.log("Signature: " + bs58.encode(signature.signature));
     return mint.publicKey;
   } catch (error) {
-    enqueueSnackbar("Error creating NFT: " + error, { variant: "error" });
     return "Error creating NFT: " + error;
   }
 };

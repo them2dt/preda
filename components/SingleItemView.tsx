@@ -1,14 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Tooltip } from "@mui/material";
-import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFireFlameCurved,
-  faCopy,
-  faPaperPlane,
-  faClose,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import {
   DasApiAssetAuthority,
   DasApiAssetCreator,

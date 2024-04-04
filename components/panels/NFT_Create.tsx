@@ -51,11 +51,7 @@ export default function Panel() {
       console.log(oldArray);
     }
   };
-  useEffect(() => {
-    if (wallet.adapter.connected) {
-      enqueueSnackbar("Wallet connected.", { variant: "success" });
-    } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
-  }, []);
+  useEffect(() => {}, []);
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
@@ -150,10 +146,7 @@ export default function Panel() {
           transition={{ duration: 0.1 }}
         >
           <div className="font-h3">Create a NFT</div>
-          <m.div
-            id="panel-nft"
-            className="panel flex-row-center-center"
-          >
+          <m.div id="panel-nft" className="panel flex-row-center-center">
             <m.div className="form flex-column-center-start">
               <input
                 type="text"

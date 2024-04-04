@@ -3,7 +3,7 @@ import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
 
-import { keypairIdentity, percentAmount } from "@metaplex-foundation/umi";
+import { percentAmount } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -11,7 +11,6 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   burnV1,
   createProgrammableNft,
-  createV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";

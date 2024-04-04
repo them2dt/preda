@@ -1,8 +1,8 @@
 import { Wallet } from "@solana/wallet-adapter-react";
-import { Connection, Transaction } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
-import { PublicKey, none, percentAmount } from "@metaplex-foundation/umi";
+import { PublicKey, none } from "@metaplex-foundation/umi";
 import {
   mintV1,
   createTree,
@@ -11,7 +11,6 @@ import {
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { enqueueSnackbar } from "notistack";
 const sizeChart = [
   { depth: 3, buffer: 8, amount: 8 },
   { depth: 5, buffer: 8, amount: 32 },
@@ -131,7 +130,6 @@ export const mintCNFT = async ({
   try {
     const mintTXResult = await mintTX.sendAndConfirm(umi);
     if (mintTXResult.result.context.slot) {
-      enqueueSnackbar("Minted cNFT!", { variant: "success" });
       console.log("mintCNFT() - Success!");
       console.log("Signature " + bs58.encode(mintTXResult.signature));
       return true;

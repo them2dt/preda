@@ -1,9 +1,8 @@
 import { Wallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
-import bs58 from "bs58";
 //umi
 
-import { percentAmount, publicKey } from "@metaplex-foundation/umi";
+import { percentAmount } from "@metaplex-foundation/umi";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -11,7 +10,6 @@ import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
 
 import {
   createAndMint,
-  createNft,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";

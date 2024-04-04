@@ -3,8 +3,6 @@ import { motion as m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
-import { faL } from "@fortawesome/free-solid-svg-icons";
-import { enqueueSnackbar } from "notistack";
 
 export default function Header({ id, theme }: { id: number; theme: number }) {
   const [tab, setTab] = useState({ id: 0, open: false });

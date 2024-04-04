@@ -57,6 +57,8 @@ export default function Panel() {
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
+  useEffect(() => {}, []);
+
   //run methode wo die hauptfunktionen drin sind
   const run = async () => {
     if (!wallet || !connection || !title || !symbol || !description || !image) {
@@ -130,11 +132,6 @@ export default function Panel() {
     }
   };
 
-  useEffect(() => {
-    if (wallet.adapter.connected) {
-      enqueueSnackbar("Wallet connected.", { variant: "success" });
-    } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
-  }, []);
   const validatePublicKey = async (pubkey: string) => {
     if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
       const found = await findMerkleTree({

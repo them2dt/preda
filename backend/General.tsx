@@ -3,40 +3,20 @@
 import { Wallet } from "@solana/wallet-adapter-react";
 
 //solana
-import {
-  Metaplex,
-  WalletAdapter,
-  walletAdapterIdentity,
-} from "@metaplex-foundation/js";
-import {
-  fetchAllDigitalAssetByOwner,
-  fetchAllDigitalAssetByUpdateAuthority,
-  mplTokenMetadata,
-} from "@metaplex-foundation/mpl-token-metadata";
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity as umiWalletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 
-import { PublicKey, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 //Irys
 import { WebIrys } from "@irys/sdk";
 import { Adapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
-import axios from "axios";
-import { percentAmount, publicKey } from "@metaplex-foundation/umi";
-import bs58 from "bs58";
+import { publicKey } from "@metaplex-foundation/umi";
 import {
   DasApiAssetAuthority,
-  DasApiAssetCompression,
-  DasApiAssetContent,
   DasApiAssetCreator,
-  DasApiAssetGrouping,
-  DasApiAssetInterface,
   DasApiAssetList,
-  DasApiAssetOwnership,
-  DasApiAssetRoyalty,
-  DasApiAssetSupply,
-  DasApiUses,
   dasApi,
 } from "@metaplex-foundation/digital-asset-standard-api";
 
@@ -197,8 +177,7 @@ export async function loadNFTs({
           mint: rpcAssets.items[i].id,
           name: rpcAssets.items[i].content.metadata.name,
           description: rpcAssets.items[i].content.metadata.description || "-",
-          imageUri:
-            rpcAssets.items[i].content.links["image"] || "",
+          imageUri: rpcAssets.items[i].content.links["image"] || "",
           attributes: rpcAssets.items[i].content.metadata.attributes.map(
             (attribute) => ({
               trait_type: attribute.trait_type || "",
@@ -212,7 +191,7 @@ export async function loadNFTs({
           tokenStandard: rpcAssets.items[i].content.metadata.token_standard,
           type: rpcAssets.items[i].interface,
         };
-        
+
         formattedItems.push(formattedItem);
       } catch (error) {
         console.error("Error formatting item:", error);

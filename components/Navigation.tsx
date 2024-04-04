@@ -1,15 +1,12 @@
 "use client";
 import {
   faWallet,
-  faGear,
-  faQuestion,
-  faUser,
-  faSun,
-  faLightbulb,
   faPalette,
+  faQuestion,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
