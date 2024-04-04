@@ -7,10 +7,15 @@ import {
   mintV1,
   createTree,
   fetchMerkleTree,
+  getAssetWithProof,
+  burn,
+  mplBubblegum,
 } from "@metaplex-foundation/mpl-bubblegum";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { enqueueSnackbar } from "notistack";
+import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
 const sizeChart = [
   { depth: 3, buffer: 8, amount: 8 },
   { depth: 5, buffer: 8, amount: 32 },
@@ -28,19 +33,17 @@ const sizeChart = [
 export const createMerkleTree = async ({
   connection, //
   wallet,
-  leafOwner,
   size,
   visibility,
 }: {
   connection: Connection; //
   wallet: Wallet;
-  leafOwner: string;
   size: number;
   visibility: boolean;
 }): Promise<{ merkleTree: PublicKey; success: boolean }> => {
   //compare the sizeParameter with the amount value of the sizeChart array and choose which value is the next highest value to the size
   const sizeParameter = sizeChart.find((element) => element.amount >= size);
-  
+
   console.log(sizeParameter.amount);
   console.log("createMerkleTree() - started.");
 
@@ -51,10 +54,11 @@ export const createMerkleTree = async ({
     merkleTree,
     maxDepth: sizeParameter.depth,
     maxBufferSize: sizeParameter.buffer,
+    public: visibility,
   });
   try {
-    console.log("Merkle tree: "+merkleTree.publicKey);
-    console.log("Public key: "+wallet.adapter.publicKey.toBase58());
+    console.log("Merkle tree: " + merkleTree.publicKey);
+    console.log("Public key: " + wallet.adapter.publicKey.toBase58());
     const treeTXResult = await treeTX.sendAndConfirm(umi);
     if (treeTXResult) {
       console.log("createMerkleTree() - success!");
@@ -139,4 +143,48 @@ export const mintCNFT = async ({
     return false;
   }
   return false;
+};
+
+export const burnCNFT = async ({
+  connection, //
+  wallet,
+  assetId,
+}: {
+  connection: Connection; //
+  wallet: Wallet;
+  assetId: string;
+}): Promise<boolean> => {
+  const umi = createUmi(connection.rpcEndpoint);
+  umi.use(walletAdapterIdentity(wallet.adapter));
+  umi.use(dasApi());
+  umi.use(mplBubblegum());
+
+  try {
+    const asset = await getAssetWithProof(umi, publicKey(assetId));
+    if (asset.leafOwner == umi.identity.publicKey) {
+      enqueueSnackbar("You are the owner of this asset.", {
+        variant: "success",
+      });
+
+      await burn(umi, {
+        ...asset,
+        leafOwner: umi.identity,
+      })
+        .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
+        .then((result) => {
+          if (result.signature) {
+            return true;
+          }
+        });
+      return true;
+    } else {
+      enqueueSnackbar("You are not the owner of this asset.", {
+        variant: "error",
+      });
+      return false;
+    }
+  } catch (e) {
+    console.log("BurnCNFT(): " + e);
+    return false;
+  }
 };

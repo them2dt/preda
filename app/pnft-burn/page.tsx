@@ -1,8 +1,8 @@
 "use client"
 import Container from "@/components/container/Container";
 import React from "react";
-import Panel from "../../components/panels/Spl22_Create";
+import Panel from "../../components/panels/PNFT_Burn";
 
 export default function page() {
-  return <Container id={0} panel={<Panel />} />;
+  return <Container id={1} panel={<Panel />} />;
 }

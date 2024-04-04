@@ -33,8 +33,8 @@ export default function Panel() {
   //sets the title of NFT.
   const [sliderValue, setSliderValue] = useState<number>(0);
   // hooks to store the key and value of the attribute to be added.
-  const [key, setKey] = useState<string>();
-  const [value, setValue] = useState<string>();
+  const [attributeKey, setAttributeKey] = useState<string>();
+  const [attributeValue, setAttributeValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
     useState<{ key: string; value: string }[]>();
@@ -371,7 +371,7 @@ export default function Panel() {
                       placeholder="key"
                       required
                       onChange={(e) => {
-                        setKey(e.target.value);
+                        setAttributeKey(e.target.value);
                       }}
                     />
                     <input
@@ -380,22 +380,22 @@ export default function Panel() {
                       placeholder="value"
                       required
                       onChange={(e) => {
-                        setValue(e.target.value);
+                        setAttributeValue(e.target.value);
                       }}
                     />
                   </div>
                   <button
                     className="submit font-text"
                     type="submit"
-                    disabled={!key || !value}
+                    disabled={!attributeKey || !attributeValue}
                     onClick={() => {
                       setAttributes([
                         ...(attributes || []),
-                        { key: key || "", value: value || "" },
+                        { key: attributeKey || "", value: attributeValue || "" },
                       ]);
                     }}
                   >
-                    {!key || !value ? "fill in the fields" : "add"}
+                    {!attributeKey || !attributeValue ? "fill in the fields" : "add"}
                   </button>
                 </form>
               </div>

@@ -32,7 +32,7 @@ body {
     padding: 0;
     font-family: "satoshi";
     background-color: var(--secondary);
-    color: var(--secondary);
+    color: var(--primary);
     overflow-x: hidden;
 }
 
@@ -75,11 +75,31 @@ a {
     --accent-4: #D3B1FF;
     --accent-5: #DCCBFF;
 
-    --pink-1: #FF6BB7;
-    --pink-2: #FF7DC1;
-    --pink-3: #FF97CA;
-    --pink-4: #FFB1D3;
-    --pink-5: #FFCBD8;
+    --pink-light-1: #ff62b3;
+    --pink-light-2: #ff7cc0;
+    --pink-light-3: #ff8fc9;
+    --pink-light-4: #ffb0d9;
+    --pink-light-5: #ffc1e1;
+
+    --pink-dark-1: #6b1742;
+    --pink-dark-2: #94215d;
+    --pink-dark-3: #c42f7c;
+    --pink-dark-4: #e23b91;
+    --pink-dark-5: #ff50aa;
+
+    --navy-light-1: #62b8ff;
+    --navy-light-2: #7cc4ff;
+    --navy-light-3: #8fd2ff;
+    --navy-light-4: #b0e6ff;
+    --navy-light-5: #c1e8ff;
+
+    --navy-dark-1: #17506b;
+    --navy-dark-2: #217094;
+    --navy-dark-3: #2f95c4;
+    --navy-dark-4: #3bade2;
+    --navy-dark-5: #50bfff;
+    color: var(--primary);
+
 }
 
 /*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
@@ -146,6 +166,69 @@ a {
     --accent-faded-2: var(--accent-3);
     --accent-faded-3: var(--accent-4);
     --accent-faded-4: var(--accent-5);
+}
+
+[data-theme="candy"] {
+    --primary: var(--pink-dark-1);
+    --primary-faded-1: var(--pink-dark-2);
+    --primary-faded-2: var(--pink-dark-3);
+    --primary-faded-3: var(--pink-dark-4);
+    --primary-faded-4: var(--pink-dark-5);
+
+    --primary-transparent-1: var(--white-transparent-1);
+    --primary-transparent-2: var(--white-transparent-2);
+    --primary-transparent-3: var(--white-transparent-3);
+    --primary-transparent-4: var(--white-transparent-4);
+    --primary-transparent-5: var(--white-transparent-5);
+
+    --secondary: var(--pink-light-5);
+    --secondary-faded-1: var(--pink-light-4);
+    --secondary-faded-2: var(--pink-light-3);
+    --secondary-faded-3: var(--pink-light-2);
+    --secondary-faded-4: var(--pink-light-1);
+
+    --secondary-transparent-1: var(--black-transparent-1);
+    --secondary-transparent-2: var(--black-transparent-2);
+    --secondary-transparent-3: var(--black-transparent-3);
+    --secondary-transparent-4: var(--black-transparent-4);
+    --secondary-transparent-5: var(--black-transparent-5);
+
+    --accent: var(--pink-dark-1);
+    --accent-faded-1: var(--pink-dark-2);
+    --accent-faded-2: var(--pink-dark-3);
+    --accent-faded-3: var(--pink-dark-4);
+    --accent-faded-4: var(--pink-dark-5);
+}
+[data-theme="navy"] {
+    --primary: var(--navy-dark-1);
+    --primary-faded-1: var(--navy-dark-2);
+    --primary-faded-2: var(--navy-dark-3);
+    --primary-faded-3: var(--navy-dark-4);
+    --primary-faded-4: var(--navy-dark-5);
+
+    --primary-transparent-1: var(--white-transparent-1);
+    --primary-transparent-2: var(--white-transparent-2);
+    --primary-transparent-3: var(--white-transparent-3);
+    --primary-transparent-4: var(--white-transparent-4);
+    --primary-transparent-5: var(--white-transparent-5);
+
+    --secondary: var(--navy-light-5);
+    --secondary-faded-1: var(--navy-light-4);
+    --secondary-faded-2: var(--navy-light-3);
+    --secondary-faded-3: var(--navy-light-2);
+    --secondary-faded-4: var(--navy-light-1);
+
+    --secondary-transparent-1: var(--black-transparent-1);
+    --secondary-transparent-2: var(--black-transparent-2);
+    --secondary-transparent-3: var(--black-transparent-3);
+    --secondary-transparent-4: var(--black-transparent-4);
+    --secondary-transparent-5: var(--black-transparent-5);
+
+    --accent: var(--navy-dark-1);
+    --accent-faded-1: var(--navy-dark-2);
+    --accent-faded-2: var(--navy-dark-3);
+    --accent-faded-3: var(--navy-dark-4);
+    --accent-faded-4: var(--navy-dark-5);
 }
 
 /* a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/

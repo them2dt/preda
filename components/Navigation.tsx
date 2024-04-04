@@ -4,12 +4,20 @@ import {
   faPalette,
   faQuestion,
   faLightbulb,
+  faMoon,
+  faCandyCane,
+  faAnchor,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
+import Image from "next/image";
+
+import empteaWhite from "../media/emptea-transparent-white.png";
+import empteaBlack from "../media/emptea-transparent-black.png";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -17,25 +25,41 @@ const WalletMultiButtonDynamic = dynamic(
   { ssr: false }
 );
 
-/**
- * The navbar. Should be self-explanatory.
- * @param {Function} setModal - Function, which changes the ID of the Modal.
- * @param {Number} theme - The current theme.
- * @param {Function} toggleTheme - Function, which toggles the theme.
- */
-export default function Navigation({ theme, toggleTheme }: any) {
+export default function Navigation({
+  theme,
+  themes,
+  toggleTheme,
+}: {
+  theme: number;
+  themes: string[];
+  toggleTheme: (themeIdParameter: number) => void;
+}) {
   // a hook to manage the modals of the navigation. 0 = none, 1 = wallet, 2 = Profile,
   const [navModal, setNavModal] = useState(0);
   const wallet = useWallet();
+
+  useEffect(() => {
+    if (wallet) {
+      if (wallet.connected) {
+        enqueueSnackbar("Wallet connected.", { variant: "success" });
+      } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
+    }
+  }, [wallet.connected]);
 
   return (
     <>
       <m.div
         className="navigation-container flex-row-center-center"
-        data-theme={theme == 0 ? "light" : "dark"}
+        data-theme={themes[theme]}
       >
         <m.div className="navigation flex-row-center-center">
-          <m.div className="navigation-button logo"></m.div>
+          <m.div className="navigation-button logo">
+            {theme == 0 && <Image src={empteaWhite} alt="Emptea-logo" />}
+            {theme == 1 && <Image src={empteaBlack} alt="Emptea-logo" />}
+            {theme == 2 && <Image src={empteaWhite} alt="Emptea-logo" />}
+            {theme == 3 && <Image src={empteaWhite} alt="Emptea-logo" />}
+
+          </m.div>
           <m.div
             className="navigation-button flex-row-center-center"
             onClick={() => {
@@ -68,7 +92,7 @@ export default function Navigation({ theme, toggleTheme }: any) {
       <AnimatePresence>
         <m.div
           className="nav-modal-container flex-row-center-center"
-          data-theme={theme == 0 ? "light" : "dark"}
+          data-theme={themes[theme]}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -108,10 +132,39 @@ export default function Navigation({ theme, toggleTheme }: any) {
               >
                 <m.div
                   className="button flex-row-center-center"
-                  onClick={toggleTheme}
+                  onClick={() => {
+                    toggleTheme(0);
+                  }}
                 >
                   <FontAwesomeIcon icon={faLightbulb} />
-                  {theme == 0 ? "Light" : "Dark"} mode
+                  Light
+                </m.div>
+                <m.div
+                  className="button flex-row-center-center"
+                  onClick={() => {
+                    toggleTheme(1);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faMoon} />
+                  Dark
+                </m.div>
+                <m.div
+                  className="button flex-row-center-center"
+                  onClick={() => {
+                    toggleTheme(2);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCandyCane} />
+                  Candy
+                </m.div>
+                <m.div
+                  className="button flex-row-center-center"
+                  onClick={() => {
+                    toggleTheme(3);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faAnchor} />
+                  Navy
                 </m.div>
               </m.div>
             </m.div>

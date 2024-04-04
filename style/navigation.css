@@ -51,12 +51,18 @@
 
 .navigation-button.logo {
   margin-left: 0;
-
-  background-image: url("../media/emptea.png");
-  /*background fills the shape*/
-  background-size: cover;
+  background-color: var(--primary);
   border-radius: 5px;
+  overflow: hidden;
+  user-select: none;
 }
+
+.navigation-button.logo img {
+  width: 80px;
+  height: 80px;
+
+}
+
 
 .navigation-button.logo:hover {
   scale: 0.95;
@@ -146,7 +152,7 @@
   border-radius: 20px;
   box-sizing: border-box;
 
-    text-align: center;
+  text-align: center;
 }
 
 .help-window .help-container .help-panel:nth-child(1) {
@@ -156,4 +162,3 @@
 .help-window .help-container .help-panel:nth-child(2) {
   width: 500px;
 }
-

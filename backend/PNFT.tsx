@@ -63,37 +63,36 @@ export const createPNFT = async ({
   }
 };
 
-/**
- * Burns Metaplex PNFT.
- * @param {Wallet} wallet - The wallet used for the transaction.
- * @param {Connection} connection - The connection to the Solana blockchain.
- * @param {Object} mintAddress - The address of the NFT to be burned.
- */
 export const burnPNFT = async ({
   wallet,
   connection,
-  mintAdress,
+  assetId,
 }: {
   wallet: Wallet;
   connection: Connection;
-  mintAdress: string;
-}): Promise<string> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
+  assetId: string;
+}): Promise<boolean> => {
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
-  const mint = generateSigner(umi);
   try {
-    const signature = await burnV1(umi, {
-      mint: publicKey(mintAdress),
+    const response = await burnV1(umi, {
+      mint: publicKey(assetId),
       tokenStandard: TokenStandard.ProgrammableNonFungible,
       tokenOwner: umi.identity.publicKey,
-    }).sendAndConfirm(umi);
-    console.log("Mint: " + mint.publicKey);
-    console.log("Signature: " + bs58.encode(signature.signature));
-    return mint.publicKey;
-  } catch (error) {
-    enqueueSnackbar("Error creating PNFT: " + error, { variant: "error" });
-    return "Error creating PNFT: " + error;
+    })
+      .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
+      .then((result) => {
+        if (result.signature) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+    return response;
+  } catch (e) {
+    console.log("BurnPNFT(): " + e);
+    return false;
   }
 };

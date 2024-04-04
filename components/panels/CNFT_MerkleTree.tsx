@@ -14,7 +14,6 @@ import Link from "next/link";
 import { enqueueSnackbar } from "notistack";
 
 export default function Panel() {
-  const [leafOwner, setLeafOwner] = useState<string>();
   const [size, setSize] = useState<number>();
   const [visibility, setVisibility] = useState<boolean>();
   const [merkleTree, setMerkleTree] = useState<string>();
@@ -25,14 +24,13 @@ export default function Panel() {
   const { wallet } = useWallet();
   const { connection } = useConnection();
   useEffect(() => {}, []);
-  
+
   const run = async () => {
     if (wallet) {
       try {
         const merkleTree = await createMerkleTree({
           connection,
           wallet,
-          leafOwner: leafOwner,
           size: size,
           visibility: visibility,
         });
@@ -67,15 +65,6 @@ export default function Panel() {
           <div className="font-h3">Create a Merkle Tree</div>
           <m.div id="lab-panel-nft" className="panel flex-row-center-center">
             <m.div className="form flex-column-center-center">
-              <input
-                type="text"
-                name="leafOwner"
-                placeholder="Leaf Owner Address"
-                className="font-text-small"
-                onChange={(e) => {
-                  setLeafOwner(e.target.value);
-                }}
-              />
               <div className="visibility flex-row-between-center">
                 <div className="legend font-text-small-bold">Public</div>
                 <input
@@ -121,10 +110,10 @@ export default function Panel() {
               </div>
               <button
                 className="submit font-text-bold"
-                disabled={!leafOwner || !size}
+                disabled={!size}
                 onClick={run}
               >
-                {!leafOwner || !size ? "fill out missing fields" : "create"}
+                {!size ? "fill out missing fields" : "create"}
               </button>
             </m.div>
           </m.div>

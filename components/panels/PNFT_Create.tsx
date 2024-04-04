@@ -32,11 +32,11 @@ export default function Panel() {
   //sets the title of NFT.
   const [sliderValue, setSliderValue] = useState<number>(0);
   // hooks to store the key and value of the attribute to be added.
-  const [key, setKey] = useState<string>();
+  const [attributeKey, setAttributeKey] = useState<string>(); //RENAME THAT
   const [value, setValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
-    useState<{ key: string; value: string }[]>();
+    useState<{ trait_type: string; value: string }[]>();
   //hooks to store the key and value of the attribute to be added.
 
   const [resultAddress, setResultAddress] = useState<string>();
@@ -72,12 +72,6 @@ export default function Panel() {
       });
 
       if (imageUri) {
-        const jsonUri = await uploadFileToIrys({
-          wallet: wallet,
-          connection: connection,
-          file: image,
-        });
-
         const metadata = {
           name: title,
           symbol: symbol,
@@ -147,7 +141,7 @@ export default function Panel() {
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence key={"AnimatePresence-PNFT"}>
         <m.div
           className="panel-container flex-column-center-center"
           initial={{ opacity: 0 }}
@@ -283,13 +277,13 @@ export default function Panel() {
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              key={renderHook}
+              key={"RENDER_KEY_"+renderHook}
             >
               {attributes?.map((attribute, index) => {
                 return (
                   <m.div
                     className="attribute"
-                    key={index}
+                    key={"pnft-attribute-" + index}
                     initial={{ opacity: 0, y: 2 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 2 }}
@@ -301,7 +295,9 @@ export default function Panel() {
                       setRenderHook(renderHook + 1);
                     }}
                   >
-                    <div className="key font-text-bold">{attribute.key}</div>
+                    <div className="key font-text-bold">
+                      {attribute.trait_type}
+                    </div>
 
                     <div className="line"></div>
                     <div className="value font-text-light">
@@ -331,7 +327,7 @@ export default function Panel() {
                       placeholder="key"
                       required
                       onChange={(e) => {
-                        setKey(e.target.value);
+                        setAttributeKey(e.target.value);
                       }}
                     />
                     <input
@@ -347,15 +343,15 @@ export default function Panel() {
                   <button
                     className="submit font-text"
                     type="submit"
-                    disabled={!key || !value}
+                    disabled={!attributeKey || !value}
                     onClick={() => {
                       setAttributes([
                         ...(attributes || []),
-                        { key: key || "", value: value || "" },
+                        { trait_type: attributeKey || "", value: value || "" },
                       ]);
                     }}
                   >
-                    {!key || !value ? "fill in the fields" : "add"}
+                    {!attributeKey || !value ? "fill in the fields" : "add"}
                   </button>
                 </form>
               </div>

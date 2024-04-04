@@ -4,30 +4,38 @@ import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
 
-export default function Header({ id, theme }: { id: number; theme: number }) {
+export default function Header({
+  id,
+  theme,
+  themes,
+}: {
+  id: number;
+  theme: number;
+  themes: string[];
+}) {
   const [tab, setTab] = useState({ id: 0, open: false });
   const [sectionId, setSectionId] = useState(0);
-  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22",];
+  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22"];
   const operations = [
-    ["Mint a NFT"],
-    ["Mint a pNFT"],
-    ["Create Merkle Tree", "Mint a cNFT"],
-    ["Create a SPL20-Token"],
-    ["Create a SPL22-Token"],
+    ["Create a NFT","burn a NFT"],
+    ["Create a pNFT","burn a pNFT"],
+    ["Create Merkle Tree", "Create a cNFT", "Burn a cNFT"],
+    ["Create a SPL20-Token","Burn a SPL20-Token"],
+    ["Create a SPL22-Token","Burn a SPL22-Token"],
   ];
   const pages = [
-    ["nft-create"],
-    ["pnft-create"],
-    ["cnft-merkletree", "cnft-create"],
-    ["spl20-create"],
-    ["spl22-create"],
+    ["nft-create","nft-burn"],
+    ["pnft-create","pnft-burn"],
+    ["cnft-merkletree", "cnft-create","cnft-burn"],
+    ["spl20-create","spl20-burn"],
+    ["spl22-create","spl22-burn"],
   ];
   return (
     <>
       <m.div
         id="header"
         className="header flex-row-between-center"
-        data-theme={theme == 0 ? "light" : "dark"}
+        data-theme={themes[theme]}
       >
         <div className="logo flex-row-center-center">
           <Image src={appIcon} alt="app-icon" />

@@ -36,7 +36,7 @@ export default function RootLayout({
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
   const endpoint =
-    "https://devnet.helius-rpc.com/?api-key=5d69c879-36f4-4acf-87b4-e44a64c07acc";
+    "https://devnet.helius-rpc.com/?api-key=73670a22-627e-4405-b80f-8fe0583892a9";
   const wallets = useMemo(() => [], [network]);
 
   //custom snackbar
@@ -50,16 +50,16 @@ export default function RootLayout({
       color: "#3eda65",
     },
     "&.notistack-MuiContent-error": {
-      backgroundColor: "#D3B1FF",
-      color: "#38254b",
+      backgroundColor: "#ffc4c4",
+      color: "#ab3a3a",
     },
     "&.notistack-MuiContent-info": {
       backgroundColor: "#D3B1FF",
       color: "#38254b",
     },
     "&.notistack-MuiContent-warning": {
-      backgroundColor: "#D3B1FF",
-      color: "#38254b",
+      backgroundColor: "#fff07a",
+      color: "#ab9e3a",
     },
   }));
 

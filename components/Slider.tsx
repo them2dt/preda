@@ -29,7 +29,7 @@ const grey = {
 
 export const CustomSlider = styled(BaseSlider)(
   ({ theme }) => `
-  color: ${theme.palette.mode === "light" ? blue[500] : blue[400]};
+  color: var(--accent);
   height: 4px;
   width: 100%;
   padding: 16px 0;
@@ -43,7 +43,7 @@ export const CustomSlider = styled(BaseSlider)(
   &.${sliderClasses.disabled} { 
     pointer-events: none;
     cursor: default;
-    color: ${theme.palette.mode === "light" ? grey[300] : grey[600]};
+    color: green;
     opacity: 0.4;
   }
 
@@ -76,7 +76,7 @@ export const CustomSlider = styled(BaseSlider)(
     box-sizing: border-box;
     border-radius: 50%;
     outline: 0;
-    background-color: ${theme.palette.mode === "light" ? blue[500] : blue[400]};
+    background-color: var(--accent-faded-4);
     transition-property: box-shadow, transform;
     transition-timing-function: ease;
     transition-duration: 120ms;
@@ -84,14 +84,14 @@ export const CustomSlider = styled(BaseSlider)(
 
     &:hover {
       box-shadow: 0 0 0 6px ${alpha(
-        theme.palette.mode === "light" ? blue[200] : blue[300],
+        "#111111",
         0.3
       )};
     }
 
     &.${sliderClasses.focusVisible} {
       box-shadow: 0 0 0 8px ${alpha(
-        theme.palette.mode === "light" ? blue[200] : blue[400],
+        "#111111",
         0.5
       )};
       outline: none;
@@ -99,7 +99,7 @@ export const CustomSlider = styled(BaseSlider)(
 
     &.${sliderClasses.active} {
       box-shadow: 0 0 0 8px ${alpha(
-        theme.palette.mode === "light" ? blue[200] : blue[400],
+        "#111111",
         0.5
       )};
       outline: none;
@@ -108,7 +108,7 @@ export const CustomSlider = styled(BaseSlider)(
     
     &.${sliderClasses.disabled} {
       background-color: ${
-        theme.palette.mode === "light" ? grey[300] : grey[600]
+        "var(-accent)"
       };
     }
   }
