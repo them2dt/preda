@@ -26,6 +26,11 @@ export default function Container({
           toggleTheme={(themeIdParameter: number) => setTheme(themeIdParameter)}
         />
       </div>
+      <div className="skeleton-mobile flex-row-center-center">
+        <div className="font-text">
+          Have patience, while we work on the mobile version.
+        </div>
+      </div>
     </div>
   );
 }
