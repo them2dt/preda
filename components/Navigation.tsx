@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion as m } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
@@ -48,19 +47,18 @@ export default function Navigation({
 
   return (
     <>
-      <m.div
+      <div
         className="navigation-container flex-row-center-center"
         data-theme={themes[theme]}
       >
-        <m.div className="navigation flex-row-center-center">
-          <m.div className="navigation-button logo">
+        <div className="navigation flex-row-center-center">
+          <div className="navigation-button logo">
             {theme == 0 && <Image src={empteaWhite} alt="Emptea-logo" />}
             {theme == 1 && <Image src={empteaBlack} alt="Emptea-logo" />}
             {theme == 2 && <Image src={empteaWhite} alt="Emptea-logo" />}
             {theme == 3 && <Image src={empteaWhite} alt="Emptea-logo" />}
-
-          </m.div>
-          <m.div
+          </div>
+          <div
             className="navigation-button flex-row-center-center"
             onClick={() => {
               setNavModal(navModal == 1 ? 0 : 1);
@@ -70,137 +68,115 @@ export default function Navigation({
               icon={faWallet}
               color={wallet.connected ? "#12b865" : "inherit"}
             />
-          </m.div>
-          <m.div
+          </div>
+          <div
             className="navigation-button flex-row-center-center"
             onClick={() => {
               setNavModal(navModal == 2 ? 0 : 2);
             }}
           >
             <FontAwesomeIcon icon={faPalette} />
-          </m.div>
-          <m.div
+          </div>
+          <div
             className="navigation-button flex-row-center-center"
             onClick={() => {
               setNavModal(navModal == 3 ? 0 : 3);
             }}
           >
             <FontAwesomeIcon icon={faQuestion} />
-          </m.div>
-        </m.div>
-      </m.div>
-      <AnimatePresence>
-        <m.div
-          className="nav-modal-container flex-row-center-center"
-          data-theme={themes[theme]}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          {navModal == 1 && (
-            <m.div
-              className="nav-modal nav-modal-wallet flex-row-center-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <m.div
-                className="modal-content"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <WalletMultiButtonDynamic />
-              </m.div>
-            </m.div>
-          )}
-          {navModal == 2 && (
-            <m.div
-              className="nav-modal nav-modal-settings flex-column-center-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <m.div
-                className="modal-content flex-column-center-center"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <m.div
-                  className="button flex-row-center-center"
-                  onClick={() => {
-                    toggleTheme(0);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faLightbulb} />
-                  Light
-                </m.div>
-                <m.div
-                  className="button flex-row-center-center"
-                  onClick={() => {
-                    toggleTheme(1);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faMoon} />
-                  Dark
-                </m.div>
-                <m.div
-                  className="button flex-row-center-center"
-                  onClick={() => {
-                    toggleTheme(2);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faCandyCane} />
-                  Candy
-                </m.div>
-                <m.div
-                  className="button flex-row-center-center"
-                  onClick={() => {
-                    toggleTheme(3);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faAnchor} />
-                  Navy
-                </m.div>
-              </m.div>
-            </m.div>
-          )}
-          {navModal == 3 && (
-            <m.div
-              className="help-window flex-row-center-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => {
-                setNavModal(0);
+          </div>
+        </div>
+      </div>
+      <div
+        className="nav-modal-container flex-row-center-center"
+        data-theme={themes[theme]}
+      >
+        {navModal == 1 && (
+          <div className="nav-modal nav-modal-wallet flex-row-center-center">
+            <div
+              className="modal-content"
+              onClick={(e) => {
+                e.stopPropagation();
               }}
             >
-              <div className="help-container flex-row-center-center">
-                <div className="help-panel flex-column-center-center">
-                  <div className="font-h4">The Lab</div>
-                  <div className="font-text">
-                    The lab is an intuitive panel to create tokens on Solana. We
-                    currently support Standard NFT&apos;s, compressed
-                    NFT&apos;s, programmable NFT&apos;s.
-                  </div>
-                </div>
-                <div className="help-panel flex-column-center-center">
-                  <div className="font-h4">The Gallery</div>
-                  <div className="font-text">
-                    The gallery is a place to get a clean overview of your
-                    assets and maintain them.
-                  </div>
+              <WalletMultiButtonDynamic />
+            </div>
+          </div>
+        )}
+        {navModal == 2 && (
+          <div className="nav-modal nav-modal-settings flex-column-center-center">
+            <div
+              className="modal-content flex-column-center-center"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div
+                className="button flex-row-center-center"
+                onClick={() => {
+                  toggleTheme(0);
+                }}
+              >
+                <FontAwesomeIcon icon={faLightbulb} />
+                Light
+              </div>
+              <div
+                className="button flex-row-center-center"
+                onClick={() => {
+                  toggleTheme(1);
+                }}
+              >
+                <FontAwesomeIcon icon={faMoon} />
+                Dark
+              </div>
+              <div
+                className="button flex-row-center-center"
+                onClick={() => {
+                  toggleTheme(2);
+                }}
+              >
+                <FontAwesomeIcon icon={faCandyCane} />
+                Candy
+              </div>
+              <div
+                className="button flex-row-center-center"
+                onClick={() => {
+                  toggleTheme(3);
+                }}
+              >
+                <FontAwesomeIcon icon={faAnchor} />
+                Navy
+              </div>
+            </div>
+          </div>
+        )}
+        {navModal == 3 && (
+          <div
+            className="help-window flex-row-center-center"
+            onClick={() => {
+              setNavModal(0);
+            }}
+          >
+            <div className="help-container flex-row-center-center">
+              <div className="help-panel flex-column-center-center">
+                <div className="font-h4">The Lab</div>
+                <div className="font-text">
+                  The lab is an intuitive panel to create tokens on Solana. We
+                  currently support Standard NFT&apos;s, compressed NFT&apos;s,
+                  programmable NFT&apos;s.
                 </div>
               </div>
-            </m.div>
-          )}
-        </m.div>
-      </AnimatePresence>
+              <div className="help-panel flex-column-center-center">
+                <div className="font-h4">The Gallery</div>
+                <div className="font-text">
+                  The gallery is a place to get a clean overview of your assets
+                  and maintain them.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }

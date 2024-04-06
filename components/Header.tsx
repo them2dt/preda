@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion as m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
@@ -32,20 +31,20 @@ export default function Header({
   ];
   return (
     <>
-      <m.div
+      <div
         id="header"
         className="header flex-row-between-center"
         data-theme={themes[theme]}
       >
         <div className="logo flex-row-center-center">
           <Image src={appIcon} alt="app-icon" />
-          <m.div className="font-h4" key={"application-title"}>
+          <div className="font-h4" key={"application-title"}>
             <Link href={"/"}>Preda</Link>
-          </m.div>
+          </div>
         </div>
         <div className="flex-row-center-start">
           {labels.map((item, index) => (
-            <m.div
+            <div
               key={"operator-" + index}
               className="flex-column-center-center"
               onClick={() => {
@@ -55,7 +54,7 @@ export default function Header({
                 } else setTab({ id: index, open: true });
               }}
             >
-              <m.div
+              <div
                 className={
                   tab.open == true && sectionId == index
                     ? "operator flex-row-end-center font-text-small-bold " +
@@ -65,9 +64,9 @@ export default function Header({
                 }
               >
                 {item}
-              </m.div>
+              </div>
               {tab.open == true && (
-                <m.div
+                <div
                   className={
                     sectionId == index
                       ? "tabs active flex-column-end-end section-" +
@@ -89,15 +88,15 @@ export default function Header({
                         index.toString()
                       }
                     >
-                      <m.div className="tab flex-row-end-center">{item}</m.div>
+                      <div className="tab flex-row-end-center">{item}</div>
                     </Link>
                   ))}
-                </m.div>
+                </div>
               )}
-            </m.div>
+            </div>
           ))}
         </div>
-      </m.div>
+      </div>
     </>
   );
 }

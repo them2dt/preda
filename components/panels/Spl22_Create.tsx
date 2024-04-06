@@ -1,11 +1,9 @@
 "use client";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
-import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { createAndMintSPL22 } from "@/backend/SPL22";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PassThrough } from "stream";
 import { CustomSlider } from "../Slider";
 import {
   faCheckCircle,
@@ -94,22 +92,13 @@ export default function Panel() {
 
   return (
     <>
-      <AnimatePresence>
-        <m.div
+        <div
           className="panel-container flex-column-center-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
         >
           <div className="font-h3">Create a SPL22-Token</div>
-          <m.div
+          <div
             id="lab-panel-spl"
             className="panel create"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
           >
             <div className="flex-column-center-center form-container">
               <div className="flex-row-center-start form">
@@ -178,7 +167,7 @@ export default function Panel() {
                   </div>
                 </div>
                 <div className="flex-column-center-center image-input">
-                  <m.div
+                  <div
                     className="image"
                     onClick={() => {
                       const imageInput = document.getElementById("image-input");
@@ -210,7 +199,7 @@ export default function Panel() {
                         }
                       }}
                     />
-                  </m.div>
+                  </div>
                 </div>
               </div>
               <button
@@ -223,15 +212,11 @@ export default function Panel() {
                   : "Create SPL22"}
               </button>
             </div>
-          </m.div>
-        </m.div>
+          </div>
+        </div>
 
         {resultPanel && success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
+          <div
             id="result-backdrop"
             className="flex-row-center-center"
           >
@@ -275,14 +260,10 @@ export default function Panel() {
                 </div>
               </div>
             </div>
-          </m.div>
+          </div>
         )}
         {resultPanel && !success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
+          <div
             id="result-backdrop"
             className="flex-row-center-center"
           >
@@ -304,9 +285,8 @@ export default function Panel() {
                 </div>
               </div>
             </div>
-          </m.div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 }

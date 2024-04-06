@@ -1,5 +1,4 @@
-"use client";
-// stylesheets
+import "../style/homepage.css";
 import "../style/globals.css";
 import "../style/skeleton.css";
 import "../style/navigation.css";
@@ -15,89 +14,47 @@ import "../style/panels/3_merkleTree.css";
 import "../style/panels/4_cnft.css";
 import "../style/panels/4_cnft.css";
 import "../style/panels/5_spl.css";
+import RootComponent from "./RootComponent";
+import Head from "next/head";
 
-// imports
-import { useMemo } from "react";
-import { WalletProvider } from "@solana/wallet-adapter-react";
-import { ConnectionProvider } from "@solana/wallet-adapter-react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-//
-import { SnackbarProvider } from "notistack";
-import { closeSnackbar } from "notistack";
-import { MaterialDesignContent } from "notistack";
-import { styled } from "@mui/material";
+export const metadata = {
+  title: "Preda",
+  description: "The powerhouse for solana tokens.",
+  openGraph: {
+    title: "Preda",
+    description: "The powerhouse for solana tokens.",
+    url: "https://emptea.xyz",
+    siteName: "Preda",
+    images: [
+      {
+        url: "https://bafkreih5wyrydfkusimvtutrk7hopqiejj73n7w4tjcovz6jipkj5tju4y.ipfs.nftstorage.link/",
+        width: "1000",
+        height: "500",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MARUTHAN.",
+    description: "WEB - MOBILE - BLOCKCHAIN.",
+    creator: "@THEM2DT",
+    images: [
+      "https://bafkreih5wyrydfkusimvtutrk7hopqiejj73n7w4tjcovz6jipkj5tju4y.ipfs.nftstorage.link/",
+    ],
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = WalletAdapterNetwork.Devnet;
-  const endpoint =
-    "https://devnet.helius-rpc.com/?api-key=73670a22-627e-4405-b80f-8fe0583892a9";
-  const wallets = useMemo(() => [], [network]);
-
-  //custom snackbar
-  const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
-    "&.notistack-MuiContent-default": {
-      backgroundColor: "#D3B1FF",
-      color: "#38254b",
-    },
-    "&.notistack-MuiContent-success": {
-      backgroundColor: "#c4ffd6",
-      color: "#3eda65",
-    },
-    "&.notistack-MuiContent-error": {
-      backgroundColor: "#ffc4c4",
-      color: "#ab3a3a",
-    },
-    "&.notistack-MuiContent-info": {
-      backgroundColor: "#D3B1FF",
-      color: "#38254b",
-    },
-    "&.notistack-MuiContent-warning": {
-      backgroundColor: "#fff07a",
-      color: "#ab9e3a",
-    },
-  }));
-
   return (
     <html lang="en">
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets}>
-          <WalletModalProvider>
-            <body>
-              <SnackbarProvider
-                maxSnack={3}
-                autoHideDuration={3000}
-                action={(snackbarId) => (
-                  <button
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => closeSnackbar(snackbarId)}
-                  >
-                    ✖️
-                  </button>
-                )}
-                Components={{
-                  default: StyledMaterialDesignContent,
-                  info: StyledMaterialDesignContent,
-                  warning: StyledMaterialDesignContent,
-                  success: StyledMaterialDesignContent,
-                  error: StyledMaterialDesignContent,
-                }}
-              >
-                {children}
-              </SnackbarProvider>
-            </body>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <RootComponent children={children} />
     </html>
   );
 }

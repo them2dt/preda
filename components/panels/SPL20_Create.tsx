@@ -1,11 +1,9 @@
 "use client";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
-import { AnimatePresence, motion as m } from "framer-motion";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { createAndMintSPL20 } from "@/backend/SPL20";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PassThrough } from "stream";
 import { CustomSlider } from "../Slider";
 import {
   faCheckCircle,
@@ -90,219 +88,190 @@ export default function Panel() {
 
   return (
     <>
-      <AnimatePresence>
-        <m.div
-          className="panel-container flex-column-center-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
-        >
-          <div className="font-h3">Create a SPL20-Token</div>
-          <m.div
-            id="lab-panel-spl"
-            className="panel create"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <div className="flex-column-center-center form-container">
-              <div className="flex-row-center-start form">
-                <div className="flex-column-center-center text-inputs">
-                  <input
-                    type="text"
-                    name="title"
-                    placeholder="Name"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    name="symbol"
-                    placeholder="Symbol"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setSymbol(e.target.value);
-                    }}
-                  />
-                  <textarea
-                    //type="text"
-                    name="description"
-                    placeholder="Description"
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="number"
-                    name="supply"
-                    placeholder="Initial Supply"
-                    min={0}
-                    max={1000000000000}
-                    className="font-text-small"
-                    onChange={(e) => {
-                      setSupply(Number(e.target.value));
-                    }}
-                  />
-                  <div className="royalties flex-column-center-center">
-                    <div className="legend flex-row-between-center">
-                      <div className="font-text-small">Decimals</div>
-                      <div className="font-text-small-bold">
-                        {decimals.toString()}
-                      </div>
-                    </div>
-                    <div className="slider-container">
-                      <CustomSlider
-                        min={0}
-                        max={18}
-                        step={1}
-                        onChange={(
-                          event: Event,
-                          value: number | number[],
-                          activeThumb: number
-                        ) => {
-                          if (typeof value == "number") {
-                            setDecimals(value);
-                          }
-                        }}
-                      />
+      <div className="panel-container flex-column-center-center">
+        <div className="font-h3">Create a SPL20-Token</div>
+        <div id="lab-panel-spl" className="panel create">
+          <div className="flex-column-center-center form-container">
+            <div className="flex-row-center-start form">
+              <div className="flex-column-center-center text-inputs">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Name"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                />
+                <input
+                  type="text"
+                  name="symbol"
+                  placeholder="Symbol"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setSymbol(e.target.value);
+                  }}
+                />
+                <textarea
+                  //type="text"
+                  name="description"
+                  placeholder="Description"
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                />
+                <input
+                  type="number"
+                  name="supply"
+                  placeholder="Initial Supply"
+                  min={0}
+                  max={1000000000000}
+                  className="font-text-small"
+                  onChange={(e) => {
+                    setSupply(Number(e.target.value));
+                  }}
+                />
+                <div className="royalties flex-column-center-center">
+                  <div className="legend flex-row-between-center">
+                    <div className="font-text-small">Decimals</div>
+                    <div className="font-text-small-bold">
+                      {decimals.toString()}
                     </div>
                   </div>
-                </div>
-                <div className="flex-column-center-center image-input">
-                  <m.div
-                    className="image"
-                    onClick={() => {
-                      const imageInput = document.getElementById("image-input");
-                      if (imageInput) {
-                        imageInput.click();
-                      }
-                    }}
-                  >
-                    {image ? (
-                      <img src={imagePreview} alt="image-preview" />
-                    ) : (
-                      <div className="placeholder font-text-small">
-                        click here to import an image
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      name="cover"
-                      id="image-input"
-                      accept="image/png"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          validateImage(
-                            e.target.files[0],
-                            setImage,
-                            setImagePreview
-                          );
-                          console.log(e.target.files[0].name);
+                  <div className="slider-container">
+                    <CustomSlider
+                      min={0}
+                      max={18}
+                      step={1}
+                      onChange={(
+                        event: Event,
+                        value: number | number[],
+                        activeThumb: number
+                      ) => {
+                        if (typeof value == "number") {
+                          setDecimals(value);
                         }
                       }}
                     />
-                  </m.div>
+                  </div>
                 </div>
               </div>
-              <button
-                className="submit font-text-bold flex-row-center-center"
-                disabled={!title || !symbol || !description || !image}
-                onClick={run}
-              >
-                {!title || !symbol || !description || !image
-                  ? "Fill out the empty fields."
-                  : "Create SPL22"}
-              </button>
+              <div className="flex-column-center-center image-input">
+                <div
+                  className="image"
+                  onClick={() => {
+                    const imageInput = document.getElementById("image-input");
+                    if (imageInput) {
+                      imageInput.click();
+                    }
+                  }}
+                >
+                  {image ? (
+                    <img src={imagePreview} alt="image-preview" />
+                  ) : (
+                    <div className="placeholder font-text-small">
+                      click here to import an image
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    name="cover"
+                    id="image-input"
+                    accept="image/png"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        validateImage(
+                          e.target.files[0],
+                          setImage,
+                          setImagePreview
+                        );
+                        console.log(e.target.files[0].name);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-          </m.div>
-        </m.div>
+            <button
+              className="submit font-text-bold flex-row-center-center"
+              disabled={!title || !symbol || !description || !image}
+              onClick={run}
+            >
+              {!title || !symbol || !description || !image
+                ? "Fill out the empty fields."
+                : "Create SPL22"}
+            </button>
+          </div>
+        </div>
+      </div>
 
-        {resultPanel && success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-            id="result-backdrop"
-            className="flex-row-center-center"
-          >
-            <div id="result-panel" className="flex-column-center-center">
-              <div className="headline flex-column-center-center">
-                <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-                <div className="message font-h4">Success!</div>
+      {resultPanel && success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
+              <div className="message font-h4">Success!</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base">
+                <Link
+                  href={"https://solana.fm/address/" + result}
+                  target="_blank"
+                >
+                  <button className="button font-text-tiny-bold flex-row-center-center">
+                    Open in Explorer
+                  </button>
+                </Link>
               </div>
-              <div className="buttons flex-column-center-center">
-                <div className="button-base">
-                  <Link
-                    href={"https://solana.fm/address/" + result}
-                    target="_blank"
-                  >
-                    <button className="button font-text-tiny-bold flex-row-center-center">
-                      Open in Explorer
-                    </button>
-                  </Link>
-                </div>
-                <div className="button-base">
-                  <Tooltip title={"Copy " + result}>
-                    <button
-                      className="button font-text-tiny-bold flex-row-center-center"
-                      onClick={() => {
-                        navigator.clipboard.writeText(result);
-                      }}
-                    >
-                      Copy Address
-                    </button>
-                  </Tooltip>
-                </div>
-                <div className="button-base close">
+              <div className="button-base">
+                <Tooltip title={"Copy " + result}>
                   <button
-                    className="button close font-text-tiny-bold flex-row-center-center"
+                    className="button font-text-tiny-bold flex-row-center-center"
                     onClick={() => {
-                      setResultPanel(false);
+                      navigator.clipboard.writeText(result);
                     }}
                   >
-                    Close
+                    Copy Address
                   </button>
-                </div>
+                </Tooltip>
+              </div>
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResultPanel(false);
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
-          </m.div>
-        )}
-        {resultPanel && !success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-            id="result-backdrop"
-            className="flex-row-center-center"
-          >
-            <div id="result-panel" className="flex-column-center-center">
-              <div className="headline flex-column-center-center">
-                <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-                <div className="message font-h4">Something went wrong.</div>
-              </div>
-              <div className="buttons flex-column-center-center">
-                <div className="button-base close">
-                  <button
-                    className="button close font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      setResultPanel(false);
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
+          </div>
+        </div>
+      )}
+      {resultPanel && !success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
+              <div className="message font-h4">Something went wrong.</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResultPanel(false);
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }

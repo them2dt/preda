@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion as m } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
@@ -141,312 +140,272 @@ export default function Panel() {
 
   return (
     <>
-      <AnimatePresence key={"AnimatePresence-PNFT"}>
-        <m.div
-          className="panel-container flex-column-center-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.1 }}
-        >
-          <div className="font-h3">Create a programmable NFT</div>
-          <m.div id="lab-panel-nft" className="panel flex-row-center-center">
-            {/**Every operation is done in here.*/}
-            <m.div className="form flex-column-center-start">
-              <input
-                type="text"
-                name="title"
-                placeholder="Name"
-                className="font-text-small"
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              <input
-                type="text"
-                name="symbol"
-                placeholder="Symbol"
-                className="font-text-small"
-                onChange={(e) => {
-                  setSymbol(e.target.value);
-                }}
-              />
-              <textarea
-                //type="text"
-                name="description"
-                placeholder="Description"
-                className="font-text-small"
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-              />
-              <div className="royalties flex-column-center-center">
-                <div className="legend flex-row-between-center">
-                  <div className="font-text-small">royalties</div>
-                  <div className="font-text-small-bold">
-                    {sliderValue.toString()}%
-                  </div>
-                </div>
-                <div className="slider-container">
-                  <CustomSlider
-                    min={0}
-                    max={20}
-                    step={1}
-                    value={sliderValue} // Fix: Change the type of sliderValue to number
-                    onChange={(
-                      event: Event,
-                      value: number | number[],
-                      activeThumb: number
-                    ) => {
-                      if (typeof value == "number") {
-                        setSliderValue(value);
-                      }
-                    }}
-                  />
+      <div className="panel-container flex-column-center-center">
+        <div className="font-h3">Create a programmable NFT</div>
+        <div id="lab-panel-nft" className="panel flex-row-center-center">
+          {/**Every operation is done in here.*/}
+          <div className="form flex-column-center-start">
+            <input
+              type="text"
+              name="title"
+              placeholder="Name"
+              className="font-text-small"
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              name="symbol"
+              placeholder="Symbol"
+              className="font-text-small"
+              onChange={(e) => {
+                setSymbol(e.target.value);
+              }}
+            />
+            <textarea
+              //type="text"
+              name="description"
+              placeholder="Description"
+              className="font-text-small"
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
+            <div className="royalties flex-column-center-center">
+              <div className="legend flex-row-between-center">
+                <div className="font-text-small">royalties</div>
+                <div className="font-text-small-bold">
+                  {sliderValue.toString()}%
                 </div>
               </div>
-              <m.div
-                className="attributes-button font-text"
-                onClick={() => {
-                  setAttributeModal(true);
-                }}
-              >
-                add attributes
-              </m.div>
-            </m.div>
-            <m.div className="form flex-column-center-start">
-              <m.div
-                className="image"
-                onClick={() => {
-                  const imageInput = document.getElementById("image-input");
-                  if (imageInput) {
-                    imageInput.click();
-                  }
-                }}
-              >
-                {image ? (
-                  <img src={imagePreview} alt="image-preview" />
-                ) : (
-                  <div className="placeholder font-text-small">
-                    click here to import an image
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="cover"
-                  id="image-input"
-                  accept="image/png"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      validateImage(
-                        e.target.files[0],
-                        setImage,
-                        setImagePreview
-                      );
-                      console.log(e.target.files[0].name);
+              <div className="slider-container">
+                <CustomSlider
+                  min={0}
+                  max={20}
+                  step={1}
+                  value={sliderValue} // Fix: Change the type of sliderValue to number
+                  onChange={(
+                    event: Event,
+                    value: number | number[],
+                    activeThumb: number
+                  ) => {
+                    if (typeof value == "number") {
+                      setSliderValue(value);
                     }
                   }}
                 />
-              </m.div>
-              <button
-                className="submit font-text-bold"
-                disabled={!title || !symbol || !description || !image}
-                onClick={run}
-              >
-                {!title || !symbol || !description || !image
-                  ? "fill out missing fields"
-                  : "create"}
-              </button>
-            </m.div>
-          </m.div>
-        </m.div>
-        {attributeModal && (
-          <m.div
-            className="attribute-modal"
-            id="attribute-modal"
-            onClick={() => {
-              setAttributeModal(false);
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <m.div
-              className="attributes"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              key={"RENDER_KEY_"+renderHook}
-            >
-              {attributes?.map((attribute, index) => {
-                return (
-                  <m.div
-                    className="attribute"
-                    key={"pnft-attribute-" + index}
-                    initial={{ opacity: 0, y: 2 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 2 }}
-                    transition={{ delay: 0.1, duration: 0.1 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log("clicked.");
-                      removeAttribute(index);
-                      setRenderHook(renderHook + 1);
-                    }}
-                  >
-                    <div className="key font-text-bold">
-                      {attribute.trait_type}
-                    </div>
-
-                    <div className="line"></div>
-                    <div className="value font-text-light">
-                      {attribute.value}
-                    </div>
-                  </m.div>
-                );
-              })}
-            </m.div>
-            {/*Modal component. Frames the modal content.*/}
-            <m.div
-              className="modal"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ delay: 0.1, duration: 0.1 }}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <div className="create-attributes font-text">
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <div className="input">
-                    <input
-                      type="text"
-                      className="key font-text"
-                      placeholder="key"
-                      required
-                      onChange={(e) => {
-                        setAttributeKey(e.target.value);
-                      }}
-                    />
-                    <input
-                      type="text"
-                      className="value font-text"
-                      placeholder="value"
-                      required
-                      onChange={(e) => {
-                        setValue(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <button
-                    className="submit font-text"
-                    type="submit"
-                    disabled={!attributeKey || !value}
-                    onClick={() => {
-                      setAttributes([
-                        ...(attributes || []),
-                        { trait_type: attributeKey || "", value: value || "" },
-                      ]);
-                    }}
-                  >
-                    {!attributeKey || !value ? "fill in the fields" : "add"}
-                  </button>
-                </form>
               </div>
-            </m.div>
-            {/* Button with x symbol */}
+            </div>
+            <div
+              className="attributes-button font-text"
+              onClick={() => {
+                setAttributeModal(true);
+              }}
+            >
+              add attributes
+            </div>
+          </div>
+          <div className="form flex-column-center-start">
+            <div
+              className="image"
+              onClick={() => {
+                const imageInput = document.getElementById("image-input");
+                if (imageInput) {
+                  imageInput.click();
+                }
+              }}
+            >
+              {image ? (
+                <img src={imagePreview} alt="image-preview" />
+              ) : (
+                <div className="placeholder font-text-small">
+                  click here to import an image
+                </div>
+              )}
+              <input
+                type="file"
+                name="cover"
+                id="image-input"
+                accept="image/png"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    validateImage(e.target.files[0], setImage, setImagePreview);
+                    console.log(e.target.files[0].name);
+                  }
+                }}
+              />
+            </div>
             <button
-              onClick={() => setAttributeModal(false)}
-              className="close-button"
+              className="submit font-text-bold"
+              disabled={!title || !symbol || !description || !image}
+              onClick={run}
             >
-              <FontAwesomeIcon icon={faX} />
+              {!title || !symbol || !description || !image
+                ? "fill out missing fields"
+                : "create"}
             </button>
-          </m.div>
-        )}
+          </div>
+        </div>
+      </div>
+      {attributeModal && (
+        <div
+          className="attribute-modal"
+          id="attribute-modal"
+          onClick={() => {
+            setAttributeModal(false);
+          }}
+        >
+          <div
+            className="attributes"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            key={"RENDER_KEY_" + renderHook}
+          >
+            {attributes?.map((attribute, index) => {
+              return (
+                <div
+                  className="attribute"
+                  key={"pnft-attribute-" + index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("clicked.");
+                    removeAttribute(index);
+                    setRenderHook(renderHook + 1);
+                  }}
+                >
+                  <div className="key font-text-bold">
+                    {attribute.trait_type}
+                  </div>
 
-        {result && success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-            id="result-backdrop"
-            className="flex-row-center-center"
+                  <div className="line"></div>
+                  <div className="value font-text-light">{attribute.value}</div>
+                </div>
+              );
+            })}
+          </div>
+          {/*Modal component. Frames the modal content.*/}
+          <div
+            className="modal"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
-            <div id="result-panel" className="flex-column-center-center">
-              <div className="headline flex-column-center-center">
-                <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-                <div className="message font-h4">Success!</div>
+            <div className="create-attributes font-text">
+              <form onSubmit={(e) => e.preventDefault()}>
+                <div className="input">
+                  <input
+                    type="text"
+                    className="key font-text"
+                    placeholder="key"
+                    required
+                    onChange={(e) => {
+                      setAttributeKey(e.target.value);
+                    }}
+                  />
+                  <input
+                    type="text"
+                    className="value font-text"
+                    placeholder="value"
+                    required
+                    onChange={(e) => {
+                      setValue(e.target.value);
+                    }}
+                  />
+                </div>
+                <button
+                  className="submit font-text"
+                  type="submit"
+                  disabled={!attributeKey || !value}
+                  onClick={() => {
+                    setAttributes([
+                      ...(attributes || []),
+                      { trait_type: attributeKey || "", value: value || "" },
+                    ]);
+                  }}
+                >
+                  {!attributeKey || !value ? "fill in the fields" : "add"}
+                </button>
+              </form>
+            </div>
+          </div>
+          {/* Button with x symbol */}
+          <button
+            onClick={() => setAttributeModal(false)}
+            className="close-button"
+          >
+            <FontAwesomeIcon icon={faX} />
+          </button>
+        </div>
+      )}
+
+      {result && success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
+              <div className="message font-h4">Success!</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base">
+                <Link
+                  href={"https://solana.fm/address/" + resultAddress}
+                  target="_blank"
+                >
+                  <button className="button font-text-tiny-bold flex-row-center-center">
+                    Open in Explorer
+                  </button>
+                </Link>
               </div>
-              <div className="buttons flex-column-center-center">
-                <div className="button-base">
-                  <Link
-                    href={"https://solana.fm/address/" + resultAddress}
-                    target="_blank"
-                  >
-                    <button className="button font-text-tiny-bold flex-row-center-center">
-                      Open in Explorer
-                    </button>
-                  </Link>
-                </div>
-                <div className="button-base">
-                  <Tooltip title={"Copy " + resultAddress}>
-                    <button
-                      className="button font-text-tiny-bold flex-row-center-center"
-                      onClick={() => {
-                        navigator.clipboard.writeText(resultAddress);
-                      }}
-                    >
-                      Copy Address
-                    </button>
-                  </Tooltip>
-                </div>
-                <div className="button-base close">
+              <div className="button-base">
+                <Tooltip title={"Copy " + resultAddress}>
                   <button
-                    className="button close font-text-tiny-bold flex-row-center-center"
+                    className="button font-text-tiny-bold flex-row-center-center"
                     onClick={() => {
-                      setResult(false);
+                      navigator.clipboard.writeText(resultAddress);
                     }}
                   >
-                    Close
+                    Copy Address
                   </button>
-                </div>
+                </Tooltip>
+              </div>
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResult(false);
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
-          </m.div>
-        )}
-        {result && !success && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-            id="result-backdrop"
-            className="flex-row-center-center"
-          >
-            <div id="result-panel" className="flex-column-center-center">
-              <div className="headline flex-column-center-center">
-                <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-                <div className="message font-h4">Something went wrong.</div>
-              </div>
-              <div className="buttons flex-column-center-center">
-                <div className="button-base close">
-                  <button
-                    className="button close font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      setResult(false);
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
+          </div>
+        </div>
+      )}
+      {result && !success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
+              <div className="message font-h4">Something went wrong.</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResult(false);
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }
