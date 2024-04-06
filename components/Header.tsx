@@ -19,14 +19,14 @@ export default function Header({
     ["Create a NFT","burn a NFT"],
     ["Create a pNFT","burn a pNFT"],
     ["Create Merkle Tree", "Create a cNFT", "Burn a cNFT"],
-    ["Create a SPL20-Token"],
+    ["Create a SPL20-Token","Burn SPL20-Tokens"],
     ["Create a SPL22-Token"],
   ];
   const pages = [
     ["nft-create","nft-burn"],
     ["pnft-create","pnft-burn"],
     ["cnft-merkletree", "cnft-create","cnft-burn"],
-    ["spl20-create"],
+    ["spl20-create","spl20-burn"],
     ["spl22-create"],
   ];
   return (

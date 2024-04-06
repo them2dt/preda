@@ -88,6 +88,10 @@
     cursor: pointer;
 }
 
+#lab-panel-spl.spl-burn .submit {
+    width: 300px;
+}
+
 #lab-panel-spl .submit:hover {
     background-color: var(--secondary);
     color: var(--accent);
