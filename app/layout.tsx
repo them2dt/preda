@@ -54,7 +54,7 @@ export default function RootLayout({
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <RootComponent children={children} />
+      <RootComponent>{children}</RootComponent>
     </html>
   );
 }

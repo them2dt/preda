@@ -8,7 +8,7 @@ import arweave from "../media/arweave.svg";
 import metaplex from "../media/metaplex.svg";
 import irys from "../media/irys.svg";
 
-export default function page() {
+export default function Page() {
   const [advanced, setAdvanced] = useState<boolean>(false);
   return (
     <div className="homepage flex-column-center-center">
