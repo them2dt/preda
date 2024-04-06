@@ -27,19 +27,19 @@ export const metadata = {
     siteName: "Preda",
     images: [
       {
-        url: "https://bafkreih5wyrydfkusimvtutrk7hopqiejj73n7w4tjcovz6jipkj5tju4y.ipfs.nftstorage.link/",
-        width: "1000",
-        height: "500",
+        url: "https://bafybeig65argso4eqbepq63kjyu35e6inwfgfahaord2tt2trmi62nnive.ipfs.nftstorage.link/",
+        width: "2000",
+        height: "1200",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MARUTHAN.",
-    description: "WEB - MOBILE - BLOCKCHAIN.",
+    title: "Preda.",
+    description: "The powerhouse for solana tokens.",
     creator: "@THEM2DT",
     images: [
-      "https://bafkreih5wyrydfkusimvtutrk7hopqiejj73n7w4tjcovz6jipkj5tju4y.ipfs.nftstorage.link/",
+      "https://bafybeig65argso4eqbepq63kjyu35e6inwfgfahaord2tt2trmi62nnive.ipfs.nftstorage.link/",
     ],
   },
 };
