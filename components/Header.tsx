@@ -16,18 +16,18 @@ export default function Header({
   const [sectionId, setSectionId] = useState(0);
   const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22"];
   const operations = [
-    ["Create a NFT","burn a NFT"],
-    ["Create a pNFT","burn a pNFT"],
+    ["Create a NFT", "burn a NFT"],
+    ["Create a pNFT", "burn a pNFT"],
     ["Create Merkle Tree", "Create a cNFT", "Burn a cNFT"],
-    ["Create a SPL20-Token","Burn SPL20-Tokens"],
-    ["Create a SPL22-Token"],
+    ["Create a SPL20-Token", "Burn SPL20-Tokens"],
+    ["Create a SPL22-Token","Burn SPL22-Tokens"],
   ];
   const pages = [
-    ["nft-create","nft-burn"],
-    ["pnft-create","pnft-burn"],
-    ["cnft-merkletree", "cnft-create","cnft-burn"],
-    ["spl20-create","spl20-burn"],
-    ["spl22-create"],
+    ["nft-create", "nft-burn"],
+    ["pnft-create", "pnft-burn"],
+    ["cnft-merkletree", "cnft-create", "cnft-burn"],
+    ["spl20-create", "spl20-burn"],
+    ["spl22-create", "spl22-burn"],
   ];
   return (
     <>

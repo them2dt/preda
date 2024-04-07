@@ -1,10 +1,9 @@
 "use client";
-import { getAsset, getHoldingFromOwner } from "@/backend/General";
 import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CustomSlider } from "../Slider";
 import { enqueueSnackbar } from "notistack";
-import { burnSPL20 } from "@/backend/SPL20";
+import { getBalanceFromToken22 } from "@/backend/SPL22";
 
 export default function Panel() {
   const [decimals, setDecimals] = useState<number>(0);
@@ -15,67 +14,33 @@ export default function Panel() {
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
-  const burn = async () => {
-    try {
-      const result = await burnSPL20({
-        wallet: wallet,
-        connection: connection,
-        assetId: token,
-        amount: supply,
-      });
-      if (result) {
-        enqueueSnackbar(
-          "Successfully burnt " +
-            (supply / 10 ** decimals).toString() +
-            " tokens.",
-          {
-            variant: "success",
-          }
-        );
-      } else {
-        enqueueSnackbar(
-          "Couldnt burn " + (supply / 10 ** decimals).toString() + " tokens.",
-          {
-            variant: "error",
-          }
-        );
-      }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", {
-        variant: "error",
-      });
-    }
-  };
+  const burn = async () => {};
   const validate = async () => {
     try {
-      const asset = await getAsset({
+      const res = await getBalanceFromToken22({
         wallet: wallet,
         connection: connection,
         assetId: token,
       });
-
-      if (asset.tokenStandard == 2) {
-        const holdingAmount = await getHoldingFromOwner({
-          wallet: wallet,
-          connection: connection,
-          assetId: token,
-        });
-        setMaxSupply(holdingAmount);
-        setDecimals(asset.decimals);
-        if (holdingAmount > 1) {
-          enqueueSnackbar("Asset found.", { variant: "success" });
-          setTokenVerified(true);
-        }
+      if (res.balance > 1) {
+        console.log(res.balance);
+        setDecimals(res.decimals);
+        setMaxSupply(res.balance);
+        setTokenVerified(true);
+        enqueueSnackbar("Token found.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Token balance is 0.", { variant: "warning" });
       }
     } catch (e) {
-      console.log("Error in panel: " + e);
+      enqueueSnackbar("Something went wrong.", { variant: "error" });
+      console.log(e);
     }
   };
 
   return (
     <>
       <div className="panel-container flex-column-center-center">
-        <div className="font-h3">Burn SPL20-Tokens</div>
+        <div className="font-h3">Burn SPL22-Tokens</div>
 
         <div className="address-validator flex-row-start-center">
           <input

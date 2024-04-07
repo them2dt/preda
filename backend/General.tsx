@@ -8,16 +8,12 @@ import { Adapter } from "@solana/wallet-adapter-base";
 import { enqueueSnackbar } from "notistack";
 import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
 import {
-  fetchAllDigitalAssetWithTokenByOwner,
   fetchAllDigitalAssetWithTokenByOwnerAndMint,
   fetchDigitalAsset,
-  fetchDigitalAssetByMetadata,
-  fetchDigitalAssetWithToken,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { metadata } from "@/app/layout";
 import { publicKey, unwrapOption } from "@metaplex-foundation/umi";
 
 export const tokenStandard = [

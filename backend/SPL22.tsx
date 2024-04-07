@@ -1,5 +1,5 @@
 import { Wallet } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 //umi
 
@@ -14,8 +14,14 @@ import {
   createV1,
   TokenStandard,
   mplTokenMetadata,
+  burnV1,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { findAssociatedTokenPda } from "@metaplex-foundation/mpl-toolbox";
+import {
+  getAssociatedTokenAddressSync,
+  getAccount,
+  getMint,
+} from "@solana/spl-token";
 
 export const createAndMintSPL22 = async ({
   wallet,
@@ -107,3 +113,83 @@ export const createAndMintSPL22 = async ({
     };
   }
 };
+
+export const burnSPL22 = async ({
+  wallet,
+  connection,
+  assetId,
+  amount,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+  assetId: string;
+  amount: number;
+}): Promise<boolean> => {
+  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+  );
+  const umi = createUmi(connection.rpcEndpoint);
+
+  umi.use(mplTokenMetadata());
+  umi.use(walletAdapterIdentity(wallet.adapter));
+  umi.use(mplCandyMachine());
+
+  try {
+    const response = await burnV1(umi, {
+      mint: publicKey(assetId),
+      tokenStandard: TokenStandard.Fungible,
+      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+      tokenOwner: umi.identity.publicKey,
+      amount: amount,
+    })
+      .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
+      .then((result) => {
+        if (result.signature) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+    return response;
+  } catch (e) {
+    console.log("Error @ BurnSPL20(): " + e);
+    return false;
+  }
+};
+
+export async function getBalanceFromToken22({
+  wallet,
+  connection,
+  assetId,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+  assetId: string;
+}): Promise<{ balance: number; decimals: number }> {
+  try {
+    const tokenAccount = getAssociatedTokenAddressSync(
+      new PublicKey(assetId),
+      wallet.adapter.publicKey,
+      true,
+      new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
+    );
+    const info = await getAccount(
+      connection,
+      new PublicKey(tokenAccount.toBase58()),
+      "confirmed",
+      new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
+    );
+    const amount = Number(info.amount);
+    const mint = await getMint(
+      connection,
+      info.mint,
+      "confirmed",
+      new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
+    );
+    const balance = amount;
+    return { balance: balance, decimals: mint.decimals };
+  } catch (e) {
+    console.log("Error @ GBT22: " + e);
+  }
+}
