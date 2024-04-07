@@ -14,9 +14,11 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import Image from "next/image";
+import { motion as m } from "framer-motion";
 
 import empteaWhite from "../media/emptea-transparent-white.png";
 import empteaBlack from "../media/emptea-transparent-black.png";
+import Link from "next/link";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -77,14 +79,16 @@ export default function Navigation({
           >
             <FontAwesomeIcon icon={faPalette} />
           </div>
-          <div
-            className="navigation-button flex-row-center-center"
-            onClick={() => {
-              setNavModal(navModal == 3 ? 0 : 3);
-            }}
-          >
-            <FontAwesomeIcon icon={faQuestion} />
-          </div>
+          <Link href={"https://emptea.gitbook.io/preda-by-emptea-studios"} target="_blank">
+            <div
+              className="navigation-button flex-row-center-center"
+              onClick={() => {
+                setNavModal(navModal == 3 ? 0 : 3);
+              }}
+            >
+              <FontAwesomeIcon icon={faQuestion} />
+            </div>
+          </Link>
         </div>
       </div>
       <div
@@ -92,7 +96,13 @@ export default function Navigation({
         data-theme={themes[theme]}
       >
         {navModal == 1 && (
-          <div className="nav-modal nav-modal-wallet flex-row-center-center">
+          <m.div
+            className="nav-modal nav-modal-wallet flex-row-center-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.1, duration: 0.1 }}
+          >
             <div
               className="modal-content"
               onClick={(e) => {
@@ -101,10 +111,16 @@ export default function Navigation({
             >
               <WalletMultiButtonDynamic />
             </div>
-          </div>
+          </m.div>
         )}
         {navModal == 2 && (
-          <div className="nav-modal nav-modal-settings flex-column-center-center">
+          <m.div
+            className="nav-modal nav-modal-settings flex-column-center-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.1, duration: 0.1 }}
+          >
             <div
               className="modal-content flex-column-center-center"
               onClick={(e) => {
@@ -148,33 +164,7 @@ export default function Navigation({
                 Navy
               </div>
             </div>
-          </div>
-        )}
-        {navModal == 3 && (
-          <div
-            className="help-window flex-row-center-center"
-            onClick={() => {
-              setNavModal(0);
-            }}
-          >
-            <div className="help-container flex-row-center-center">
-              <div className="help-panel flex-column-center-center">
-                <div className="font-h4">The Lab</div>
-                <div className="font-text">
-                  The lab is an intuitive panel to create tokens on Solana. We
-                  currently support Standard NFT&apos;s, compressed NFT&apos;s,
-                  programmable NFT&apos;s.
-                </div>
-              </div>
-              <div className="help-panel flex-column-center-center">
-                <div className="font-h4">The Gallery</div>
-                <div className="font-text">
-                  The gallery is a place to get a clean overview of your assets
-                  and maintain them.
-                </div>
-              </div>
-            </div>
-          </div>
+          </m.div>
         )}
       </div>
     </>

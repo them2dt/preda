@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
+import { motion as m } from "framer-motion";
 
 export default function Header({
   id,
@@ -20,7 +21,7 @@ export default function Header({
     ["Create a pNFT", "burn a pNFT"],
     ["Create Merkle Tree", "Create a cNFT", "Burn a cNFT"],
     ["Create a SPL20-Token", "Burn SPL20-Tokens"],
-    ["Create a SPL22-Token","Burn SPL22-Tokens"],
+    ["Create a SPL22-Token", "Burn SPL22-Tokens"],
   ];
   const pages = [
     ["nft-create", "nft-burn"],
@@ -66,7 +67,7 @@ export default function Header({
                 {item}
               </div>
               {tab.open == true && (
-                <div
+                <m.div
                   className={
                     sectionId == index
                       ? "tabs active flex-column-end-end section-" +
@@ -74,6 +75,10 @@ export default function Header({
                       : "tabs flex-column-end-end section-" +
                         sectionId.toString()
                   }
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: 0.1, duration: 0.2 }}
                 >
                   {operations[sectionId].map((item, index) => (
                     <Link
@@ -91,7 +96,7 @@ export default function Header({
                       <div className="tab flex-row-end-center">{item}</div>
                     </Link>
                   ))}
-                </div>
+                </m.div>
               )}
             </div>
           ))}

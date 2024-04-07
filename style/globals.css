@@ -98,6 +98,12 @@ a {
     --navy-dark-3: #2f95c4;
     --navy-dark-4: #3bade2;
     --navy-dark-5: #50bfff;
+
+    --bg-white: url("../media/bg-white.png");
+    --bg-black: url("../media/bg-black.png");
+    --bg-navy: url("../media/bg-navy.png");
+    --bg-pink: url("../media/bg-pink.png");
+
     color: var(--primary);
 
 }
@@ -105,6 +111,7 @@ a {
 /*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
 
 [data-theme="light"] {
+    --background: var(--bg-white);
     --primary: var(--black-1);
     --primary-faded-1: var(--black-2);
     --primary-faded-2: var(--black-3);
@@ -137,6 +144,7 @@ a {
 }
 
 [data-theme="dark"] {
+    --background: var(--bg-black);
     --primary: var(--white-1);
     --primary-faded-1: var(--white-2);
     --primary-faded-2: var(--white-3);
@@ -169,6 +177,7 @@ a {
 }
 
 [data-theme="candy"] {
+    --background: var(--bg-pink);
     --primary: var(--pink-dark-1);
     --primary-faded-1: var(--pink-dark-2);
     --primary-faded-2: var(--pink-dark-3);
@@ -199,7 +208,9 @@ a {
     --accent-faded-3: var(--pink-dark-4);
     --accent-faded-4: var(--pink-dark-5);
 }
+
 [data-theme="navy"] {
+    --background: var(--bg-navy);
     --primary: var(--navy-dark-1);
     --primary-faded-1: var(--navy-dark-2);
     --primary-faded-2: var(--navy-dark-3);

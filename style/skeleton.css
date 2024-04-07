@@ -41,7 +41,6 @@
     width: calc(100vw - 40px);
     height: 80px;
 
-    background-color: var(--secondary);
 
     padding-left: 20px;
     padding-right: 20px;
@@ -62,7 +61,6 @@
     height: 40px;
 
     color: var(--primary);
-    background-color: var(--secondary);
     border: none;
 
     padding: 5px 12px;
@@ -141,4 +139,6 @@
     overflow-y: scroll;
 
     background-color: var(--secondary);
+    background: var(--background) no-repeat;
+    background-size: cover;
 }
