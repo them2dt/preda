@@ -213,7 +213,7 @@ export default function Panel() {
   return (
     <>
       <div className="panel-container flex-column-center-center">
-        <div className="font-h3">Create a programmable NFT</div>
+        <div className="font-h3">Create a NFT</div>
         <div id="panel-nft" className="panel flex-row-center-start">
           <div className="form flex-column-center-start">
             <input

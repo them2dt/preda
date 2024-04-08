@@ -13,6 +13,7 @@ import { createNFT } from "@/backend/NFT";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
+import { createCollection } from "@/backend/CORE";
 
 export default function Panel() {
   const [attributeModal, setAttributeModal] = useState(false);
@@ -56,78 +57,49 @@ export default function Panel() {
 
   //run methode wo die hauptfunktionen drin sind
   const run = async () => {
-    if (!wallet || !connection || !title || !symbol || !description || !image) {
-      enqueueSnackbar("Fill out the empty fields.", {
-        variant: "error",
-      });
-    } else {
-      enqueueSnackbar("Uploading image...", { variant: "info" });
-      const imageUri = await uploadFileToIrys({
+    const imageUri = await uploadFileToIrys({
+      wallet: wallet,
+      connection: connection,
+      file: image,
+    });
+    if (imageUri) {
+      const metadata = {
+        name: title,
+        symbol: symbol,
+        description: description,
+        image: imageUri,
+      };
+      const metadataFile = new File(
+        [JSON.stringify(metadata)],
+        "metadata.json",
+        { type: "application/json" }
+      );
+      const metadataUri = await uploadFileToIrys({
         wallet: wallet,
         connection: connection,
-        file: image,
+        file: metadataFile,
       });
 
-      if (imageUri) {
-        const metadata = {
-          name: title,
-          symbol: symbol,
-          description: description,
-          seller_fee_basis_points: sliderValue,
-          image: imageUri,
-          external_url: "emptea.xyz",
-          attributes: attributes || [],
-          properties: {
-            files: [{ uri: imageUri, type: "image/png" }],
-            category: "image",
-            creators: [
-              {
-                address:
-                  wallet.adapter.publicKey?.toBase58() ||
-                  "DFoRBzY3odkJ53FgCeSj26Ps6Bk7tuZ5kaV47QsyrqnV",
-                share: 100,
-              },
-            ],
-          },
-          collection: {},
-        };
-        const metadataFile = new File(
-          [JSON.stringify(metadata)],
-          "metadata.json",
-          { type: "application/json" }
-        );
-        const metadataUri = await uploadFileToIrys({
+      if (metadataUri) {
+        const response = await createCollection({
           wallet: wallet,
           connection: connection,
-          file: metadataFile,
+          name: title,
+          uri: description,
         });
 
-        if (metadataUri) {
-          const mint = await createNFT({
-            wallet: wallet,
-            connection: connection,
-            title: title,
-            metadata: metadataUri,
-            sellerFeeBasisPoints: sliderValue,
-          });
-
-          if (mint) {
-            enqueueSnackbar("NFT created!", { variant: "success" });
-            setResultAddress(mint);
-            setSuccess(true);
-            setResult(true);
-          } else {
-            enqueueSnackbar("NFT creation failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
-          }
+        if (response) {
+          enqueueSnackbar("Collection created!", { variant: "success" });
+          setResultAddress(response.assetID || "");
+          setSuccess(true);
+          setResult(true);
         } else {
-          enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+          enqueueSnackbar("Collection creation failed.", { variant: "error" });
           setSuccess(false);
           setResult(true);
         }
       } else {
-        enqueueSnackbar("Image upload failed.", { variant: "error" });
+        enqueueSnackbar("Metadata upload failed.", { variant: "error" });
         setSuccess(false);
         setResult(true);
       }
@@ -138,69 +110,7 @@ export default function Panel() {
     <>
       <div className="panel-container flex-column-center-center">
         <div className="font-h3">Create a CORE Collection</div>
-        <div id="panel-nft" className="panel flex-row-center-center">
-          <div className="form flex-column-center-start">
-            <input
-              type="text"
-              name="title"
-              placeholder="Name"
-              className="font-text-small"
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-            />
-            <input
-              type="text"
-              name="symbol"
-              placeholder="Symbol"
-              className="font-text-small"
-              onChange={(e) => {
-                setSymbol(e.target.value);
-              }}
-            />
-            <textarea
-              //type="text"
-              name="description"
-              placeholder="Description"
-              className="font-text-small"
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            />
-            <div className="royalties flex-column-center-center">
-              <div className="legend flex-row-between-center">
-                <div className="font-text-small">royalties</div>
-                <div className="font-text-small-bold">
-                  {sliderValue.toString()}%
-                </div>
-              </div>
-              <div className="slider-container">
-                <CustomSlider
-                  min={0}
-                  max={20}
-                  step={1}
-                  value={sliderValue} // Fix: Change the type of sliderValue to number
-                  onChange={(
-                    event: Event,
-                    value: number | number[],
-                    activeThumb: number
-                  ) => {
-                    if (typeof value == "number") {
-                      setSliderValue(value);
-                    }
-                  }}
-                />
-              </div>
-            </div>
-            <div
-              className="attributes-button font-text"
-              onClick={() => {
-                setAttributeModal(true);
-              }}
-            >
-              add attributes
-            </div>
-          </div>
+        <div id="panel-core-collection" className="panel flex-row-center-start">
           <div className="form flex-column-center-start">
             <div
               className="image"
@@ -231,6 +141,33 @@ export default function Panel() {
                 }}
               />
             </div>
+
+            <input
+              type="text"
+              name="title"
+              placeholder="Name"
+              className="font-text-small"
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            /><input
+            type="text"
+            name="symbol"
+            placeholder="Symbol"
+            className="font-text-small"
+            onChange={(e) => {
+              setSymbol(e.target.value);
+            }}
+          />
+            <textarea
+              //type="text"
+              name="description"
+              placeholder="Description"
+              className="font-text-small"
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
             <button
               className="submit font-text-bold"
               disabled={!title || !symbol || !description || !image}

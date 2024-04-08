@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { burnNFT } from "@/backend/NFT";
+import { burnAsset, fetchAsset } from "@/backend/CORE";
 
 export default function Panel() {
   const [validatorInput, setValidatorInput] = useState<string>();
@@ -13,17 +14,25 @@ export default function Panel() {
 
   const validatePublicKey = async (pubkey: string) => {
     if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      await burnNFT({
+      await fetchAsset({
         connection: connection,
         wallet: wallet,
         assetId: validatorInput,
-      }).then((result) => {
+      }).then(async (result) => {
         if (result) {
-          enqueueSnackbar("Burnt asset successfully.", {
-            variant: "success",
+          await burnAsset({
+            connection: connection,
+            wallet: wallet,
+            assetId: result.assetID,
+          }).then((res) => {
+            if (res.signature) {
+              enqueueSnackbar("Burnt asset successfully.", {
+                variant: "success",
+              });
+            }
           });
         } else {
-          enqueueSnackbar("Couldn't burn asset. Is it a standard NFT?", {
+          enqueueSnackbar("Couldn't burn asset. Is it a CORE Asset?", {
             variant: "error",
           });
         }
@@ -33,7 +42,7 @@ export default function Panel() {
   return (
     <>
       <div className="panel-container flex-column-center-center">
-        <div className="font-h3">Burn a standard NFT</div>
+        <div className="font-h3">Burn a CORE Asset</div>
         <div className="address-validator flex-row-start-center">
           <input
             type="text"

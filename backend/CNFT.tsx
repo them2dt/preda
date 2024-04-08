@@ -107,6 +107,7 @@ export const mintCNFT = async ({
   title,
   sellerFeeBasisPoints,
   metadata,
+  creators,
 }: {
   wallet: Wallet;
   connection: Connection;
@@ -114,6 +115,7 @@ export const mintCNFT = async ({
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
+  creators: { address: string; share: number }[];
 }): Promise<Boolean> => {
   console.log("mintCNFT() - started.");
   const umi = createUmi(connection.rpcEndpoint);

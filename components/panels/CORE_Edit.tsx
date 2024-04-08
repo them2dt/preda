@@ -8,13 +8,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { Tooltip } from "@mui/material";
-import { createNFT } from "@/backend/NFT";
+import { createCoreAsset } from "@/backend/CORE";
 import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { findMerkleTree, mintCNFT } from "@/backend/CNFT";
-import { publicKey } from "@metaplex-foundation/umi";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -43,10 +41,6 @@ export default function Panel() {
   const [resultAddress, setResultAddress] = useState<string>();
   const [result, setResult] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
-
-  const [merkleTree, setMerkleTree] = useState<string>();
-  const [foundMerkleTree, setFoundMerkleTree] = useState(false);
-
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -173,34 +167,32 @@ export default function Panel() {
           });
 
           if (metadataUri) {
-            const mint = await mintCNFT({
+            const mint = await createCoreAsset({
               wallet: wallet,
               connection: connection,
-              merkleTree: publicKey(merkleTree),
-              title: title,
+              name: title,
               metadata: metadataUri,
-              sellerFeeBasisPoints: sliderValue,
-              creators:
-                creators.length > 0
-                  ? creators
-                  : [
-                      {
-                        address: wallet.adapter.publicKey.toBase58(),
-                        share: 100,
-                      },
-                    ],
             });
 
             if (mint) {
               enqueueSnackbar("NFT created!", { variant: "success" });
+              setResultAddress(mint);
+              setSuccess(true);
+              setResult(true);
             } else {
               enqueueSnackbar("NFT creation failed.", { variant: "error" });
+              setSuccess(false);
+              setResult(true);
             }
           } else {
             enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+            setSuccess(false);
+            setResult(true);
           }
         } else {
           enqueueSnackbar("Image upload failed.", { variant: "error" });
+          setSuccess(false);
+          setResult(true);
         }
       }
     } catch (e) {
@@ -208,57 +200,11 @@ export default function Panel() {
     }
   };
 
-  const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      const found = await findMerkleTree({
-        connection: connection,
-        wallet: wallet,
-        merkleTree: publicKey(pubkey),
-      });
-      if (found) {
-        setFoundMerkleTree(true);
-        enqueueSnackbar("Found MerkleTree!", { variant: "success" });
-      }
-
-      return found;
-    } else {
-      enqueueSnackbar("Invalid public key.", { variant: "error" });
-      return false;
-    }
-  };
   return (
     <>
       <div className="panel-container flex-column-center-center">
-        <div className="font-h3">Create a compressed NFT</div>
-        <div className="address-validator flex-row-start-center">
-          <input
-            type="text"
-            name="title"
-            placeholder="Address of your merkle tree"
-            className="font-text-small"
-            onChange={(e) => {
-              setFoundMerkleTree(false);
-              setMerkleTree(e.target.value);
-            }}
-          />
-          <div className="button-base">
-            <button
-              disabled={!wallet || !connection || !merkleTree}
-              className="button flex-row-center-center font-text-tiny-bold"
-              onClick={async () => {
-                await validatePublicKey(merkleTree);
-              }}
-            >
-              Verify Merkle Tree
-            </button>
-          </div>
-        </div>
-        <div id="panel-nft" 
-          className={
-            foundMerkleTree
-              ? "panel flex-row-center-start"
-              : "panel disabled flex-row-center-center"
-          }>
+        <div className="font-h3">Create a CORE Asset</div>
+        <div id="panel-nft" className="panel flex-row-center-start">
           <div className="form flex-column-center-start">
             <input
               type="text"
@@ -588,6 +534,73 @@ export default function Panel() {
           >
             <FontAwesomeIcon icon={faX} />
           </button>
+        </div>
+      )}
+
+      {result && success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
+              <div className="message font-h4">Success!</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base">
+                <Link
+                  href={"https://solana.fm/address/" + resultAddress}
+                  target="_blank"
+                >
+                  <button className="button font-text-tiny-bold flex-row-center-center">
+                    Open in Explorer
+                  </button>
+                </Link>
+              </div>
+              <div className="button-base">
+                <Tooltip title={"Copy " + resultAddress}>
+                  <button
+                    className="button font-text-tiny-bold flex-row-center-center"
+                    onClick={() => {
+                      navigator.clipboard.writeText(resultAddress);
+                    }}
+                  >
+                    Copy Address
+                  </button>
+                </Tooltip>
+              </div>
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResult(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {result && !success && (
+        <div id="result-backdrop" className="flex-row-center-center">
+          <div id="result-panel" className="flex-column-center-center">
+            <div className="headline flex-column-center-center">
+              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
+              <div className="message font-h4">Something went wrong.</div>
+            </div>
+            <div className="buttons flex-column-center-center">
+              <div className="button-base close">
+                <button
+                  className="button close font-text-tiny-bold flex-row-center-center"
+                  onClick={() => {
+                    setResult(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>

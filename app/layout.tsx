@@ -14,6 +14,8 @@ import "../style/panels/3_merkleTree.css";
 import "../style/panels/4_cnft.css";
 import "../style/panels/4_cnft.css";
 import "../style/panels/5_spl.css";
+import "../style/panels/5_spl.css";
+import "../style/panels/6_core.css";
 import RootComponent from "./RootComponent";
 import Head from "next/head";
 
