@@ -7,13 +7,13 @@ import { burnAsset, fetchAsset } from "@/backend/CORE";
 
 export default function Panel() {
   const [validatorInput, setValidatorInput] = useState<string>();
-  const [inputValid, setInputValid] = useState(false);
+  const [collection, setCollection] = useState<string>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
+  const validatePublicKey = async () => {
+    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(validatorInput)) {
       await fetchAsset({
         connection: connection,
         wallet: wallet,
@@ -24,10 +24,17 @@ export default function Panel() {
             connection: connection,
             wallet: wallet,
             assetId: result.assetID,
+            collection: /[1-9A-HJ-NP-Za-km-z]{32,44}/.test(collection)
+              ? collection
+              : null,
           }).then((res) => {
             if (res.signature) {
               enqueueSnackbar("Burnt asset successfully.", {
                 variant: "success",
+              });
+            }else{
+              enqueueSnackbar("Did't burn asset. Is it a CORE Asset?", {
+                variant: "error",
               });
             }
           });
@@ -50,8 +57,16 @@ export default function Panel() {
             placeholder="Address of your asset"
             className="font-text-small"
             onChange={(e) => {
-              setInputValid(false);
               setValidatorInput(e.target.value);
+            }}
+          />
+          <input
+            type="text"
+            name="title"
+            placeholder="Address of your collection (optional)"
+            className="font-text-small"
+            onChange={(e) => {
+              setCollection(e.target.value);
             }}
           />
           <div className="button-base">
@@ -59,7 +74,7 @@ export default function Panel() {
               disabled={!wallet || !connection || !validatorInput}
               className="button flex-row-center-center font-text-tiny-bold"
               onClick={async () => {
-                await validatePublicKey(validatorInput);
+                await validatePublicKey();
               }}
             >
               Burn Asset

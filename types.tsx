@@ -11,6 +11,7 @@ export type BackendResponse = {
   assetID?: string;
   signature?: string;
   coreAsset?: AssetV1;
+  coreCollection?: string;
   digitalAsset?: DigitalAsset;
   digitalAssetWithToken?: DigitalAssetWithToken;
 };
