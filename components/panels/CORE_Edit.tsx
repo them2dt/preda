@@ -176,7 +176,7 @@ export default function Panel() {
 
             if (mint) {
               enqueueSnackbar("NFT created!", { variant: "success" });
-              setResultAddress(mint);
+              setResultAddress(mint.assetID || "");
               setSuccess(true);
               setResult(true);
             } else {
