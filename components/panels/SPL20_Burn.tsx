@@ -81,7 +81,7 @@ export default function Panel() {
           <input
             type="text"
             name="title"
-            placeholder="Address of your merkle tree"
+            placeholder="Address of your token"
             className="font-text-small"
             onChange={(e) => {
               setTokenVerified(false);

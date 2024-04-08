@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CustomSlider } from "../Slider";
 import { enqueueSnackbar } from "notistack";
-import { getBalanceFromToken22 } from "@/backend/SPL22";
+import { burnSPL22, getBalanceFromToken22 } from "@/backend/SPL22";
 
 export default function Panel() {
   const [decimals, setDecimals] = useState<number>(0);
@@ -13,8 +13,37 @@ export default function Panel() {
   const [tokenVerified, setTokenVerified] = useState<boolean>(false);
 
   const { wallet } = useWallet();
-  const { connection } = useConnection();
-  const burn = async () => {};
+  const { connection } = useConnection();const burn = async () => {
+    try {
+      const result = await burnSPL22({
+        wallet: wallet,
+        connection: connection,
+        assetId: token,
+        amount: supply,
+      });
+      if (result) {
+        enqueueSnackbar(
+          "Successfully burnt " +
+            (supply / 10 ** decimals).toString() +
+            " tokens.",
+          {
+            variant: "success",
+          }
+        );
+      } else {
+        enqueueSnackbar(
+          "Couldnt burn " + (supply / 10 ** decimals).toString() + " tokens.",
+          {
+            variant: "error",
+          }
+        );
+      }
+    } catch (e) {
+      enqueueSnackbar("Something went wrong.", {
+        variant: "error",
+      });
+    }
+  };
   const validate = async () => {
     try {
       const res = await getBalanceFromToken22({
@@ -46,7 +75,7 @@ export default function Panel() {
           <input
             type="text"
             name="title"
-            placeholder="Address of your merkle tree"
+            placeholder="Address of your token"
             className="font-text-small"
             onChange={(e) => {
               setTokenVerified(false);
