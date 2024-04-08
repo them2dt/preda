@@ -135,8 +135,14 @@ export const burnSPL22 = async ({
   umi.use(mplCandyMachine());
 
   try {
+    const token = findAssociatedTokenPda(umi, {
+      mint: publicKey(assetId),
+      owner: umi.identity.publicKey,
+      tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
+    });
     const response = await burnV1(umi, {
       mint: publicKey(assetId),
+      token,
       tokenStandard: TokenStandard.Fungible,
       splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
       tokenOwner: umi.identity.publicKey,
@@ -153,7 +159,7 @@ export const burnSPL22 = async ({
 
     return response;
   } catch (e) {
-    console.log("Error @ BurnSPL20(): " + e);
+    console.log("Error @ BurnSPL22(): " + e);
     return false;
   }
 };
