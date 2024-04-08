@@ -6,135 +6,207 @@ import {
   faX,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import { Tooltip } from "@mui/material";
+import { createPNFT } from "@/backend/PNFT";
+import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
-import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createPNFT } from "@/backend/PNFT";
-import { Tooltip } from "@mui/material";
-import Link from "next/link";
 
 export default function Panel() {
-  const [attributeModal, setAttributeModal] = useState(false);
-  //rerenders the attribute-modal on every change.
-  const [renderHook, setRenderHook] = useState<number>(0);
-  //sets the title of NFT.
   const [title, setTitle] = useState<string>();
-  //sets the symbol of NFT.
-  const [symbol, setSymbol] = useState<string>();
-  //sets the description of NFT.
+  const [symbol, setSymbol] = useState<string>("");
+  const [domain, setDomain] = useState<string>();
   const [description, setDescription] = useState<string>();
-  //sets the image of NFT.
   const [image, setImage] = useState();
-  //sets the image-preview of NFT.
   const [imagePreview, setImagePreview] = useState();
-  //sets the title of NFT.
   const [sliderValue, setSliderValue] = useState<number>(0);
-  // hooks to store the key and value of the attribute to be added.
-  const [attributeKey, setAttributeKey] = useState<string>(); //RENAME THAT
-  const [value, setValue] = useState<string>();
-  // a hook with the type of an array of objects, which contains the key and value of the attribute.
-  const [attributes, setAttributes] =
-    useState<{ trait_type: string; value: string }[]>();
-  //hooks to store the key and value of the attribute to be added.
-
+  //
+  const [attributeModal, setAttributeModal] = useState(false);
+  const [renderHook, setRenderHook] = useState<number>(0);
+  const [attributeKey, setAttributeKey] = useState<string>();
+  const [attributeValue, setAttributeValue] = useState<string>();
+  const [attributes, setAttributes] = useState<
+    { trait_type: string; value: string }[]
+  >([]);
+  //
+  const [creatorModal, setCreatorModal] = useState(false);
+  const [creatorKey, setCreatorKey] = useState<string>("");
+  const [creatorValue, setCreatorValue] = useState<number>(0);
+  const [creators, setCreators] = useState<
+    { address: string; share: number }[]
+  >([]);
+  //
   const [resultAddress, setResultAddress] = useState<string>();
-
   const [result, setResult] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
-
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
+    if (oldArray) {
+      oldArray.splice(index, 1);
+      setAttributes(oldArray);
+      console.log(oldArray);
+    }
+  };
+  const removeCreator = (index: number) => {
+    const oldArray = creators;
     if (oldArray) {
       oldArray.splice(index, 1);
       console.log(oldArray);
     }
   };
-
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  useEffect(() => {}, []);
-
-  //run methode wo die hauptfunktionen drin sind
-  const run = async () => {
-    if (!wallet || !connection || !title || !symbol || !description || !image) {
-      enqueueSnackbar("Fill out the empty fields.", {
-        variant: "error",
-      });
-    } else {
-      enqueueSnackbar("Uploading image...", { variant: "info" });
-      const imageUri = await uploadFileToIrys({
-        wallet: wallet,
-        connection: connection,
-        file: image,
-      });
-
-      if (imageUri) {
-        const metadata = {
-          name: title,
-          symbol: symbol,
-          description: description,
-          seller_fee_basis_points: sliderValue,
-          image: imageUri,
-          external_url: "emptea.xyz",
-          attributes: attributes || [],
-          properties: {
-            files: [{ uri: imageUri, type: "image/png" }],
-            category: "image",
-            creators: [
+  const validate = () => {
+    var invalidPoints = 0;
+    //---------------------------------------------------------------check if wallet is connected.
+    if (wallet) {
+      if (wallet.adapter?.connected) {
+        //---------------------------------------------------------------check for basic metadata-input.
+        if (title && description && symbol && description && image) {
+          //---------------------------------------------------------------check for custom royalties.
+          if (creators.length > 0) {
+            enqueueSnackbar("Royalties are registered.", {
+              variant: "success",
+            });
+            var totalShare = 0;
+            for (let i = 0; i < creators.length; i++) {
+              //add to total-share
+              totalShare += creators[i].share;
+              //---------------------------------------------------------------check for creator duplicates.
+              for (let j = 0; j < creators.length; j++) {
+                if (i != j && creators[i].address == creators[j].address) {
+                  console.log(creators);
+                  enqueueSnackbar("Duplicate found.", { variant: "error" });
+                  invalidPoints++;
+                }
+              }
+            }
+            //---------------------------------------------------------------check if share split sums up to 100.
+            if (totalShare == 100) {
+            } else {
+              invalidPoints++;
+              enqueueSnackbar(
+                "Royalty shares adds up to " +
+                  totalShare +
+                  ", it has to add up to 100.",
+                { variant: "error" }
+              );
+            }
+          } else {
+            setCreators([
               {
-                address:
-                  wallet.adapter.publicKey?.toBase58() ||
-                  "DFoRBzY3odkJ53FgCeSj26Ps6Bk7tuZ5kaV47QsyrqnV",
+                address: wallet.adapter.publicKey.toBase58(),
                 share: 100,
               },
-            ],
-          },
-          collection: {},
-        };
-        const metadataFile = new File(
-          [JSON.stringify(metadata)],
-          "metadata.json",
-          { type: "application/json" }
-        );
-        const metadataUri = await uploadFileToIrys({
+            ]);
+            enqueueSnackbar("Default royalties are registered.", {
+              variant: "info",
+            });
+          }
+        } else {
+          invalidPoints++;
+          enqueueSnackbar("Emptea fields detected.", { variant: "error" });
+        }
+      } else {
+        invalidPoints++;
+        enqueueSnackbar("Wallet not connected", { variant: "error" });
+      }
+    } else {
+      invalidPoints++;
+      enqueueSnackbar("Wallet not connected", { variant: "error" });
+    }
+
+    return invalidPoints == 0;
+  };
+  const run = async () => {
+    try {
+      if (validate()) {
+        enqueueSnackbar("Uploading image...", { variant: "info" });
+        const imageUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
-          file: metadataFile,
+          file: image,
         });
 
-        if (metadataUri) {
-          const mint = await createPNFT({
+        if (imageUri) {
+          const metadata = {
+            name: title,
+            symbol: symbol,
+            description: description,
+            seller_fee_basis_points: sliderValue,
+            image: imageUri,
+            external_url: "emptea.xyz",
+            attributes: attributes || [],
+            properties: {
+              files: [{ uri: imageUri, type: "image/png" }],
+              category: "image",
+              creators:
+                creators.length > 0
+                  ? creators
+                  : [
+                      {
+                        address: wallet.adapter.publicKey.toBase58(),
+                        share: 100,
+                      },
+                    ],
+            },
+            collection: {},
+          };
+          const metadataFile = new File(
+            [JSON.stringify(metadata)],
+            "metadata.json",
+            { type: "application/json" }
+          );
+          const metadataUri = await uploadFileToIrys({
             wallet: wallet,
             connection: connection,
-            title: title,
-            metadata: metadataUri,
-            sellerFeeBasisPoints: sliderValue,
+            file: metadataFile,
           });
 
-          if (mint) {
-            enqueueSnackbar("NFT created!", { variant: "success" });
-            setResultAddress(mint);
-            setSuccess(true);
-            setResult(true);
+          if (metadataUri) {
+            const mint = await createPNFT({
+              wallet: wallet,
+              connection: connection,
+              title: title,
+              metadata: metadataUri,
+              sellerFeeBasisPoints: sliderValue,
+              creators:
+                creators.length > 0
+                  ? creators
+                  : [
+                      {
+                        address: wallet.adapter.publicKey.toBase58(),
+                        share: 100,
+                      },
+                    ],
+            });
+
+            if (mint) {
+              enqueueSnackbar("NFT created!", { variant: "success" });
+              setResultAddress(mint);
+              setSuccess(true);
+              setResult(true);
+            } else {
+              enqueueSnackbar("NFT creation failed.", { variant: "error" });
+              setSuccess(false);
+              setResult(true);
+            }
           } else {
-            enqueueSnackbar("NFT creation failed.", { variant: "error" });
+            enqueueSnackbar("Metadata upload failed.", { variant: "error" });
             setSuccess(false);
             setResult(true);
           }
         } else {
-          enqueueSnackbar("Metadata upload failed.", { variant: "error" });
+          enqueueSnackbar("Image upload failed.", { variant: "error" });
           setSuccess(false);
           setResult(true);
-          return;
         }
-      } else {
-        enqueueSnackbar("Image upload failed.", { variant: "error" });
-        setSuccess(false);
-        setResult(true);
-        return;
       }
+    } catch (e) {
+      enqueueSnackbar("Something went wrong.", { variant: "error" });
     }
   };
 
@@ -142,8 +214,7 @@ export default function Panel() {
     <>
       <div className="panel-container flex-column-center-center">
         <div className="font-h3">Create a programmable NFT</div>
-        <div id="lab-panel-nft" className="panel flex-row-center-center">
-          {/**Every operation is done in here.*/}
+        <div id="panel-nft" className="panel flex-row-center-start">
           <div className="form flex-column-center-start">
             <input
               type="text"
@@ -157,10 +228,12 @@ export default function Panel() {
             <input
               type="text"
               name="symbol"
+              maxLength={5}
               placeholder="Symbol"
               className="font-text-small"
+              value={symbol}
               onChange={(e) => {
-                setSymbol(e.target.value);
+                setSymbol(e.target.value.toUpperCase());
               }}
             />
             <textarea
@@ -172,31 +245,15 @@ export default function Panel() {
                 setDescription(e.target.value);
               }}
             />
-            <div className="royalties flex-column-center-center">
-              <div className="legend flex-row-between-center">
-                <div className="font-text-small">royalties</div>
-                <div className="font-text-small-bold">
-                  {sliderValue.toString()}%
-                </div>
-              </div>
-              <div className="slider-container">
-                <CustomSlider
-                  min={0}
-                  max={20}
-                  step={1}
-                  value={sliderValue} // Fix: Change the type of sliderValue to number
-                  onChange={(
-                    event: Event,
-                    value: number | number[],
-                    activeThumb: number
-                  ) => {
-                    if (typeof value == "number") {
-                      setSliderValue(value);
-                    }
-                  }}
-                />
-              </div>
-            </div>
+            <input
+              type="text"
+              name="domain"
+              placeholder="domain (optional)"
+              className="font-text-small"
+              onChange={(e) => {
+                setDomain(e.target.value);
+              }}
+            />
             <div
               className="attributes-button font-text"
               onClick={() => {
@@ -204,6 +261,14 @@ export default function Panel() {
               }}
             >
               add attributes
+            </div>
+            <div
+              className="attributes-button font-text"
+              onClick={() => {
+                setCreatorModal(true);
+              }}
+            >
+              configure royalties
             </div>
           </div>
           <div className="form flex-column-center-start">
@@ -261,13 +326,13 @@ export default function Panel() {
             onClick={(e) => {
               e.stopPropagation();
             }}
-            key={"RENDER_KEY_" + renderHook}
+            key={renderHook}
           >
             {attributes?.map((attribute, index) => {
               return (
                 <div
                   className="attribute"
-                  key={"pnft-attribute-" + index}
+                  key={"nft-attribute-" + index}
                   onClick={(e) => {
                     e.stopPropagation();
                     console.log("clicked.");
@@ -310,22 +375,27 @@ export default function Panel() {
                     placeholder="value"
                     required
                     onChange={(e) => {
-                      setValue(e.target.value);
+                      setAttributeValue(e.target.value);
                     }}
                   />
                 </div>
                 <button
                   className="submit font-text"
                   type="submit"
-                  disabled={!attributeKey || !value}
+                  disabled={!attributeKey || !attributeValue}
                   onClick={() => {
                     setAttributes([
                       ...(attributes || []),
-                      { trait_type: attributeKey || "", value: value || "" },
+                      {
+                        trait_type: attributeKey || "",
+                        value: attributeValue || "",
+                      },
                     ]);
                   }}
                 >
-                  {!attributeKey || !value ? "fill in the fields" : "add"}
+                  {!attributeKey || !attributeValue
+                    ? "fill in the fields"
+                    : "add"}
                 </button>
               </form>
             </div>
@@ -333,6 +403,143 @@ export default function Panel() {
           {/* Button with x symbol */}
           <button
             onClick={() => setAttributeModal(false)}
+            className="close-button"
+          >
+            <FontAwesomeIcon icon={faX} />
+          </button>
+        </div>
+      )}
+
+      {creatorModal && (
+        <div
+          className="attribute-modal"
+          id="attribute-modal"
+          onClick={() => {
+            setAttributeModal(false);
+          }}
+        >
+          <div
+            className="attributes"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            key={"creator-" + renderHook}
+          >
+            {creators?.map((attribute, index) => {
+              return (
+                <div
+                  className="attribute"
+                  key={"nft-creator-" + index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("clicked.");
+                    removeCreator(index);
+                    setRenderHook(renderHook + 1);
+                  }}
+                >
+                  <div className="key font-text-bold">{attribute.address}</div>
+
+                  <div className="line"></div>
+                  <div className="value font-text-light">
+                    {attribute.share.toString()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="royalties flex-column-center-center">
+            <div className="legend flex-row-between-center">
+              <div className="font-text-small">royalties</div>
+              <div className="font-text-small-bold">
+                {sliderValue.toString()}%
+              </div>
+            </div>
+            <div className="slider-container">
+              <CustomSlider
+                min={0}
+                max={20}
+                step={1}
+                value={sliderValue} // Fix: Change the type of sliderValue to number
+                onChange={(
+                  event: Event,
+                  value: number | number[],
+                  activeThumb: number
+                ) => {
+                  if (typeof value == "number") {
+                    setSliderValue(value);
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <div
+            className="modal"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="create-attributes font-text">
+              <form onSubmit={(e) => e.preventDefault()}>
+                <div className="input">
+                  <input
+                    type="text"
+                    className="key font-text"
+                    placeholder="Creator"
+                    required
+                    value={creatorKey}
+                    onChange={(e) => {
+                      setCreatorKey(e.target.value);
+                    }}
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={creatorValue}
+                    className="value font-text"
+                    placeholder="Share (%)"
+                    required
+                    onChange={(e) => {
+                      setCreatorValue(Number(e.target.value));
+                    }}
+                  />
+                </div>
+                <button
+                  className="submit font-text"
+                  type="submit"
+                  disabled={
+                    !creatorKey ||
+                    !/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(creatorKey) ||
+                    !creatorValue ||
+                    creatorValue < 0
+                  }
+                  onClick={() => {
+                    setCreators([
+                      ...(creators || []),
+                      {
+                        address: creatorKey || "",
+                        share: creatorValue || 0,
+                      },
+                    ]);
+                    setCreatorKey("");
+                    setCreatorValue(100 - creatorValue);
+                  }}
+                >
+                  {!creatorKey ||
+                  !/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(creatorKey) ||
+                  !creatorValue ||
+                  creatorValue < 0
+                    ? "fill correctly in the fields"
+                    : "add"}
+                </button>
+              </form>
+            </div>
+          </div>
+          {/* Button with x symbol */}
+          <button
+            onClick={() => {
+              setCreatorModal(false);
+            }}
             className="close-button"
           >
             <FontAwesomeIcon icon={faX} />

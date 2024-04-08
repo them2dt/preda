@@ -9,9 +9,8 @@ import {
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
+import { createNFT } from "@/backend/NFT";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { findMerkleTree, mintCNFT } from "@/backend/CNFT";
-import { publicKey } from "@metaplex-foundation/umi";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 
@@ -36,12 +35,11 @@ export default function Panel() {
   const [attributeValue, setAttributeValue] = useState<string>();
   // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
-    useState<{ key: string; value: string }[]>();
-
-  const [merkleTree, setMerkleTree] = useState<string>();
-  const [foundMerkleTree, setFoundMerkleTree] = useState(false);
+    useState<{ trait_type: string; value: string }[]>();
+  //hooks to store the key and value of the attribute to be added.
 
   const [resultAddress, setResultAddress] = useState<string>();
+
   const [result, setResult] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
@@ -52,11 +50,9 @@ export default function Panel() {
       console.log(oldArray);
     }
   };
-
+  useEffect(() => {}, []);
   const { wallet } = useWallet();
   const { connection } = useConnection();
-
-  useEffect(() => {}, []);
 
   //run methode wo die hauptfunktionen drin sind
   const run = async () => {
@@ -100,201 +96,150 @@ export default function Panel() {
           "metadata.json",
           { type: "application/json" }
         );
-
         const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
           file: metadataFile,
         });
-        if (!metadataUri) {
+
+        if (metadataUri) {
+          const mint = await createNFT({
+            wallet: wallet,
+            connection: connection,
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+          });
+
+          if (mint) {
+            enqueueSnackbar("NFT created!", { variant: "success" });
+            setResultAddress(mint);
+            setSuccess(true);
+            setResult(true);
+          } else {
+            enqueueSnackbar("NFT creation failed.", { variant: "error" });
+            setSuccess(false);
+            setResult(true);
+          }
+        } else {
           enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-          return;
-        }
-
-        console.log("Creating CNFT...");
-        const mint = await mintCNFT({
-          wallet: wallet,
-          connection: connection,
-          title: title,
-          metadata: metadataUri,
-          sellerFeeBasisPoints: sliderValue,
-          merkleTree: publicKey(merkleTree),
-        });
-
-        if (mint) {
-          enqueueSnackbar("Created cNFT successfully.", { variant: "success" });
+          setSuccess(false);
+          setResult(true);
         }
       } else {
         enqueueSnackbar("Image upload failed.", { variant: "error" });
-        return;
+        setSuccess(false);
+        setResult(true);
       }
     }
   };
 
-  const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      const found = await findMerkleTree({
-        connection: connection,
-        wallet: wallet,
-        merkleTree: publicKey(pubkey),
-      });
-      if (found) {
-        setFoundMerkleTree(true);
-        enqueueSnackbar("Found MerkleTree!", { variant: "success" });
-      }
-
-      return found;
-    } else {
-      enqueueSnackbar("Invalid public key.", { variant: "error" });
-      return false;
-    }
-  };
   return (
     <>
       <div className="panel-container flex-column-center-center">
-        <div className="font-h3">Mint a compressed NFT</div>
-        <div className="address-validator flex-row-start-center">
-          <input
-            type="text"
-            name="title"
-            placeholder="Address of your merkle tree"
-            className="font-text-small"
-            onChange={(e) => {
-              setFoundMerkleTree(false);
-              setMerkleTree(e.target.value);
-            }}
-          />
-          <div className="button-base">
-            <button
-              disabled={!wallet || !connection || !merkleTree}
-              className="button flex-row-center-center font-text-tiny-bold"
-              onClick={async () => {
-                await validatePublicKey(merkleTree);
+        <div className="font-h3">Create a CORE Asset</div>
+        <div id="panel-nft" className="panel flex-row-center-center">
+          <div className="form flex-column-center-start">
+            <input
+              type="text"
+              name="title"
+              placeholder="Name"
+              className="font-text-small"
+              onChange={(e) => {
+                setTitle(e.target.value);
               }}
-            >
-              Verify Merkle Tree
-            </button>
-          </div>
-        </div>
-        <div
-          id="lab-panel-nft"
-          className={
-            foundMerkleTree
-              ? "panel flex-row-center-center"
-              : "panel disabled flex-row-center-center"
-          }
-        >
-          {/**Every operation is done in here.*/}
-          <div className="editor">
-            <div className="form flex-column-center-start">
-              <input
-                type="text"
-                name="title"
-                placeholder="Name"
-                className="font-text-small"
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              <input
-                type="text"
-                name="symbol"
-                placeholder="Symbol"
-                className="font-text-small"
-                onChange={(e) => {
-                  setSymbol(e.target.value);
-                }}
-              />
-              <textarea
-                //type="text"
-                name="description"
-                placeholder="Description"
-                className="font-text-small"
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-              />
-              <div className="royalties flex-column-center-center">
-                <div className="legend flex-row-between-center">
-                  <div className="font-text-small">royalties</div>
-                  <div className="font-text-small-bold">
-                    {sliderValue.toString()}%
-                  </div>
-                </div>
-                <div className="slider-container">
-                  <CustomSlider
-                    min={0}
-                    max={20}
-                    step={1}
-                    value={sliderValue} // Fix: Change the type of sliderValue to number
-                    onChange={(
-                      event: Event,
-                      value: number | number[],
-                      activeThumb: number
-                    ) => {
-                      if (typeof value == "number") {
-                        setSliderValue(value);
-                      }
-                    }}
-                  />
+            />
+            <input
+              type="text"
+              name="symbol"
+              placeholder="Symbol"
+              className="font-text-small"
+              onChange={(e) => {
+                setSymbol(e.target.value);
+              }}
+            />
+            <textarea
+              //type="text"
+              name="description"
+              placeholder="Description"
+              className="font-text-small"
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
+            <div className="royalties flex-column-center-center">
+              <div className="legend flex-row-between-center">
+                <div className="font-text-small">royalties</div>
+                <div className="font-text-small-bold">
+                  {sliderValue.toString()}%
                 </div>
               </div>
-              <div
-                className="attributes-button font-text"
-                onClick={() => {
-                  setAttributeModal(true);
-                }}
-              >
-                add attributes
-              </div>
-            </div>
-          </div>
-          {/**Shows a preview of the NFT */}
-          <div className="preview">
-            <div className="content">
-              <div
-                className="image"
-                onClick={() => {
-                  const imageInput = document.getElementById("image-input");
-                  if (imageInput) {
-                    imageInput.click();
-                  }
-                }}
-              >
-                {image ? (
-                  <img src={imagePreview} alt="image-preview" />
-                ) : (
-                  <div className="placeholder font-text-small">
-                    click here to import an image
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="cover"
-                  id="image-input"
-                  accept="image/png"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      validateImage(
-                        e.target.files[0],
-                        setImage,
-                        setImagePreview
-                      );
-                      console.log(e.target.files[0].name);
+              <div className="slider-container">
+                <CustomSlider
+                  min={0}
+                  max={20}
+                  step={1}
+                  value={sliderValue} // Fix: Change the type of sliderValue to number
+                  onChange={(
+                    event: Event,
+                    value: number | number[],
+                    activeThumb: number
+                  ) => {
+                    if (typeof value == "number") {
+                      setSliderValue(value);
                     }
                   }}
                 />
               </div>
-              <button
-                className="submit font-text-bold"
-                disabled={!title || !symbol || !description || !image}
-                onClick={run}
-              >
-                {!title || !symbol || !description || !image
-                  ? "fill out missing fields"
-                  : "create"}
-              </button>
             </div>
+            <div
+              className="attributes-button font-text"
+              onClick={() => {
+                setAttributeModal(true);
+              }}
+            >
+              add attributes
+            </div>
+          </div>
+          <div className="form flex-column-center-start">
+            <div
+              className="image"
+              onClick={() => {
+                const imageInput = document.getElementById("image-input");
+                if (imageInput) {
+                  imageInput.click();
+                }
+              }}
+            >
+              {image ? (
+                <img src={imagePreview} alt="image-preview" />
+              ) : (
+                <div className="placeholder font-text-small">
+                  click here to import an image
+                </div>
+              )}
+              <input
+                type="file"
+                name="cover"
+                id="image-input"
+                accept="image/png"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    validateImage(e.target.files[0], setImage, setImagePreview);
+                    console.log(e.target.files[0].name);
+                  }
+                }}
+              />
+            </div>
+            <button
+              className="submit font-text-bold"
+              disabled={!title || !symbol || !description || !image}
+              onClick={run}
+            >
+              {!title || !symbol || !description || !image
+                ? "fill out missing fields"
+                : "create"}
+            </button>
           </div>
         </div>
       </div>
@@ -317,7 +262,7 @@ export default function Panel() {
               return (
                 <div
                   className="attribute"
-                  key={index}
+                  key={"nft-attribute-" + index}
                   onClick={(e) => {
                     e.stopPropagation();
                     console.log("clicked.");
@@ -325,7 +270,9 @@ export default function Panel() {
                     setRenderHook(renderHook + 1);
                   }}
                 >
-                  <div className="key font-text-bold">{attribute.key}</div>
+                  <div className="key font-text-bold">
+                    {attribute.trait_type}
+                  </div>
 
                   <div className="line"></div>
                   <div className="value font-text-light">{attribute.value}</div>
@@ -370,7 +317,7 @@ export default function Panel() {
                     setAttributes([
                       ...(attributes || []),
                       {
-                        key: attributeKey || "",
+                        trait_type: attributeKey || "",
                         value: attributeValue || "",
                       },
                     ]);
@@ -392,6 +339,7 @@ export default function Panel() {
           </button>
         </div>
       )}
+
       {result && success && (
         <div id="result-backdrop" className="flex-row-center-center">
           <div id="result-panel" className="flex-column-center-center">

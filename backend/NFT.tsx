@@ -29,23 +29,45 @@ export const createNFT = async ({
   title,
   sellerFeeBasisPoints,
   metadata,
+  creators,
 }: {
   wallet: Wallet;
   connection: Connection;
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
+  creators: { address: string; share: number }[];
 }): Promise<string> => {
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
   const mint = generateSigner(umi);
   try {
+    console.log({
+      mint,
+      name: title,
+      uri: metadata,
+      sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+      creators: creators.map((item) => {
+        return {
+          address: publicKey(item.address),
+          share: item.share,
+          verified: false,
+        };
+      }),
+    });
     const result = await createNft(umi, {
       mint,
       name: title,
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+      creators: creators.map((item) => {
+        return {
+          address: publicKey(item.address),
+          share: item.share,
+          verified: false,
+        };
+      }),
     }).sendAndConfirm(umi);
 
     console.log("Mint: " + mint.publicKey);

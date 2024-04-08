@@ -15,13 +15,19 @@ export default function Header({
 }) {
   const [tab, setTab] = useState({ id: 0, open: false });
   const [sectionId, setSectionId] = useState(0);
-  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22"];
+  const labels = ["NFT", "PNFT", "CNFT", "SPL20", "SPL22", "CORE"];
   const operations = [
     ["Create a NFT", "burn a NFT"],
     ["Create a pNFT", "burn a pNFT"],
     ["Create Merkle Tree", "Create a cNFT", "Burn a cNFT"],
     ["Create a SPL20-Token", "Burn SPL20-Tokens"],
     ["Create a SPL22-Token", "Burn SPL22-Tokens"],
+    [
+      "Create a CORE-Asset",
+      "Create a CORE Collection",
+      "Edit a CORE Asset",
+      "Burn a CORE-Asset",
+    ],
   ];
   const pages = [
     ["nft-create", "nft-burn"],
@@ -29,6 +35,7 @@ export default function Header({
     ["cnft-merkletree", "cnft-create", "cnft-burn"],
     ["spl20-create", "spl20-burn"],
     ["spl22-create", "spl22-burn"],
+    ["core-create", "core-collection", "core-edit", "core-burn"],
   ];
   return (
     <>
@@ -93,7 +100,9 @@ export default function Header({
                         index.toString()
                       }
                     >
-                      <div className="tab flex-row-end-center">{item}</div>
+                      <div className="tab font-text-tiny flex-row-end-center">
+                        {item}
+                      </div>
                     </Link>
                   ))}
                 </m.div>

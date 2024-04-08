@@ -50,8 +50,8 @@ export default function RootComponent({
         <WalletModalProvider>
           <body>
             <SnackbarProvider
-              maxSnack={3}
-              autoHideDuration={3000}
+              maxSnack={100}
+              autoHideDuration={8000}
               action={(snackbarId) => (
                 <button
                   style={{

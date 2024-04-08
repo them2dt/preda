@@ -30,12 +30,14 @@ export const createPNFT = async ({
   title,
   sellerFeeBasisPoints,
   metadata,
+  creators,
 }: {
   wallet: Wallet;
   connection: Connection;
   title: string;
   sellerFeeBasisPoints: number;
   metadata: string;
+  creators: { address: string; share: number }[];
 }): Promise<string> => {
   enqueueSnackbar("initialize umi", { variant: "info" });
   const umi = createUmi(connection.rpcEndpoint);
@@ -48,6 +50,13 @@ export const createPNFT = async ({
       name: title,
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+      creators: creators.map((item) => {
+        return {
+          address: publicKey(item.address),
+          share: item.share,
+          verified: false,
+        };
+      }),
     }).sendAndConfirm(umi);
 
     console.log("Mint: " + mint.publicKey);

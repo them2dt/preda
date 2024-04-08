@@ -103,18 +103,20 @@
 }
 
 #header .tabs.section-0 {
+    right: 520px;
+}#header .tabs.section-1 {
     right: 420px;
 }
 
-#header .tabs.section-1 {
+#header .tabs.section-2 {
     right: 320px;
 }
 
-#header .tabs.section-2 {
+#header .tabs.section-3 {
     right: 220px;
 }
 
-#header .tabs.section-3 {
+#header .tabs.section-4 {
     right: 120px;
 }
 
