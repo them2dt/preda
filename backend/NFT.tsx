@@ -14,6 +14,8 @@ import {
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
+import { BackendResponse } from "@/types";
+import base58 from "bs58";
 
 /**
  * Creates a new Metaplex Standard NFT (Non-Fungible Token).
@@ -89,26 +91,14 @@ export const burnNFT = async ({
   wallet: Wallet;
   connection: Connection;
   assetId: string;
-}): Promise<boolean> => {
+}): Promise<BackendResponse> => {
   const umi = createUmi(connection.rpcEndpoint);
   umi.use(mplTokenMetadata());
   umi.use(walletAdapterIdentity(wallet.adapter));
-  try {
-    await burnV1(umi, {
-      mint: publicKey(assetId),
-      tokenStandard: TokenStandard.NonFungible,
-      tokenOwner: umi.identity.publicKey,
-    })
-      .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
-      .then((result) => {
-        if (result.signature) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-  } catch (e) {
-    console.log("BurnNFT(): " + e);
-    return false;
-  }
+  const response = await burnV1(umi, {
+    mint: publicKey(assetId),
+    tokenStandard: TokenStandard.NonFungible,
+    tokenOwner: umi.identity.publicKey,
+  }).sendAndConfirm(umi, { confirm: { commitment: "confirmed" } });
+  return { assetID: assetId, signature: base58.encode(response.signature) };
 };

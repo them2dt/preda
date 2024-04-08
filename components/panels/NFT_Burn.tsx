@@ -13,12 +13,13 @@ export default function Panel() {
 
   const validatePublicKey = async (pubkey: string) => {
     if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
+      try{
       await burnNFT({
         connection: connection,
         wallet: wallet,
         assetId: validatorInput,
       }).then((result) => {
-        if (result) {
+        if (result.signature) {
           enqueueSnackbar("Burnt asset successfully.", {
             variant: "success",
           });
@@ -28,6 +29,12 @@ export default function Panel() {
           });
         }
       });
+      }catch(e){
+
+        enqueueSnackbar("Something went wrong", {
+          variant: "error",
+        });
+      }
     }
   };
   return (
