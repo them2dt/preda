@@ -2,6 +2,8 @@
 The powerhouse for Solana tokens.
 
 ## Getting Started
+
+### Launch from the Web(recommended)
 1. Open [http://localhost:3000](http://localhost:3000)
 
 ### Launch locally
