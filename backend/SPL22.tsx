@@ -22,6 +22,7 @@ import {
   getAccount,
   getMint,
 } from "@solana/spl-token";
+import { BackendResponse } from "@/types";
 
 export const createAndMintSPL22 = async ({
   wallet,
@@ -41,43 +42,43 @@ export const createAndMintSPL22 = async ({
   decimals: number;
   supply: number;
   sellerFeeBasisPoints: number;
-}): Promise<{ status: number; pubkey: string }> => {
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-  const mint = generateSigner(umi);
-
-  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
-    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-  );
-  const createTX = createV1(umi, {
-    mint: mint,
-    authority: umi.identity,
-    name: name,
-    symbol: symbol,
-    uri: metadata,
-    sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
-    decimals: decimals,
-    printSupply: { __kind: "Limited", fields: [supply * 10 ** decimals] },
-    tokenStandard: TokenStandard.Fungible,
-    splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
-  });
-  const token = findAssociatedTokenPda(umi, {
-    mint: mint.publicKey,
-    owner: umi.identity.publicKey,
-    tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
-  });
-  const mintTX = mintV1(umi, {
-    mint: mint.publicKey,
-    token,
-    authority: umi.identity,
-    amount: supply * 10 ** decimals,
-    tokenOwner: umi.identity.publicKey,
-    splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
-    tokenStandard: TokenStandard.Fungible,
-  });
+}): Promise<BackendResponse> => {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+    const mint = generateSigner(umi);
+
+    const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
+      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+    );
+    const createTX = createV1(umi, {
+      mint: mint,
+      authority: umi.identity,
+      name: name,
+      symbol: symbol,
+      uri: metadata,
+      sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
+      decimals: decimals,
+      printSupply: { __kind: "Limited", fields: [supply * 10 ** decimals] },
+      tokenStandard: TokenStandard.Fungible,
+      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+    });
+    const token = findAssociatedTokenPda(umi, {
+      mint: mint.publicKey,
+      owner: umi.identity.publicKey,
+      tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
+    });
+    const mintTX = mintV1(umi, {
+      mint: mint.publicKey,
+      token,
+      authority: umi.identity,
+      amount: supply * 10 ** decimals,
+      tokenOwner: umi.identity.publicKey,
+      splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+      tokenStandard: TokenStandard.Fungible,
+    });
     await createTX
       .sendAndConfirm(umi, {
         send: { skipPreflight: true },
@@ -103,14 +104,10 @@ export const createAndMintSPL22 = async ({
 
     return {
       status: 200,
-      pubkey: mint.publicKey,
+      assetID: mint.publicKey,
     };
   } catch (e) {
-    console.log("Error @ CreateAndMint(): " + e);
-    return {
-      status: 400,
-      pubkey: mint.publicKey,
-    };
+    return { status: 500, errorMessage: e || "" };
   }
 };
 
@@ -124,17 +121,17 @@ export const burnSPL22 = async ({
   connection: Connection;
   assetId: string;
   amount: number;
-}): Promise<boolean> => {
-  const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
-    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-  );
-  const umi = createUmi(connection.rpcEndpoint);
-
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-
+}): Promise<BackendResponse> => {
   try {
+    const SPL_TOKEN_2022_PROGRAM_ID = publicKey(
+      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+    );
+    const umi = createUmi(connection.rpcEndpoint);
+
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+
     const token = findAssociatedTokenPda(umi, {
       mint: publicKey(assetId),
       owner: umi.identity.publicKey,
@@ -150,21 +147,20 @@ export const burnSPL22 = async ({
     })
       .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
       .then((result) => {
-        if (result.signature) {
-          return true;
-        } else {
-          return false;
-        }
+        return {
+          signature: bs58.encode(result.signature),
+          assetID: assetId,
+          status: 200,
+        };
       });
 
     return response;
   } catch (e) {
-    console.log("Error @ BurnSPL22(): " + e);
-    return false;
+    return { status: 500, errorMessage: e || "" };
   }
 };
 
-export async function getBalanceFromToken22({
+export async function fetchToken22({
   wallet,
   connection,
   assetId,
@@ -172,7 +168,7 @@ export async function getBalanceFromToken22({
   wallet: Wallet;
   connection: Connection;
   assetId: string;
-}): Promise<{ balance: number; decimals: number }> {
+}): Promise<BackendResponse> {
   try {
     const tokenAccount = getAssociatedTokenAddressSync(
       new PublicKey(assetId),
@@ -194,8 +190,11 @@ export async function getBalanceFromToken22({
       new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
     );
     const balance = amount;
-    return { balance: balance, decimals: mint.decimals };
+    return {
+      tokenBalance: { balance: balance, decimals: mint.decimals },
+      status: 200,
+    };
   } catch (e) {
-    console.log("Error @ GBT22: " + e);
+    return { status: 500, errorMessage: e || "" };
   }
 }

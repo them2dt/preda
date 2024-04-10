@@ -6,43 +6,29 @@ import {
   faX,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { enqueueSnackbar } from "notistack";
-import { createNFT } from "@/backend/NFT";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import { createCollection } from "@/backend/CORE";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [attributeModal, setAttributeModal] = useState(false);
-  //rerenders the attribute-modal on every change.
   const [renderHook, setRenderHook] = useState<number>(0);
-  //sets the title of NFT.
   const [title, setTitle] = useState<string>();
-  //sets the symbol of NFT.
   const [symbol, setSymbol] = useState<string>();
-  //sets the description of NFT.
   const [description, setDescription] = useState<string>();
-  //sets the image of NFT.
   const [image, setImage] = useState();
-  //sets the image-preview of NFT.
   const [imagePreview, setImagePreview] = useState();
-  //sets the title of NFT.
-  const [sliderValue, setSliderValue] = useState<number>(0);
-  // hooks to store the key and value of the attribute to be added.
   const [attributeKey, setAttributeKey] = useState<string>();
   const [attributeValue, setAttributeValue] = useState<string>();
-  // a hook with the type of an array of objects, which contains the key and value of the attribute.
   const [attributes, setAttributes] =
     useState<{ trait_type: string; value: string }[]>();
-  //hooks to store the key and value of the attribute to be added.
-
-  const [resultAddress, setResultAddress] = useState<string>();
-
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
@@ -51,7 +37,6 @@ export default function Panel() {
       console.log(oldArray);
     }
   };
-  useEffect(() => {}, []);
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
@@ -81,28 +66,25 @@ export default function Panel() {
       });
 
       if (metadataUri) {
-        const response = await createCollection({
+        const runner = createCollection({
           wallet: wallet,
           connection: connection,
           name: title,
           uri: description,
         });
 
-        if (response) {
-          enqueueSnackbar("Collection created!", { variant: "success" });
-          setResultAddress(response.assetID || "");
-          setSuccess(true);
-          setResult(true);
-        } else {
-          enqueueSnackbar("Collection creation failed.", { variant: "error" });
-          setSuccess(false);
-          setResult(true);
-        }
+        const response = await backendWrapper({
+          wallet: wallet,
+          connection: connection,
+          initialMessage: "Create CORE collection",
+          backendCall: async () => await runner,
+        });
+        setResult(response);
       } else {
         enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-        setSuccess(false);
-        setResult(true);
       }
+    } else {
+      enqueueSnackbar("Image upload failed.", { variant: "error" });
     }
   };
 
@@ -150,15 +132,16 @@ export default function Panel() {
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
-            /><input
-            type="text"
-            name="symbol"
-            placeholder="Symbol"
-            className="font-text-small"
-            onChange={(e) => {
-              setSymbol(e.target.value);
-            }}
-          />
+            />
+            <input
+              type="text"
+              name="symbol"
+              placeholder="Symbol"
+              className="font-text-small"
+              onChange={(e) => {
+                setSymbol(e.target.value);
+              }}
+            />
             <textarea
               //type="text"
               name="description"
@@ -276,73 +259,7 @@ export default function Panel() {
           </button>
         </div>
       )}
-
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

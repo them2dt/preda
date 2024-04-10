@@ -3,38 +3,36 @@ import React, { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { burnNFT } from "@/backend/NFT";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [validatorInput, setValidatorInput] = useState<string>();
   const [inputValid, setInputValid] = useState(false);
 
+  const [result, setResult] = useState<BackendResponse>();
+
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      try{
-      await burnNFT({
+  const run = async () => {
+    if (!/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(validatorInput)) {
+      enqueueSnackbar("Invalid public key.", { variant: "error" });
+    } else {
+      const runner = burnNFT({
         connection: connection,
         wallet: wallet,
         assetId: validatorInput,
-      }).then((result) => {
-        if (result.signature) {
-          enqueueSnackbar("Burnt asset successfully.", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Couldn't burn asset. Is it a standard NFT?", {
-            variant: "error",
-          });
-        }
       });
-      }catch(e){
 
-        enqueueSnackbar("Something went wrong", {
-          variant: "error",
-        });
-      }
+      const response = await backendWrapper({
+        wallet: wallet,
+        connection: connection,
+        initialMessage: "Burn NFT",
+        backendCall: async () => await runner,
+      });
+      setResult(response);
     }
   };
   return (
@@ -56,15 +54,14 @@ export default function Panel() {
             <button
               disabled={!wallet || !connection || !validatorInput}
               className="button flex-row-center-center font-text-tiny-bold"
-              onClick={async () => {
-                await validatePublicKey(validatorInput);
-              }}
+              onClick={run}
             >
               Burn Asset
             </button>
           </div>
         </div>
       </div>
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

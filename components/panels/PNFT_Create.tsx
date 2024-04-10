@@ -1,18 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faX,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import { Tooltip } from "@mui/material";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 import { createPNFT } from "@/backend/PNFT";
 import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -38,9 +35,8 @@ export default function Panel() {
     { address: string; share: number }[]
   >([]);
   //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
+
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -122,91 +118,80 @@ export default function Panel() {
     return invalidPoints == 0;
   };
   const run = async () => {
-    try {
-      if (validate()) {
-        enqueueSnackbar("Uploading image...", { variant: "info" });
-        const imageUri = await uploadFileToIrys({
+    if (validate()) {
+      enqueueSnackbar("Uploading image...", { variant: "info" });
+      const imageUri = await uploadFileToIrys({
+        wallet: wallet,
+        connection: connection,
+        file: image,
+      });
+
+      if (imageUri) {
+        const metadata = {
+          name: title,
+          symbol: symbol,
+          description: description,
+          seller_fee_basis_points: sliderValue,
+          image: imageUri,
+          external_url: "emptea.xyz",
+          attributes: attributes || [],
+          properties: {
+            files: [{ uri: imageUri, type: "image/png" }],
+            category: "image",
+            creators:
+              creators.length > 0
+                ? creators
+                : [
+                    {
+                      address: wallet.adapter.publicKey.toBase58(),
+                      share: 100,
+                    },
+                  ],
+          },
+          collection: {},
+        };
+        const metadataFile = new File(
+          [JSON.stringify(metadata)],
+          "metadata.json",
+          { type: "application/json" }
+        );
+        const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
-          file: image,
+          file: metadataFile,
         });
 
-        if (imageUri) {
-          const metadata = {
-            name: title,
-            symbol: symbol,
-            description: description,
-            seller_fee_basis_points: sliderValue,
-            image: imageUri,
-            external_url: "emptea.xyz",
-            attributes: attributes || [],
-            properties: {
-              files: [{ uri: imageUri, type: "image/png" }],
-              category: "image",
-              creators:
-                creators.length > 0
-                  ? creators
-                  : [
-                      {
-                        address: wallet.adapter.publicKey.toBase58(),
-                        share: 100,
-                      },
-                    ],
-            },
-            collection: {},
-          };
-          const metadataFile = new File(
-            [JSON.stringify(metadata)],
-            "metadata.json",
-            { type: "application/json" }
-          );
-          const metadataUri = await uploadFileToIrys({
+        if (metadataUri) {
+          const runner = createPNFT({
             wallet: wallet,
             connection: connection,
-            file: metadataFile,
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+            creators:
+              creators.length > 0
+                ? creators
+                : [
+                    {
+                      address: wallet.adapter.publicKey.toBase58(),
+                      share: 100,
+                    },
+                  ],
           });
 
-          if (metadataUri) {
-            const mint = await createPNFT({
-              wallet: wallet,
-              connection: connection,
-              title: title,
-              metadata: metadataUri,
-              sellerFeeBasisPoints: sliderValue,
-              creators:
-                creators.length > 0
-                  ? creators
-                  : [
-                      {
-                        address: wallet.adapter.publicKey.toBase58(),
-                        share: 100,
-                      },
-                    ],
-            });
-
-            if (mint) {
-              enqueueSnackbar("NFT created!", { variant: "success" });
-              setResultAddress(mint);
-              setSuccess(true);
-              setResult(true);
-            } else {
-              enqueueSnackbar("NFT creation failed.", { variant: "error" });
-              setSuccess(false);
-              setResult(true);
-            }
-          } else {
-            enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
-          }
+          const response = await backendWrapper({
+            wallet: wallet,
+            connection: connection,
+            initialMessage: "Create PNFT",
+            backendCall: async () => await runner,
+          });
+          setResult(response);
         } else {
-          enqueueSnackbar("Image upload failed.", { variant: "error" });
-          setSuccess(false);
-          setResult(true);
+          enqueueSnackbar("Metadata upload failed.", { variant: "error" });
         }
+      } else {
+        enqueueSnackbar("Image upload failed.", { variant: "error" });
       }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", { variant: "error" });
     }
   };
 
@@ -409,7 +394,6 @@ export default function Panel() {
           </button>
         </div>
       )}
-
       {creatorModal && (
         <div
           className="attribute-modal"
@@ -546,73 +530,7 @@ export default function Panel() {
           </button>
         </div>
       )}
-
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

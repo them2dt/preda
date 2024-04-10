@@ -1,49 +1,40 @@
 "use client";
 import React, { useState } from "react";
-import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { burnNFT } from "@/backend/NFT";
 import { burnAsset, fetchAsset } from "@/backend/CORE";
+import { backendWrapper } from "../BackendWrapper";
+import { enqueueSnackbar } from "notistack";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [validatorInput, setValidatorInput] = useState<string>();
   const [collection, setCollection] = useState<string>();
+  const [result, setResult] = useState<BackendResponse>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
-  const validatePublicKey = async () => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(validatorInput)) {
-      await fetchAsset({
+  const run = async () => {
+    if (!/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(validatorInput)) {
+      enqueueSnackbar("Invalid public key.", { variant: "error" });
+    } else {
+      const runner = burnAsset({
         connection: connection,
         wallet: wallet,
         assetId: validatorInput,
-      }).then(async (result) => {
-        if (result) {
-          await burnAsset({
-            connection: connection,
-            wallet: wallet,
-            assetId: result.assetID,
-            collection: /[1-9A-HJ-NP-Za-km-z]{32,44}/.test(collection)
-              ? collection
-              : null,
-          }).then((res) => {
-            if (res.signature) {
-              enqueueSnackbar("Burnt asset successfully.", {
-                variant: "success",
-              });
-            }else{
-              enqueueSnackbar("Did't burn asset. Is it a CORE Asset?", {
-                variant: "error",
-              });
-            }
-          });
-        } else {
-          enqueueSnackbar("Couldn't burn asset. Is it a CORE Asset?", {
-            variant: "error",
-          });
-        }
+        collection: /[1-9A-HJ-NP-Za-km-z]{32,44}/.test(collection)
+          ? collection
+          : null,
       });
+
+      const response = await backendWrapper({
+        initialMessage: "Burning CORE",
+        wallet: wallet,
+        connection: connection,
+        backendCall: async () => await runner,
+      });
+      setResult(response);
     }
   };
   return (
@@ -73,15 +64,14 @@ export default function Panel() {
             <button
               disabled={!wallet || !connection || !validatorInput}
               className="button flex-row-center-center font-text-tiny-bold"
-              onClick={async () => {
-                await validatePublicKey();
-              }}
+              onClick={run}
             >
               Burn Asset
             </button>
           </div>
         </div>
       </div>
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

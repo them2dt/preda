@@ -39,13 +39,13 @@ export default function Navigation({
   const [navModal, setNavModal] = useState(0);
   const wallet = useWallet();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (wallet) {
       if (wallet.connected) {
         enqueueSnackbar("Wallet connected.", { variant: "success" });
-      } else enqueueSnackbar("Wallet not connected.", { variant: "error" });
+      } 
     }
-  }, [wallet.connected]);
+  }, [wallet.connected]); */
 
   return (
     <>
@@ -79,7 +79,10 @@ export default function Navigation({
           >
             <FontAwesomeIcon icon={faPalette} />
           </div>
-          <Link href={"https://emptea.gitbook.io/preda-by-emptea-studios"} target="_blank">
+          <Link
+            href={"https://emptea.gitbook.io/preda-by-emptea-studios"}
+            target="_blank"
+          >
             <div
               className="navigation-button flex-row-center-center"
               onClick={() => {

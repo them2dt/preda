@@ -1,54 +1,38 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
 import { CustomSlider } from "@/components/Slider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { createMerkleTree } from "@/backend/CNFT";
 import { Tooltip } from "@mui/material";
-import Link from "next/link";
-import { enqueueSnackbar } from "notistack";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [size, setSize] = useState<number>();
   const [visibility, setVisibility] = useState<boolean>();
-  const [merkleTree, setMerkleTree] = useState<string>();
-
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
   useEffect(() => {}, []);
 
   const run = async () => {
-    if (wallet) {
-      try {
-        const merkleTree = await createMerkleTree({
-          connection,
-          wallet,
-          size: size,
-          visibility: visibility,
-        });
-        if (merkleTree.success) {
-          setMerkleTree(merkleTree.merkleTree);
-          setSuccess(true);
-          setResult(true);
-        } else {
-          setSuccess(false);
-          setResult(true);
-        }
-      } catch (e) {
-        console.log(e);
-        enqueueSnackbar(
-          "Transaction failed. Check your funds and connection.",
-          { variant: "error" }
-        );
-      }
-    }
+    const runner = createMerkleTree({
+      connection,
+      wallet,
+      size: size,
+      visibility: visibility,
+    });
+
+    const response = await backendWrapper({
+      wallet: wallet,
+      connection: connection,
+      initialMessage: "",
+      backendCall: async () => await runner,
+    });
+
+    setResult(response);
   };
 
   return (
@@ -111,72 +95,7 @@ export default function Panel() {
         </div>
       </div>
 
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + merkleTree}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + merkleTree}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(merkleTree);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

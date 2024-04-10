@@ -1,3 +1,8 @@
+button:disabled {
+    background-color: var(--secondary-faded-1);
+    color: var(--secondary-faded-2);
+}
+
 .panel-container {
     gap: 10px;
 }

@@ -13,6 +13,9 @@ import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { backendWrapper } from "../BackendWrapper";
+import ResultPanel from "../ResultPanel";
+import { BackendResponse } from "@/types";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -38,10 +41,9 @@ export default function Panel() {
   const [creators, setCreators] = useState<
     { address: string; share: number }[]
   >([]);
-  //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+
+  const [result, setResult] = useState<BackendResponse>();
+
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -168,33 +170,24 @@ export default function Panel() {
           });
 
           if (metadataUri) {
-            const mint = await createCoreAsset({
+            const runner = createCoreAsset({
               wallet: wallet,
               connection: connection,
               name: title,
               metadata: metadataUri,
               collection: collection || null,
             });
-
-            if (mint) {
-              enqueueSnackbar("Asset created!", { variant: "success" });
-              setResultAddress(mint.assetID || "");
-              setSuccess(true);
-              setResult(true);
-            } else {
-              enqueueSnackbar("Asset creation failed.", { variant: "error" });
-              setSuccess(false);
-              setResult(true);
-            }
+            const response = await backendWrapper({
+              wallet: wallet,
+              connection: connection,
+              initialMessage: "Create CORE collection",
+              backendCall: async () => await runner,
+            });
           } else {
             enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         } else {
           enqueueSnackbar("Image upload failed.", { variant: "error" });
-          setSuccess(false);
-          setResult(true);
         }
       }
     } catch (e) {
@@ -553,73 +546,8 @@ export default function Panel() {
           </button>
         </div>
       )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
 
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

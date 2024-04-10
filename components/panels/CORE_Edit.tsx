@@ -16,6 +16,9 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
 import { metadata } from "@/app/layout";
 import { collectionAddress } from "@metaplex-foundation/mpl-core";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -42,9 +45,7 @@ export default function Panel() {
     { address: string; share: number }[]
   >([]);
   //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const [address, setAddress] = useState<string>();
   const [adressValid, setAdressValid] = useState<boolean>(false);
@@ -172,7 +173,7 @@ export default function Panel() {
 
           if (metadataUri) {
             if (collection) {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
@@ -181,18 +182,14 @@ export default function Panel() {
                 collection: collection,
               });
 
-              if (mint) {
-                enqueueSnackbar("Asset Updated!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("Asset update failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                initialMessage: "Edit CORE asset",
+                backendCall: async () => await runner,
+              });
             } else {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
@@ -200,24 +197,17 @@ export default function Panel() {
                 metadata: metadataUri,
               });
 
-              if (mint) {
-                enqueueSnackbar("Asset Updated!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("Asset update failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                initialMessage: "Edit CORE asset",
+                backendCall: async () => await runner,
+              });
             }
           } else {
             enqueueSnackbar("Asset upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         } else {
-          enqueueSnackbar("Uploading assets...", { variant: "info" });
           const imageUri = await uploadFileToIrys({
             wallet: wallet,
             connection: connection,
@@ -260,33 +250,24 @@ export default function Panel() {
             });
 
             if (metadataUri) {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
                 name: title,
                 metadata: metadataUri,
               });
-
-              if (mint) {
-                enqueueSnackbar("NFT created!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("NFT creation failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                backendCall: async () => await runner,
+              });
+              setResult(response);
             } else {
               enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-              setSuccess(false);
-              setResult(true);
             }
           } else {
             enqueueSnackbar("Image upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         }
       }
@@ -722,72 +703,7 @@ export default function Panel() {
         </div>
       )}
 
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }
