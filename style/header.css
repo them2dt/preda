@@ -1,0 +1,55 @@
+@media only screen and (min-width: 768px) {
+  #header {
+    position: fixed;
+    width: calc(100vw - 40px);
+    height: 80px;
+
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #header .logo {
+    color: var(--primary);
+    gap: 20px;
+  }
+
+  #header .logo img {
+    width: 40px;
+    height: 40px;
+  }
+  #header .opener {
+    width: fit-content;
+    height: fit-content;
+
+    margin: 0px;
+    padding: 0px;
+
+    background-color: transparent;
+    border: none;
+
+    font-size: 28px;
+    cursor: pointer;
+  }
+
+  #header-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  #header-backdrop .menu {
+    gap: 40px;
+    max-width: 80vw;
+    flex-wrap: wrap;
+  }
+
+  #header-backdrop .menu .section .title {
+    color: var(--accent-1);
+    padding-bottom: 20px;
+  }
+}
