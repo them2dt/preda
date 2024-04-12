@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import appIcon from "../media/app-icon.png";
 import { motion as m } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header({
   id,
@@ -50,65 +52,31 @@ export default function Header({
             <Link href={"/"}>Preda</Link>
           </div>
         </div>
-        <div className="flex-row-center-start">
-          {labels.map((item, index) => (
-            <div
-              key={"operator-" + index}
-              className="flex-column-center-center"
-              onClick={() => {
-                setSectionId(index);
-                if (index == sectionId) {
-                  setTab({ id: index, open: !tab.open });
-                } else setTab({ id: index, open: true });
-              }}
-            >
+        <button className="opener flex-row-center-center">
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+      </div>
+      <div id="header-backdrop" className="flex-row-center-center">
+        <div className="flex-row-center-center">
+          <div className="menu flex-row-center-start">
+            {labels.map((item, index) => (
               <div
-                className={
-                  tab.open == true && sectionId == index
-                    ? "operator flex-row-end-center font-text-small-bold " +
-                      (id == index && "active")
-                    : "operator flex-row-end-center font-text-small " +
-                      (id == index && "active")
-                }
+                className="section flex-column-center-start"
+                key={"header-section-" + index}
               >
-                {item}
+                <div className="title font-text-bold">{item}</div>
+                {operations.map((op, i) => (
+                  <div
+                    className="font-text-small"
+                    key={"operation-" + index + "-" + i}
+                  >
+                    {operations[index][i]}
+                  </div>
+                ))}
+                <div className="font-text-small">Burn an asset</div>
               </div>
-              {tab.open == true && (
-                <m.div
-                  className={
-                    sectionId == index
-                      ? "tabs active flex-column-end-end section-" +
-                        sectionId.toString()
-                      : "tabs flex-column-end-end section-" +
-                        sectionId.toString()
-                  }
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ delay: 0.1, duration: 0.2 }}
-                >
-                  {operations[sectionId].map((item, index) => (
-                    <Link
-                      href={"/" + pages[sectionId][index]}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                      key={
-                        "operation-" +
-                        sectionId.toString() +
-                        "-" +
-                        index.toString()
-                      }
-                    >
-                      <div className="tab font-text-tiny flex-row-end-center">
-                        {item}
-                      </div>
-                    </Link>
-                  ))}
-                </m.div>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </>
