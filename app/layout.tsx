@@ -1,3 +1,4 @@
+import "../style/header.css";
 import "../style/homepage.css";
 import "../style/globals.css";
 import "../style/skeleton.css";

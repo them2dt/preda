@@ -1,7 +1,7 @@
 import Container from "@/components/container/Container";
 import React from "react";
-import Panel from "../../components/panels/NFT_Create";
+import Panel from "../../../components/panels/CORE_Edit";
 
 export default function page() {
-  return <Container id={0} panel={<Panel />} />;
+  return <Container id={5} panel={<Panel />} />;
 }
