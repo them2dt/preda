@@ -81,12 +81,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/nft/create"}>
+                    <Link href={"/nft-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create an NFT
                       </motion.div>
                     </Link>
-                    <Link href={"/nft/burn"}>
+                    <Link href={"/nft-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn an NFT
                       </motion.div>
@@ -116,17 +116,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/spl20/create"}>
+                    <Link href={"/spl20-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a SPL20
                       </motion.div>
                     </Link>
-                    <Link href={"/spl20-mint"}>
-                      <motion.div className="action flex-column-center-center font-text-tiny-bold">
-                        Mint SPL20
-                      </motion.div>
-                    </Link>
-                    <Link href={"/spl20/burn"}>
+                    <Link href={"/spl20-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn SPL20
                       </motion.div>
@@ -152,12 +147,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/pnft/create"}>
+                    <Link href={"/pnft-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create an pNFT
                       </motion.div>
                     </Link>
-                    <Link href={"/pnft/burn"}>
+                    <Link href={"/pnft-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn an pNFT
                       </motion.div>
@@ -183,17 +178,17 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/cnft/merkletree"}>
+                    <Link href={"/cnft-merkletree"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a Merkle Tree
                       </motion.div>
                     </Link>
-                    <Link href={"/cnft/create"}>
+                    <Link href={"/cnft-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a cNFT
                       </motion.div>
                     </Link>
-                    <Link href={"/cnft/burn"}>
+                    <Link href={"/cnft-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn a cNFT
                       </motion.div>
@@ -219,17 +214,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/spl22/create"}>
+                    <Link href={"/spl22-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a SPL22
                       </motion.div>
                     </Link>
-                    <Link href={"/spl22-mint"}>
-                      <motion.div className="action flex-column-center-center font-text-tiny-bold">
-                        Mint SPL22
-                      </motion.div>
-                    </Link>
-                    <Link href={"/spl22/burn"}>
+                    <Link href={"/spl22-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn SPL22
                       </motion.div>
@@ -255,22 +245,22 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="actions flex-column-center-center">
-                    <Link href={"/core/create"}>
+                    <Link href={"/core-create"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a CORE Asset
                       </motion.div>
                     </Link>
-                    <Link href={"/core/collection"}>
+                    <Link href={"/core-collection"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Create a CORE Collection
                       </motion.div>
                     </Link>
-                    <Link href={"/core/edit"}>
+                    <Link href={"/core-edit"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Edit a CORE Asset
                       </motion.div>
                     </Link>
-                    <Link href={"/core/burn"}>
+                    <Link href={"/core-burn"}>
                       <motion.div className="action flex-column-center-center font-text-tiny-bold">
                         Burn a CORE Asset
                       </motion.div>
@@ -303,7 +293,7 @@ export default function Page() {
             exit={{ opacity: 0 }}
             transition={{ delay: 0.1, duration: 0.1 }}
           >
-            <Link href={"/nft/create"} target="_blank">
+            <Link href={"/nft-create"} target="_blank">
               <div className="item launch font-h4">launch</div>
             </Link>
           </motion.div>
