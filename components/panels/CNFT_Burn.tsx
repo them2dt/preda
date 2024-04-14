@@ -30,9 +30,9 @@ export default function Panel() {
   };
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Burn a compressed NFT</div>
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-column-start-center">
           <input
             type="text"
             name="title"
@@ -45,7 +45,7 @@ export default function Panel() {
           <div className="button-base">
             <button
               disabled={!wallet || !connection || !validatorInput}
-              className="button flex-row-center-center font-text-tiny-bold"
+              className="submit flex-row-center-center font-text-tiny-bold"
               onClick={run}
             >
               Burn Asset

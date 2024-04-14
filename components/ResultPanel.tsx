@@ -18,14 +18,14 @@ export default function ResultPanel({
   return (
     <>
       {result.status != 0 && (
-        <div id="result-backdrop" className="flex-row-center-center">
+        <div id="result-backdrop" className="backdrop flex-row-center-center">
           {result.status == 200 ? (
-            <div id="result-panel" className="flex-column-center-center">
+            <div id="result-panel" className="panel flex-column-center-center">
               <div className="headline flex-column-center-center">
                 <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
                 <div className="message font-h4">Success!</div>
               </div>
-              <div className="buttons flex-column-center-center">
+              <div className="column buttons flex-column-center-center">
                 {result.signature && (
                   <div className="button-base">
                     <Link

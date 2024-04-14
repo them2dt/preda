@@ -197,10 +197,10 @@ export default function Panel() {
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a programmable NFT</div>
-        <div id="panel-nft" className="panel flex-row-center-start">
-          <div className="form flex-column-center-start">
+        <div  className="panel flex-row-center-start">
+          <div className="column flex-column-center-start">
             <input
               type="text"
               name="title"
@@ -239,26 +239,26 @@ export default function Panel() {
                 setDomain(e.target.value);
               }}
             />
-            <div
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setAttributeModal(true);
               }}
             >
               add attributes
-            </div>
-            <div
+            </button>
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setCreatorModal(true);
               }}
             >
               configure royalties
-            </div>
+            </button>
           </div>
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <div
-              className="image"
+              className="image-preview flex-row-center-center"
               onClick={() => {
                 const imageInput = document.getElementById("image-input");
                 if (imageInput) {
@@ -300,8 +300,7 @@ export default function Panel() {
       </div>
       {attributeModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -396,8 +395,7 @@ export default function Panel() {
       )}
       {creatorModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}

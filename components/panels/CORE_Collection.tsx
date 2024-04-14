@@ -90,40 +90,10 @@ export default function Panel() {
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a CORE Collection</div>
         <div id="panel-core-collection" className="panel flex-row-center-start">
-          <div className="form flex-column-center-start">
-            <div
-              className="image"
-              onClick={() => {
-                const imageInput = document.getElementById("image-input");
-                if (imageInput) {
-                  imageInput.click();
-                }
-              }}
-            >
-              {image ? (
-                <img src={imagePreview} alt="image-preview" />
-              ) : (
-                <div className="placeholder font-text-small">
-                  click here to import an image
-                </div>
-              )}
-              <input
-                type="file"
-                name="cover"
-                id="image-input"
-                accept="image/png"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    validateImage(e.target.files[0], setImage, setImagePreview);
-                    console.log(e.target.files[0].name);
-                  }
-                }}
-              />
-            </div>
-
+          <div className="column flex-column-center-start">
             <input
               type="text"
               name="title"
@@ -151,6 +121,37 @@ export default function Panel() {
                 setDescription(e.target.value);
               }}
             />
+          </div>
+          <div className="column flex-column-center-start">
+            <div
+              className="image-preview flex-row-center-center"
+              onClick={() => {
+                const imageInput = document.getElementById("image-input");
+                if (imageInput) {
+                  imageInput.click();
+                }
+              }}
+            >
+              {image ? (
+                <img src={imagePreview} alt="image-preview" />
+              ) : (
+                <div className="placeholder font-text-small">
+                  click here to import an image
+                </div>
+              )}
+              <input
+                type="file"
+                name="cover"
+                id="image-input"
+                accept="image/png"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    validateImage(e.target.files[0], setImage, setImagePreview);
+                    console.log(e.target.files[0].name);
+                  }
+                }}
+              />
+            </div>
             <button
               className="submit font-text-bold"
               disabled={!title || !symbol || !description || !image}
@@ -165,8 +166,7 @@ export default function Panel() {
       </div>
       {attributeModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}

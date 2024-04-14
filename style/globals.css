@@ -24,7 +24,7 @@
 html {
     scroll-behavior: smooth;
     background-color: var(--secondary);
-
+    max-width: 100vw;
 }
 
 body {
@@ -34,6 +34,8 @@ body {
     background-color: var(--secondary);
     color: var(--primary);
     overflow-x: hidden;
+
+    max-width: 100vw;
 }
 
 a {
@@ -41,9 +43,35 @@ a {
     color: inherit;
 }
 
+#skeleton {
+    width: 100vw;
+    height: 100vh;
+  
+    margin: 0;
+    padding: 0;
+  
+    background-color: var(--secondary);
+    color: var(--primary);
+  }
+  
+  #mainboard {
+    width: 100vw;
+    height: 100vh;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    overflow-y: scroll;
+  
+    background-color: var(--secondary);
+    background: var(--background) no-repeat;
+    background-size: cover;
+  }
 /*a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades, lets take a #B763FF for the accent*/
 
 :root {
+    max-width: 100vw;
 
     --black-1: rgb(0, 0, 0);
     --black-2: rgb(10, 10, 10);

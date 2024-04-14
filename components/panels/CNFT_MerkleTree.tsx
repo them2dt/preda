@@ -37,12 +37,12 @@ export default function Panel() {
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a Merkle Tree</div>
         <div id="lab-panel-nft" className="panel flex-row-center-center">
-          <div className="form flex-column-center-center">
-            <div className="visibility flex-row-between-center">
-              <div className="legend font-text-small-bold">Public</div>
+          <div className="column flex-column-center-center">
+            <div className="legend flex-row-between-center">
+              <div className="font-text-small-bold">Public</div>
               <input
                 type="checkbox"
                 onChange={(e) => {

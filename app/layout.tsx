@@ -1,22 +1,10 @@
 import "../style/header.css";
 import "../style/homepage.css";
 import "../style/globals.css";
-import "../style/skeleton.css";
 import "../style/navigation.css";
 import "../style/adapter.css";
-import "../style/profile.css";
-import "../style/gallery.css";
-import "../style/singleItemView.css";
 //
-import "../style/panels/general.css";
-import "../style/panels/1_nft.css";
-import "../style/panels/2_pnft.css";
-import "../style/panels/3_merkleTree.css";
-import "../style/panels/4_cnft.css";
-import "../style/panels/4_cnft.css";
-import "../style/panels/5_spl.css";
-import "../style/panels/5_spl.css";
-import "../style/panels/6_core.css";
+import "../style/panel.css";
 import RootComponent from "./RootComponent";
 import Head from "next/head";
 

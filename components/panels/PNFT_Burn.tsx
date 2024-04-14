@@ -36,9 +36,9 @@ export default function Panel() {
   };
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Burn a programmable NFT</div>
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"

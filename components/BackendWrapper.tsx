@@ -26,7 +26,7 @@ export const backendWrapper = async ({
           try {
             const response = await backendCall();
             if (response.status == 200) {
-              enqueueSnackbar("Leberkas.", { variant: "success" });
+              enqueueSnackbar("Success.", { variant: "success" });
             } else {
               console.log(
                 "----------------------------------------------------------"
@@ -55,7 +55,7 @@ export const backendWrapper = async ({
               "----------------------------------------------------------"
             );
 
-            enqueueSnackbar("Des is ned de eanscht, oda.", {
+            enqueueSnackbar("Unknown Error.", {
               variant: "error",
             });
             return { status: 500 };

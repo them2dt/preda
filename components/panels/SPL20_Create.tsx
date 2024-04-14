@@ -88,7 +88,7 @@ export default function Panel() {
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a SPL20-Token</div>
         <div id="lab-panel-spl" className="panel create">
           <div className="flex-column-center-center form-container">
@@ -159,7 +159,7 @@ export default function Panel() {
               </div>
               <div className="flex-column-center-center image-input">
                 <div
-                  className="image"
+                  className="image-preview flex-row-center-center"
                   onClick={() => {
                     const imageInput = document.getElementById("image-input");
                     if (imageInput) {
