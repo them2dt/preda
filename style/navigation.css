@@ -87,9 +87,7 @@
   position: relative;
 
   margin: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  max-width: 440px;
+  padding: 10px;
   background-color: var(--secondary-faded-1);
   border: 1px solid var(--secondary-faded-2);
   border-radius: 10px;
@@ -100,7 +98,7 @@
 }
 
 .nav-modal-settings .modal-content .button {
-  width: 420px;
+  width: 330px;
   height: 40px;
 
   gap: 5px;
@@ -121,6 +119,4 @@
 }
 
 
-@media only screen and (max-width: 768px) {
-
-}
+@media only screen and (max-width: 768px) {}
