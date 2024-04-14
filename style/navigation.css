@@ -89,7 +89,7 @@
   margin: 0;
   padding-top: 10px;
   padding-bottom: 10px;
-  width: 440px;
+  max-width: 440px;
   background-color: var(--secondary-faded-1);
   border: 1px solid var(--secondary-faded-2);
   border-radius: 10px;
@@ -120,45 +120,7 @@
   border: 1px solid var(--secondary-faded-4);
 }
 
-.nav-modal-help {
-  text-align: center;
-}
 
-.help-window {
-  position: fixed;
-  top: 0;
-  left: 0;
+@media only screen and (max-width: 768px) {
 
-  width: 100vw;
-  height: 100vh;
-
-  background-color: var(--secondary-transparent);
-  backdrop-filter: blur(5px);
-}
-
-.help-window .help-container {
-  width: 1000px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.help-window .help-container .help-panel {
-  width: 200px;
-  height: 200px;
-
-  padding: 20px;
-  background-color: var(--secondary-faded-1);
-  border: 1px solid var(--secondary-faded-2);
-  border-radius: 20px;
-  box-sizing: border-box;
-
-  text-align: center;
-}
-
-.help-window .help-container .help-panel:nth-child(1) {
-  width: 500px;
-}
-
-.help-window .help-container .help-panel:nth-child(2) {
-  width: 500px;
 }

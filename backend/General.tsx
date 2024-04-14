@@ -15,6 +15,7 @@ import {
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, unwrapOption } from "@metaplex-foundation/umi";
+import { BackendResponse } from "@/types";
 
 export const tokenStandard = [
   "NonFungible",
@@ -103,7 +104,7 @@ export async function uploadFileToIrys({
   const funds = await bundler.fund(imagePrice);
 
   console.log(
-    "Image price: " + imagePrice.toNumber() / LAMPORTS_PER_SOL + " SOL"
+    "Upload price: " + imagePrice.toNumber() / LAMPORTS_PER_SOL + " SOL"
   );
 
   const fileArrayBuffer = await file.arrayBuffer();
@@ -114,17 +115,11 @@ export async function uploadFileToIrys({
   const sign = await imageUpload.sign();
   const upload = await imageUpload.upload();
   console.log(
-    "Uploaded " +
-      file.name +
-      "." +
-      file.type +
-      ": https://arweave.net/" +
-      upload.id
+    file.name + "." + file.type + ": https://arweave.net/" + upload.id
   );
 
   return "https://arweave.net/" + upload.id;
 }
-
 export async function getAsset({
   wallet,
   connection,
@@ -133,45 +128,25 @@ export async function getAsset({
   wallet: Wallet;
   connection: Connection;
   assetId: string;
-}): Promise<{
-  name: string;
-  tokenStandard: number;
-  mutable: boolean;
-  decimals: number;
-}> {
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-
+}): Promise<BackendResponse> {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+
     const asset = await fetchDigitalAsset(umi, publicKey(assetId));
-    console.log("Mint: " + asset.publicKey);
-    console.log("Mint: " + asset.publicKey);
-    console.log("Name: " + asset.metadata.name);
-    console.log(
-      "Token standard: " +
-        tokenStandard[unwrapOption(asset.metadata.tokenStandard)]
-    );
-    console.log("Mutable: " + asset.metadata.isMutable);
+
     return {
-      name: asset.metadata.name,
+      status: 200,
+      digitalAsset: asset,
       tokenStandard: unwrapOption(asset.metadata.tokenStandard),
-      mutable: asset.metadata.isMutable,
-      decimals: asset.mint.decimals,
     };
   } catch (e) {
-    console.log("Error @ getAsset(): " + e);
-    return {
-      name: "",
-      tokenStandard: 500,
-      mutable: false,
-      decimals: 500,
-    };
+    return { status: 500, errorMessage: e || "" };
   }
 }
-
-export async function getHoldingFromOwner({
+export async function getDigitalAssetBalance({
   wallet,
   connection,
   assetId,
@@ -179,21 +154,23 @@ export async function getHoldingFromOwner({
   wallet: Wallet;
   connection: Connection;
   assetId: string;
-}): Promise<number> {
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-
+}): Promise<BackendResponse> {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+
     const asset = await fetchAllDigitalAssetWithTokenByOwnerAndMint(
       umi,
       umi.identity.publicKey,
       publicKey(assetId)
     );
-    console.log("Amount: " + asset[0].token.amount.toString());
-    return Number(asset[0].token.amount);
+    return {
+      status: 200,
+      tokenBalance: { balance: Number(asset[0].token.amount) },
+    };
   } catch (e) {
-    console.log("Error @ getAsset(): " + e);
+    return { status: 500, errorMessage: e || "" };
   }
 }

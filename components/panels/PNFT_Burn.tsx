@@ -3,39 +3,42 @@ import React, { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { burnPNFT } from "@/backend/PNFT";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [validatorInput, setValidatorInput] = useState<string>();
   const [inputValid, setInputValid] = useState(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
 
   const validatePublicKey = async (pubkey: string) => {
-    if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
-      const result = await burnPNFT({
+    if (!/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(validatorInput)) {
+      enqueueSnackbar("Invalid public key.", { variant: "error" });
+    } else {
+      const runner = burnPNFT({
         connection: connection,
         wallet: wallet,
         assetId: validatorInput,
       });
 
-      console.log(result);
-      if (result == true) {
-        enqueueSnackbar("Burnt asset successfully.", {
-          variant: "success",
-        });
-      } else {
-        enqueueSnackbar("Couldn't burn asset. Is it a programmable NFT?", {
-          variant: "error",
-        });
-      }
+      const response = await backendWrapper({
+        initialMessage: "Burning PNFT",
+        wallet: wallet,
+        connection: connection,
+        backendCall: async () => await runner,
+      });
+      setResult(response);
     }
   };
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Burn a programmable NFT</div>
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"
@@ -59,6 +62,7 @@ export default function Panel() {
           </div>
         </div>
       </div>
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

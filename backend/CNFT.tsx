@@ -16,6 +16,7 @@ import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
+import { BackendResponse } from "@/types";
 const sizeChart = [
   { depth: 3, buffer: 8, amount: 8 },
   { depth: 5, buffer: 8, amount: 32 },
@@ -40,64 +41,39 @@ export const createMerkleTree = async ({
   wallet: Wallet;
   size: number;
   visibility: boolean;
-}): Promise<{ merkleTree: PublicKey; success: boolean }> => {
-  //compare the sizeParameter with the amount value of the sizeChart array and choose which value is the next highest value to the size
-  const sizeParameter = sizeChart.find((element) => element.amount >= size);
-
-  console.log(sizeParameter.amount);
-  console.log("createMerkleTree() - started.");
-
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  const merkleTree = generateSigner(umi);
-  const treeTX = await createTree(umi, {
-    merkleTree,
-    maxDepth: sizeParameter.depth,
-    maxBufferSize: sizeParameter.buffer,
-    public: visibility,
-  });
+}): Promise<BackendResponse> => {
   try {
-    console.log("Merkle tree: " + merkleTree.publicKey);
-    console.log("Public key: " + wallet.adapter.publicKey.toBase58());
+    const sizeParameter = sizeChart.find((element) => element.amount >= size);
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    const merkleTree = generateSigner(umi);
+    const treeTX = await createTree(umi, {
+      merkleTree,
+      maxDepth: sizeParameter.depth,
+      maxBufferSize: sizeParameter.buffer,
+      public: visibility,
+    });
     const treeTXResult = await treeTX.sendAndConfirm(umi);
-    if (treeTXResult) {
-      console.log("createMerkleTree() - success!");
-      console.log("Merkle tree: " + merkleTree.publicKey);
-      return { merkleTree: merkleTree.publicKey, success: true };
-    }
+    return {
+      assetID: merkleTree.publicKey,
+      signature: bs58.encode(treeTXResult.signature),
+      status: 200,
+    };
   } catch (e) {
-    console.log("Error @ createMerkleTree()." + e);
-    return { merkleTree: publicKey(""), success: false };
+    return { status: 500 };
   }
-  return { merkleTree: publicKey(""), success: false };
 };
 
 export const findMerkleTree = async ({
   connection, //
-  wallet,
   merkleTree,
 }: {
   connection: Connection; //
-  wallet: Wallet;
   merkleTree: PublicKey;
-}): Promise<boolean> => {
-  //
+}): Promise<BackendResponse> => {
   const umi = createUmi(connection.rpcEndpoint);
-  console.log("findMerkleTree() - started.");
-  //
-  try {
-    const merkleTreeAccount = await fetchMerkleTree(umi, merkleTree);
-    if (merkleTreeAccount) {
-      console.log("findMerkleTree() - Success!");
-      return true;
-    } else {
-      console.log("findMerkleTree() - Couldnt find Merkle Tree.");
-      return false;
-    }
-  } catch (e) {
-    console.log("Error @ findMerkleTree()." + e);
-    return false;
-  }
+  const merkleTreeAccount = await fetchMerkleTree(umi, merkleTree);
+  return { status: 200, assetID: merkleTreeAccount.publicKey };
 };
 
 export const mintCNFT = async ({
@@ -116,35 +92,32 @@ export const mintCNFT = async ({
   sellerFeeBasisPoints: number;
   metadata: string;
   creators: { address: string; share: number }[];
-}): Promise<Boolean> => {
-  console.log("mintCNFT() - started.");
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  const mintTX = mintV1(umi, {
-    leafOwner: umi.identity.publicKey,
-    merkleTree: merkleTree,
-    metadata: {
-      name: title,
-      uri: metadata,
-      sellerFeeBasisPoints: sellerFeeBasisPoints * 100, // 5%
-      collection: none(),
-      creators: [
-        { address: umi.identity.publicKey, verified: false, share: 100 },
-      ],
-    },
-  });
+}): Promise<BackendResponse> => {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    const mintTX = mintV1(umi, {
+      leafOwner: umi.identity.publicKey,
+      merkleTree: merkleTree,
+      metadata: {
+        name: title,
+        uri: metadata,
+        sellerFeeBasisPoints: sellerFeeBasisPoints * 100,
+        collection: none(),
+        creators: creators.map((item) => {
+          return {
+            address: publicKey(item.address),
+            share: item.share,
+            verified: false,
+          };
+        }),
+      },
+    });
     const mintTXResult = await mintTX.sendAndConfirm(umi);
-    if (mintTXResult.result.context.slot) {
-      console.log("mintCNFT() - Success!");
-      console.log("Signature " + bs58.encode(mintTXResult.signature));
-      return true;
-    }
+    return { signature: bs58.encode(mintTXResult.signature), status: 200 };
   } catch (e) {
-    console.log("Error @ mintCNFT()." + e);
-    return false;
+    return { status: 500 };
   }
-  return false;
 };
 
 export const burnCNFT = async ({
@@ -155,38 +128,36 @@ export const burnCNFT = async ({
   connection: Connection; //
   wallet: Wallet;
   assetId: string;
-}): Promise<boolean> => {
-  const umi = createUmi(connection.rpcEndpoint);
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(dasApi());
-  umi.use(mplBubblegum());
-
+}): Promise<BackendResponse> => {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(dasApi());
+    umi.use(mplBubblegum());
+
     const asset = await getAssetWithProof(umi, publicKey(assetId));
     if (asset.leafOwner == umi.identity.publicKey) {
       enqueueSnackbar("You are the owner of this asset.", {
         variant: "success",
       });
 
-      await burn(umi, {
+      const result = await burn(umi, {
         ...asset,
         leafOwner: umi.identity,
       })
         .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
         .then((result) => {
-          if (result.signature) {
-            return true;
-          }
+          return { signature: bs58.encode(result.signature), status: 200 };
         });
-      return true;
+
+      return result;
     } else {
       enqueueSnackbar("You are not the owner of this asset.", {
         variant: "error",
       });
-      return false;
+      return { status: 400 };
     }
   } catch (e) {
-    console.log("BurnCNFT(): " + e);
-    return false;
+    return { status: 500 };
   }
 };

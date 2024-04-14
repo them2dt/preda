@@ -1,0 +1,214 @@
+@media only screen and (min-width: 768px) {
+  #header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+    width: calc(100vw - 40px);
+
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+
+    background-color: var(--secondary);
+    border: 2px solid var(--secondary-faded-1);
+    border-radius: 40px;
+    z-index: 1000;
+  }
+
+  #header .logo {
+    color: var(--primary);
+    gap: 20px;
+  }
+
+  #header .logo img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .opener {
+    width: fit-content;
+    height: fit-content;
+
+    margin: 0px;
+    padding: 0px;
+
+    background-color: transparent;
+    border: none;
+
+    font-size: 28px;
+    cursor: pointer;
+    rotate: 0deg;
+    transition-duration: 0.2s;
+    z-index: 2000;
+    color: var(--primary);
+  }
+
+  .opener.open {
+    rotate: 135deg;
+    transition-duration: 0.2s;
+    z-index: 200;
+  }
+
+  #header-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--primary-transparent-1);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+
+  #header-backdrop .menu {
+    gap: 40px;
+    max-width: 80vw;
+    height: 40vh;
+    flex-wrap: wrap;
+
+    padding: 20px;
+
+    background-color: var(--secondary);
+    border: 2px solid var(--secondary-faded-1);
+    border-radius: 20px;
+
+  }
+
+  #header-backdrop .menu .section a {
+    cursor: pointer;
+  }
+
+  #header-backdrop .menu .section .title {
+    color: var(--primary-1);
+    padding-bottom: 20px;
+  }
+
+  #header-backdrop .menu .section.disabled .title {
+    color: rgb(189, 189, 189) !important;
+    padding-bottom: 20px;
+  }
+
+  #header-backdrop .menu .section.disabled {
+    color: rgb(189, 189, 189) !important;
+    padding-bottom: 20px;
+  }
+
+  #header-backdrop .menu .section a:hover {
+    color: var(--accent-1);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  #header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+    width: calc(100vw - 40px);
+
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+
+    background-color: var(--secondary);
+    border: 2px solid var(--secondary-faded-1);
+    border-radius: 40px;
+    z-index: 1000;
+  }
+
+  #header .logo {
+    color: var(--primary);
+    gap: 20px;
+  }
+
+  #header .logo img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .opener {
+    width: fit-content;
+    height: fit-content;
+
+    margin: 0px;
+    padding: 0px;
+
+    background-color: transparent;
+    border: none;
+
+    font-size: 28px;
+    cursor: pointer;
+    rotate: 0deg;
+    transition-duration: 0.2s;
+    z-index: 2000;
+    color: var(--primary);
+  }
+
+  .opener.open {
+    rotate: 135deg;
+    transition-duration: 0.2s;
+    z-index: 200;
+  }
+
+  #header-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--primary-transparent-1);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+
+  #header-backdrop .menu {
+    flex-direction: column !important;
+    justify-content: start !important;
+    gap: 40px;
+    width: 80vw;
+    height: 60vh;
+
+    flex-wrap: nowrap;
+    padding: 20px;
+    overflow-y: scroll;
+
+    background-color: var(--secondary);
+    border: 2px solid var(--secondary-faded-1);
+    border-radius: 20px;
+
+  }
+
+  #header-backdrop .menu-items {
+    flex-direction: column;
+
+  }
+
+  #header-backdrop .menu .section a {
+    cursor: pointer;
+  }
+
+  #header-backdrop .menu .section .title {
+    color: var(--primary-1);
+    padding-bottom: 20px;
+
+  }
+
+  #header-backdrop .menu .section.disabled .title {
+    color: rgb(189, 189, 189) !important;
+    padding-bottom: 20px;
+  }
+
+  #header-backdrop .menu .section.disabled {
+    color: rgb(189, 189, 189) !important;
+    padding-bottom: 20px;
+  }
+
+  #header-backdrop .menu .section a:hover {
+    color: var(--accent-1);
+  }
+}

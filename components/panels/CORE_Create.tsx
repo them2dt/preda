@@ -13,6 +13,9 @@ import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { backendWrapper } from "../BackendWrapper";
+import ResultPanel from "../ResultPanel";
+import { BackendResponse } from "@/types";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -38,10 +41,9 @@ export default function Panel() {
   const [creators, setCreators] = useState<
     { address: string; share: number }[]
   >([]);
-  //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+
+  const [result, setResult] = useState<BackendResponse>();
+
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
     if (oldArray) {
@@ -168,33 +170,24 @@ export default function Panel() {
           });
 
           if (metadataUri) {
-            const mint = await createCoreAsset({
+            const runner = createCoreAsset({
               wallet: wallet,
               connection: connection,
               name: title,
               metadata: metadataUri,
               collection: collection || null,
             });
-
-            if (mint) {
-              enqueueSnackbar("Asset created!", { variant: "success" });
-              setResultAddress(mint.assetID || "");
-              setSuccess(true);
-              setResult(true);
-            } else {
-              enqueueSnackbar("Asset creation failed.", { variant: "error" });
-              setSuccess(false);
-              setResult(true);
-            }
+            const response = await backendWrapper({
+              wallet: wallet,
+              connection: connection,
+              initialMessage: "Create CORE collection",
+              backendCall: async () => await runner,
+            });
           } else {
             enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         } else {
           enqueueSnackbar("Image upload failed.", { variant: "error" });
-          setSuccess(false);
-          setResult(true);
         }
       }
     } catch (e) {
@@ -204,10 +197,10 @@ export default function Panel() {
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a CORE Asset</div>
         <div id="panel-core-create" className="panel flex-row-center-start">
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <input
               type="text"
               name="title"
@@ -261,26 +254,26 @@ export default function Panel() {
                 );
               }}
             />
-            <div
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setAttributeModal(true);
               }}
             >
               add attributes
-            </div>
-            <div
+            </button>
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setCreatorModal(true);
               }}
             >
               configure royalties
-            </div>
+            </button>
           </div>
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <div
-              className="image"
+              className="image-preview flex-row-center-center"
               onClick={() => {
                 const imageInput = document.getElementById("image-input");
                 if (imageInput) {
@@ -322,8 +315,7 @@ export default function Panel() {
       </div>
       {attributeModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -419,8 +411,7 @@ export default function Panel() {
 
       {creatorModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -553,73 +544,8 @@ export default function Panel() {
           </button>
         </div>
       )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
 
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

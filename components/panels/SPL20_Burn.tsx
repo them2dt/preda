@@ -1,10 +1,13 @@
 "use client";
-import { getAsset, getHoldingFromOwner } from "@/backend/General";
+import { getAsset, getDigitalAssetBalance } from "@/backend/General";
 import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CustomSlider } from "../Slider";
 import { enqueueSnackbar } from "notistack";
 import { burnSPL20 } from "@/backend/SPL20";
+import { backendWrapper } from "../BackendWrapper";
+import ResultPanel from "../ResultPanel";
+import { BackendResponse } from "@/types";
 
 export default function Panel() {
   const [decimals, setDecimals] = useState<number>(0);
@@ -12,72 +15,76 @@ export default function Panel() {
   const [maxSupply, setMaxSupply] = useState<number>(0);
   const [token, setToken] = useState<string>();
   const [tokenVerified, setTokenVerified] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const { wallet } = useWallet();
   const { connection } = useConnection();
-  const burn = async () => {
-    try {
-      const result = await burnSPL20({
-        wallet: wallet,
-        connection: connection,
-        assetId: token,
-        amount: supply,
-      });
-      if (result) {
-        enqueueSnackbar(
-          "Successfully burnt " +
-            (supply / 10 ** decimals).toString() +
-            " tokens.",
-          {
-            variant: "success",
+
+  const validate = async () => {
+    const runner_1 = getAsset({
+      wallet: wallet,
+      connection: connection,
+      assetId: token,
+    });
+    const runner_2 = getDigitalAssetBalance({
+      wallet: wallet,
+      connection: connection,
+      assetId: token,
+    });
+    const response_1 = await backendWrapper({
+      wallet: wallet,
+      connection: connection,
+      backendCall: async () => await runner_1,
+      initialMessage: "Fetching digital asset",
+    });
+    const response_2 = await backendWrapper({
+      wallet: wallet,
+      connection: connection,
+      backendCall: async () => await runner_2,
+      initialMessage: "Fetching balance of digital asset",
+    });
+    if (response_1.status == 200) {
+      if (response_1.tokenStandard == 2) {
+        if (response_2.status == 200) {
+          if (
+            response_2.tokenBalance.balance &&
+            response_2.tokenBalance.decimals
+          ) {
+            setTokenVerified(true);
+            setDecimals(response_1.tokenBalance.decimals);
+            setMaxSupply(response_1.tokenBalance.balance);
+          } else {
+            enqueueSnackbar("You don't hold any tokens.", { variant: "error" });
           }
-        );
+        }
       } else {
-        enqueueSnackbar(
-          "Couldnt burn " + (supply / 10 ** decimals).toString() + " tokens.",
-          {
-            variant: "error",
-          }
-        );
+        enqueueSnackbar("Wrong token standard.", { variant: "error" });
       }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", {
-        variant: "error",
-      });
     }
   };
-  const validate = async () => {
-    try {
-      const asset = await getAsset({
-        wallet: wallet,
-        connection: connection,
-        assetId: token,
-      });
 
-      if (asset.tokenStandard == 2) {
-        const holdingAmount = await getHoldingFromOwner({
-          wallet: wallet,
-          connection: connection,
-          assetId: token,
-        });
-        setMaxSupply(holdingAmount);
-        setDecimals(asset.decimals);
-        if (holdingAmount > 1) {
-          enqueueSnackbar("Asset found.", { variant: "success" });
-          setTokenVerified(true);
-        }
-      }
-    } catch (e) {
-      console.log("Error in panel: " + e);
-    }
+  const burn = async () => {
+    const runner = burnSPL20({
+      wallet: wallet,
+      connection: connection,
+      assetId: token,
+      amount: supply,
+    });
+    const response = await backendWrapper({
+      initialMessage: "Burning SPL20",
+      wallet: wallet,
+      connection: connection,
+      backendCall: async () => await runner,
+    });
+    setResult(response);
   };
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Burn SPL20-Tokens</div>
 
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"
@@ -143,6 +150,7 @@ export default function Panel() {
           </div>
         </div>
       </div>
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

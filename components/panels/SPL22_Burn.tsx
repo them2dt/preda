@@ -3,7 +3,10 @@ import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CustomSlider } from "../Slider";
 import { enqueueSnackbar } from "notistack";
-import { burnSPL22, getBalanceFromToken22 } from "@/backend/SPL22";
+import { burnSPL22, fetchToken22 } from "@/backend/SPL22";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [decimals, setDecimals] = useState<number>(0);
@@ -11,67 +14,60 @@ export default function Panel() {
   const [maxSupply, setMaxSupply] = useState<number>(0);
   const [token, setToken] = useState<string>();
   const [tokenVerified, setTokenVerified] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const { wallet } = useWallet();
-  const { connection } = useConnection();const burn = async () => {
-    try {
-      const result = await burnSPL22({
-        wallet: wallet,
-        connection: connection,
-        assetId: token,
-        amount: supply,
-      });
-      if (result) {
-        enqueueSnackbar(
-          "Successfully burnt " +
-            (supply / 10 ** decimals).toString() +
-            " tokens.",
-          {
-            variant: "success",
-          }
-        );
-      } else {
-        enqueueSnackbar(
-          "Couldnt burn " + (supply / 10 ** decimals).toString() + " tokens.",
-          {
-            variant: "error",
-          }
-        );
-      }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", {
-        variant: "error",
-      });
-    }
-  };
+  const { connection } = useConnection();
+
   const validate = async () => {
-    try {
-      const res = await getBalanceFromToken22({
-        wallet: wallet,
-        connection: connection,
-        assetId: token,
-      });
-      if (res.balance > 1) {
-        console.log(res.balance);
-        setDecimals(res.decimals);
-        setMaxSupply(res.balance);
+    const runner = fetchToken22({
+      wallet: wallet,
+      connection: connection,
+      assetId: token,
+    });
+
+    const response = await backendWrapper({
+      wallet,
+      connection,
+      backendCall: async () => await runner,
+    });
+
+    if (response.status == 200) {
+      if (response.tokenBalance.balance > 1) {
+        setDecimals(response.tokenBalance.decimals);
+        setMaxSupply(response.tokenBalance.balance);
         setTokenVerified(true);
-        enqueueSnackbar("Token found.", { variant: "success" });
       } else {
         enqueueSnackbar("Token balance is 0.", { variant: "warning" });
+        setTokenVerified(false);
       }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", { variant: "error" });
-      console.log(e);
+    } else {
+      enqueueSnackbar("Token not found.", { variant: "error" });
+      setTokenVerified(false);
     }
+  };
+  const burn = async () => {
+    const runner = burnSPL22({
+      wallet: wallet,
+      connection: connection,
+      assetId: token,
+      amount: supply,
+    });
+    const response = await backendWrapper({
+      initialMessage: "Burning SPL22",
+      wallet: wallet,
+      connection: connection,
+      backendCall: async () => await runner,
+    });
+    setResult(response);
   };
 
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Burn SPL22-Tokens</div>
 
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"
@@ -86,9 +82,7 @@ export default function Panel() {
             <button
               disabled={!wallet || !connection || !token}
               className="button flex-row-center-center font-text-tiny-bold"
-              onClick={async () => {
-                await validate();
-              }}
+              onClick={validate}
             >
               Verify Token
             </button>
@@ -137,6 +131,7 @@ export default function Panel() {
           </div>
         </div>
       </div>
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

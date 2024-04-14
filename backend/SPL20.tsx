@@ -16,7 +16,8 @@ import {
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 import { getAsset } from "./General";
-
+import { BackendResponse } from "@/types";
+import base58 from "bs58";
 
 export const createAndMintSPL20 = async ({
   wallet,
@@ -37,18 +38,16 @@ export const createAndMintSPL20 = async ({
   decimals: number;
   supply: number;
   sellerFeeBasisPoints: number;
-}): Promise<{ pubkey: string; success: boolean }> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
-  const umi = createUmi(connection.rpcEndpoint);
-
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-
-  const mint = generateSigner(umi);
-
+}): Promise<BackendResponse> => {
   try {
-    await createAndMint(umi, {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+
+    const mint = generateSigner(umi);
+
+    const response = await createAndMint(umi, {
       mint,
       authority: umi.identity,
       name: name,
@@ -56,33 +55,23 @@ export const createAndMintSPL20 = async ({
       uri: metadata,
       sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints),
       decimals: decimals,
-      amount: supply,
+      amount: supply * 10 ** decimals,
       tokenOwner: umi.identity.publicKey,
       tokenStandard: TokenStandard.Fungible,
     })
       .sendAndConfirm(umi)
       .then((result) => {
-        if (result.signature) {
-          console.log("Successfully created your SPL-20 token.");
-          return {
-            pubkey: mint.publicKey,
-            success: true,
-          };
-        } else {
-          console.log("Couldn't find transaction.");
-          return {
-            pubkey: mint.publicKey,
-            success: false,
-          };
-        }
+        return {
+          assetID: mint.publicKey,
+          signature: base58.encode(result.signature),
+          status: 200,
+        };
       });
+
+    return response;
   } catch (e) {
-    console.log("Error @ CreateSPL20(): " + e);
+    return { status: 500, errorMessage: e || "" };
   }
-  return {
-    pubkey: mint.publicKey,
-    success: true,
-  };
 };
 export const burnSPL20 = async ({
   wallet,
@@ -94,15 +83,13 @@ export const burnSPL20 = async ({
   connection: Connection;
   assetId: string;
   amount: number;
-}): Promise<boolean> => {
-  enqueueSnackbar("initialize umi", { variant: "info" });
-  const umi = createUmi(connection.rpcEndpoint);
-
-  umi.use(mplTokenMetadata());
-  umi.use(walletAdapterIdentity(wallet.adapter));
-  umi.use(mplCandyMachine());
-
+}): Promise<BackendResponse> => {
   try {
+    const umi = createUmi(connection.rpcEndpoint);
+    umi.use(mplTokenMetadata());
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplCandyMachine());
+
     const response = await burnV1(umi, {
       mint: publicKey(assetId),
       tokenStandard: TokenStandard.Fungible,
@@ -111,16 +98,15 @@ export const burnSPL20 = async ({
     })
       .sendAndConfirm(umi, { confirm: { commitment: "confirmed" } })
       .then((result) => {
-        if (result.signature) {
-          return true;
-        } else {
-          return false;
-        }
+        return {
+          assetID: assetId,
+          signature: base58.encode(result.signature),
+          status: 200,
+        };
       });
 
     return response;
   } catch (e) {
-    console.log("Error @ BurnSPL20(): " + e);
-    return false;
+    return { status: 500, errorMessage: e || "" };
   }
 };

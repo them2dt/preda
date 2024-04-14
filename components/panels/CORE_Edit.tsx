@@ -16,6 +16,9 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
 import { metadata } from "@/app/layout";
 import { collectionAddress } from "@metaplex-foundation/mpl-core";
+import { backendWrapper } from "../BackendWrapper";
+import { BackendResponse } from "@/types";
+import ResultPanel from "../ResultPanel";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -42,9 +45,7 @@ export default function Panel() {
     { address: string; share: number }[]
   >([]);
   //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>();
 
   const [address, setAddress] = useState<string>();
   const [adressValid, setAdressValid] = useState<boolean>(false);
@@ -172,7 +173,7 @@ export default function Panel() {
 
           if (metadataUri) {
             if (collection) {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
@@ -181,18 +182,14 @@ export default function Panel() {
                 collection: collection,
               });
 
-              if (mint) {
-                enqueueSnackbar("Asset Updated!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("Asset update failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                initialMessage: "Edit CORE asset",
+                backendCall: async () => await runner,
+              });
             } else {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
@@ -200,24 +197,17 @@ export default function Panel() {
                 metadata: metadataUri,
               });
 
-              if (mint) {
-                enqueueSnackbar("Asset Updated!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("Asset update failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                initialMessage: "Edit CORE asset",
+                backendCall: async () => await runner,
+              });
             }
           } else {
             enqueueSnackbar("Asset upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         } else {
-          enqueueSnackbar("Uploading assets...", { variant: "info" });
           const imageUri = await uploadFileToIrys({
             wallet: wallet,
             connection: connection,
@@ -260,33 +250,24 @@ export default function Panel() {
             });
 
             if (metadataUri) {
-              const mint = await updateCoreAsset({
+              const runner = updateCoreAsset({
                 wallet: wallet,
                 connection: connection,
                 assetId: address,
                 name: title,
                 metadata: metadataUri,
               });
-
-              if (mint) {
-                enqueueSnackbar("NFT created!", { variant: "success" });
-                setResultAddress(mint.assetID || "");
-                setSuccess(true);
-                setResult(true);
-              } else {
-                enqueueSnackbar("NFT creation failed.", { variant: "error" });
-                setSuccess(false);
-                setResult(true);
-              }
+              const response = await backendWrapper({
+                wallet: wallet,
+                connection: connection,
+                backendCall: async () => await runner,
+              });
+              setResult(response);
             } else {
               enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-              setSuccess(false);
-              setResult(true);
             }
           } else {
             enqueueSnackbar("Image upload failed.", { variant: "error" });
-            setSuccess(false);
-            setResult(true);
           }
         }
       }
@@ -346,9 +327,9 @@ export default function Panel() {
   };
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Edit a CORE Asset</div>
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"
@@ -361,6 +342,7 @@ export default function Panel() {
           />
           <div className="button-base">
             <button
+              disabled={!wallet || !connection || !adressValid}
               className="button flex-row-center-center font-text-tiny-bold"
               onClick={findAsset}
             >
@@ -369,14 +351,13 @@ export default function Panel() {
           </div>
         </div>
         <div
-          id="panel-nft"
           className={
             adressValid
               ? "panel flex-row-center-start"
               : "panel flex-row-center-start disabled"
           }
         >
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <input
               type="text"
               name="title"
@@ -418,26 +399,26 @@ export default function Panel() {
                 setDomain(e.target.value);
               }}
             />
-            <div
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setAttributeModal(true);
               }}
             >
               add attributes
-            </div>
-            <div
+            </button>
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setCreatorModal(true);
               }}
             >
               configure royalties
-            </div>
+            </button>
           </div>
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <div
-              className="image"
+              className="image-preview flex-row-center-center"
               onClick={() => {
                 const imageInput = document.getElementById("image-input");
                 if (imageInput) {
@@ -490,8 +471,7 @@ export default function Panel() {
       </div>
       {attributeModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -587,8 +567,7 @@ export default function Panel() {
 
       {creatorModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -722,72 +701,7 @@ export default function Panel() {
         </div>
       )}
 
-      {result && success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faCheckCircle} color="#0ba34b" />
-              <div className="message font-h4">Success!</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base">
-                <Link
-                  href={"https://solana.fm/address/" + resultAddress}
-                  target="_blank"
-                >
-                  <button className="button font-text-tiny-bold flex-row-center-center">
-                    Open in Explorer
-                  </button>
-                </Link>
-              </div>
-              <div className="button-base">
-                <Tooltip title={"Copy " + resultAddress}>
-                  <button
-                    className="button font-text-tiny-bold flex-row-center-center"
-                    onClick={() => {
-                      navigator.clipboard.writeText(resultAddress);
-                    }}
-                  >
-                    Copy Address
-                  </button>
-                </Tooltip>
-              </div>
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {result && !success && (
-        <div id="result-backdrop" className="flex-row-center-center">
-          <div id="result-panel" className="flex-column-center-center">
-            <div className="headline flex-column-center-center">
-              <FontAwesomeIcon icon={faXmarkCircle} color="#d40f1c" />
-              <div className="message font-h4">Something went wrong.</div>
-            </div>
-            <div className="buttons flex-column-center-center">
-              <div className="button-base close">
-                <button
-                  className="button close font-text-tiny-bold flex-row-center-center"
-                  onClick={() => {
-                    setResult(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }

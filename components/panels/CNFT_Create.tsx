@@ -1,20 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faX,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import { Tooltip } from "@mui/material";
-import { createNFT } from "@/backend/NFT";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 import { enqueueSnackbar } from "notistack";
 import { CustomSlider } from "@/components/Slider";
 import { uploadFileToIrys, validateImage } from "@/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { findMerkleTree, mintCNFT } from "@/backend/CNFT";
 import { publicKey } from "@metaplex-foundation/umi";
+import { backendWrapper } from "../BackendWrapper";
+import ResultPanel from "../ResultPanel";
+import { BackendResponse } from "@/types";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -40,9 +36,7 @@ export default function Panel() {
     { address: string; share: number }[]
   >([]);
   //
-  const [resultAddress, setResultAddress] = useState<string>();
-  const [result, setResult] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [result, setResult] = useState<BackendResponse>({ status: 0 });
 
   const [merkleTree, setMerkleTree] = useState<string>();
   const [foundMerkleTree, setFoundMerkleTree] = useState(false);
@@ -128,83 +122,78 @@ export default function Panel() {
     return invalidPoints == 0;
   };
   const run = async () => {
-    try {
-      if (validate()) {
-        enqueueSnackbar("Uploading image...", { variant: "info" });
-        const imageUri = await uploadFileToIrys({
+    if (validate()) {
+      const imageUri = await uploadFileToIrys({
+        wallet: wallet,
+        connection: connection,
+        file: image,
+      });
+      if (imageUri) {
+        const metadata = {
+          name: title,
+          symbol: symbol,
+          description: description,
+          seller_fee_basis_points: sliderValue,
+          image: imageUri,
+          external_url: "emptea.xyz",
+          attributes: attributes || [],
+          properties: {
+            files: [{ uri: imageUri, type: "image/png" }],
+            category: "image",
+            creators:
+              creators.length > 0
+                ? creators
+                : [
+                    {
+                      address: wallet.adapter.publicKey.toBase58(),
+                      share: 100,
+                    },
+                  ],
+          },
+          collection: {},
+        };
+        const metadataFile = new File(
+          [JSON.stringify(metadata)],
+          "metadata.json",
+          { type: "application/json" }
+        );
+        const metadataUri = await uploadFileToIrys({
           wallet: wallet,
           connection: connection,
-          file: image,
+          file: metadataFile,
         });
 
-        if (imageUri) {
-          const metadata = {
-            name: title,
-            symbol: symbol,
-            description: description,
-            seller_fee_basis_points: sliderValue,
-            image: imageUri,
-            external_url: "emptea.xyz",
-            attributes: attributes || [],
-            properties: {
-              files: [{ uri: imageUri, type: "image/png" }],
-              category: "image",
-              creators:
-                creators.length > 0
-                  ? creators
-                  : [
-                      {
-                        address: wallet.adapter.publicKey.toBase58(),
-                        share: 100,
-                      },
-                    ],
-            },
-            collection: {},
-          };
-          const metadataFile = new File(
-            [JSON.stringify(metadata)],
-            "metadata.json",
-            { type: "application/json" }
-          );
-          const metadataUri = await uploadFileToIrys({
+        if (metadataUri) {
+          const runner = mintCNFT({
             wallet: wallet,
             connection: connection,
-            file: metadataFile,
+            merkleTree: publicKey(merkleTree),
+            title: title,
+            metadata: metadataUri,
+            sellerFeeBasisPoints: sliderValue,
+            creators:
+              creators.length > 0
+                ? creators
+                : [
+                    {
+                      address: wallet.adapter.publicKey.toBase58(),
+                      share: 100,
+                    },
+                  ],
           });
-
-          if (metadataUri) {
-            const mint = await mintCNFT({
-              wallet: wallet,
-              connection: connection,
-              merkleTree: publicKey(merkleTree),
-              title: title,
-              metadata: metadataUri,
-              sellerFeeBasisPoints: sliderValue,
-              creators:
-                creators.length > 0
-                  ? creators
-                  : [
-                      {
-                        address: wallet.adapter.publicKey.toBase58(),
-                        share: 100,
-                      },
-                    ],
-            });
-
-            if (mint) {
-              enqueueSnackbar("NFT created!", { variant: "success" });
-            } else {
-              enqueueSnackbar("NFT creation failed.", { variant: "error" });
-            }
-          } else {
-            enqueueSnackbar("Metadata upload failed.", { variant: "error" });
-          }
+          const response = await backendWrapper({
+            wallet: wallet,
+            connection: connection,
+            initialMessage: "",
+            backendCall: async () => await runner,
+          });
+          setResult(response);
         } else {
-          enqueueSnackbar("Image upload failed.", { variant: "error" });
+          enqueueSnackbar("Metadata upload failed.", { variant: "error" });
         }
+      } else {
+        enqueueSnackbar("Image upload failed.", { variant: "error" });
       }
-    } catch (e) {
-      enqueueSnackbar("Something went wrong.", { variant: "error" });
     }
   };
 
@@ -212,7 +201,6 @@ export default function Panel() {
     if (/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(pubkey)) {
       const found = await findMerkleTree({
         connection: connection,
-        wallet: wallet,
         merkleTree: publicKey(pubkey),
       });
       if (found) {
@@ -228,9 +216,9 @@ export default function Panel() {
   };
   return (
     <>
-      <div className="panel-container flex-column-center-center">
+      <div className="panel-container flex-column-start-center">
         <div className="font-h3">Create a compressed NFT</div>
-        <div className="address-validator flex-row-start-center">
+        <div className="panel flex-row-start-center">
           <input
             type="text"
             name="title"
@@ -241,25 +229,25 @@ export default function Panel() {
               setMerkleTree(e.target.value);
             }}
           />
-          <div className="button-base">
             <button
               disabled={!wallet || !connection || !merkleTree}
-              className="button flex-row-center-center font-text-tiny-bold"
+              className="button flex-row-center-center font-text"
               onClick={async () => {
                 await validatePublicKey(merkleTree);
               }}
             >
               Verify Merkle Tree
             </button>
-          </div>
         </div>
-        <div id="panel-nft" 
+        <div
+          
           className={
             foundMerkleTree
               ? "panel flex-row-center-start"
-              : "panel disabled flex-row-center-center"
-          }>
-          <div className="form flex-column-center-start">
+              : "panel disabled flex-row-center-start"
+          }
+        >
+          <div className="column flex-column-center-start">
             <input
               type="text"
               name="title"
@@ -298,26 +286,26 @@ export default function Panel() {
                 setDomain(e.target.value);
               }}
             />
-            <div
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setAttributeModal(true);
               }}
             >
               add attributes
-            </div>
-            <div
+            </button>
+            <button
               className="attributes-button font-text"
               onClick={() => {
                 setCreatorModal(true);
               }}
             >
               configure royalties
-            </div>
+            </button>
           </div>
-          <div className="form flex-column-center-start">
+          <div className="column flex-column-center-start">
             <div
-              className="image"
+              className="image-preview flex-row-center-center"
               onClick={() => {
                 const imageInput = document.getElementById("image-input");
                 if (imageInput) {
@@ -359,8 +347,7 @@ export default function Panel() {
       </div>
       {attributeModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -453,11 +440,9 @@ export default function Panel() {
           </button>
         </div>
       )}
-
       {creatorModal && (
         <div
-          className="attribute-modal"
-          id="attribute-modal"
+          className="backdrop flex-column-center-center"
           onClick={() => {
             setAttributeModal(false);
           }}
@@ -590,6 +575,7 @@ export default function Panel() {
           </button>
         </div>
       )}
+      {result && <ResultPanel result={result} setResult={setResult} />}
     </>
   );
 }
