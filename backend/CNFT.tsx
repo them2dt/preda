@@ -75,6 +75,29 @@ export const findMerkleTree = async ({
   const merkleTreeAccount = await fetchMerkleTree(umi, merkleTree);
   return { status: 200, assetID: merkleTreeAccount.publicKey };
 };
+export const loadAssets = async ({
+  wallet,
+  connection,
+  address,
+}: {
+  wallet: Wallet;
+  connection: Connection;
+  address: string;
+}): Promise<BackendResponse> => {
+  try {
+    const umi = createUmi(connection);
+    umi.use(walletAdapterIdentity(wallet.adapter));
+    umi.use(mplBubblegum());
+
+    const assets = await umi.rpc.getAssetsByOwner({
+      owner: publicKey(address),
+    });
+    console.log(assets);
+    return { status: 200, dasList: assets };
+  } catch (e) {
+    return { status: 500 };
+  }
+};
 
 export const mintCNFT = async ({
   wallet,

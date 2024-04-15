@@ -1,3 +1,7 @@
+import {
+  DasApiAsset,
+  DasApiAssetList,
+} from "@metaplex-foundation/digital-asset-standard-api";
 import { AssetV1 } from "@metaplex-foundation/mpl-core";
 import {
   DigitalAsset,
@@ -19,6 +23,7 @@ export type BackendResponse = {
   coreAsset?: AssetV1;
   coreCollection?: string;
   tokenStandard?: number;
+  dasList?: DasApiAssetList;
   digitalAsset?: DigitalAsset;
   digitalAssetWithToken?: DigitalAssetWithToken;
   tokenBalance?: { balance?: number; decimals?: number };

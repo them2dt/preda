@@ -22,7 +22,7 @@ export default function Header({
   const operationLabels = [
     ["Create NFT", "Burn NFT"],
     ["Create pNFT", "Burn pNFT"],
-    ["Create cNFT", "Burn cNFT", "Create Merkle tree"],
+    ["Create cNFT", "Burn cNFT", "Create Merkle tree", "Load Assets"],
     ["Create SPL20", "Burn SPL20"],
     ["Create SPL22", "Burn SPL22"],
     [
@@ -35,7 +35,7 @@ export default function Header({
   const pages = [
     ["create", "burn"],
     ["create", "burn"],
-    ["create", "burn", "merkletree"],
+    ["create", "burn", "merkletree", "gallery"],
     ["create", "burn"],
     ["create", "burn"],
     ["create", "burn", "edit", "collection"],
@@ -87,39 +87,39 @@ export default function Header({
                 e.stopPropagation();
               }}
             >
-                {labels.map((item, index) => (
-                  <div
-                    className={
-                      index == 6
-                        ? "section disabled flex-column-center-start"
-                        : "section flex-column-center-start"
-                    }
-                    key={"header-section-" + index}
-                  >
-                    <div className="title font-text-bold">
-                      {item}
-                      {index == 6 && " - coming soon"}
-                    </div>
-                    {pages[index].map((op, i) => (
-                      <Link
-                        href={
-                          "/" + labelDirectories[index] + "-" + pages[index][i]
-                        }
-                        key={"operation-" + index + "-" + i}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          enqueueSnackbar("Loading panel...", {
-                            variant: "info",
-                          });
-                        }}
-                      >
-                        <div className="operation font-text-small">
-                          {operationLabels[index][i]}
-                        </div>
-                      </Link>
-                    ))}
+              {labels.map((item, index) => (
+                <div
+                  className={
+                    index == 6
+                      ? "section disabled flex-column-center-start"
+                      : "section flex-column-center-start"
+                  }
+                  key={"header-section-" + index}
+                >
+                  <div className="title font-text-bold">
+                    {item}
+                    {index == 6 && " - coming soon"}
                   </div>
-                ))}
+                  {pages[index].map((op, i) => (
+                    <Link
+                      href={
+                        "/" + labelDirectories[index] + "-" + pages[index][i]
+                      }
+                      key={"operation-" + index + "-" + i}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        enqueueSnackbar("Loading panel...", {
+                          variant: "info",
+                        });
+                      }}
+                    >
+                      <div className="operation font-text-small">
+                        {operationLabels[index][i]}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ))}
             </motion.div>
           </motion.div>
         )}

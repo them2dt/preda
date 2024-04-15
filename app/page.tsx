@@ -51,7 +51,9 @@ export default function Page() {
           </div>
         </div>
         <div id="tools" className="section tools flex-column-center-center">
-          <div className="font-h3">The right tools for your needs.</div>
+          <div className="font-h3 flex-column-center-center">
+            The right tools for your needs.
+          </div>
           <div className="switch-container flex-row-center-center">
             <div className="font-text-small">Essential</div>
             <motion.div
