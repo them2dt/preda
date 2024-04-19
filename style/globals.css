@@ -143,10 +143,10 @@ a {
     --navy-dark-4: #3bade2;
     --navy-dark-5: #50bfff;
 
-    --bg-white: url("../media/mesh-white.png");
-    --bg-black: url("../media/mesh-black.png");
-    --bg-navy: url("../media/mesh-blue.png");
-    --bg-pink: url("../media/mesh-pink.png");
+    --bg-white: url("../media/bg-white.png");
+    --bg-black: url("../media/bg-black.png");
+    --bg-navy: url("../media/bg-navy.png");
+    --bg-pink: url("../media/bg-pink.png");
 
     color: var(--primary);
 

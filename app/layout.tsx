@@ -3,6 +3,8 @@ import "../style/homepage.css";
 import "../style/globals.css";
 import "../style/navigation.css";
 import "../style/adapter.css";
+import "../style/gallery.css";
+import "../style/ultra.css";
 //
 import "../style/panel.css";
 import RootComponent from "./RootComponent";

@@ -26,11 +26,11 @@ export const tokenStandard = [
   "ProgrammableNonFungibleEdition",
 ];
 //function which takes a file and validates whether it is an image and fulfills the requirements (size, format, etc.)
-export async function validateImage(
+export function validateImage(
   input: File,
   setImage: Function,
   setImagePreview: Function
-): Promise<boolean> {
+): boolean {
   if (input != undefined) {
     // Check if input is defined
     if (input.type == "image/png") {

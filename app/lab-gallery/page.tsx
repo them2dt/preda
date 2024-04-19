@@ -1,7 +1,7 @@
 "use client";
 import Container from "@/components/container/Container";
 import React from "react";
-import Panel from "../../components/panels/CNFT_Gallery";
+import Panel from "../../components/panels/X_Gallery";
 
 export default function page() {
   return <Container id={2} panel={<Panel />} />;

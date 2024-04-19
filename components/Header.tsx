@@ -17,12 +17,20 @@ export default function Header({
   themes: string[];
 }) {
   const [tab, setTab] = useState<boolean>(false);
-  const labels = ["NFT", "PNFT", "CNFT", "SPL-20", "SPL-22", "CORE"];
-  const labelDirectories = ["nft", "pnft", "cnft", "spl20", "spl22", "core"];
+  const labels = ["NFT", "PNFT", "CNFT", "SPL-20", "SPL-22", "CORE", "The Lab"];
+  const labelDirectories = [
+    "nft",
+    "pnft",
+    "cnft",
+    "spl20",
+    "spl22",
+    "core",
+    "lab",
+  ];
   const operationLabels = [
     ["Create NFT", "Burn NFT"],
     ["Create pNFT", "Burn pNFT"],
-    ["Create cNFT", "Burn cNFT", "Create Merkle tree", "Load Assets"],
+    ["Create cNFT", "Burn cNFT", "Create Merkle tree"],
     ["Create SPL20", "Burn SPL20"],
     ["Create SPL22", "Burn SPL22"],
     [
@@ -31,14 +39,16 @@ export default function Header({
       "Edit CORE Asset",
       "Create CORE collection",
     ],
+    ["Gallery"],
   ];
   const pages = [
     ["create", "burn"],
     ["create", "burn"],
-    ["create", "burn", "merkletree", "gallery"],
+    ["create", "burn", "merkletree"],
     ["create", "burn"],
     ["create", "burn"],
     ["create", "burn", "edit", "collection"],
+    ["gallery"],
   ];
   return (
     <>
@@ -89,16 +99,11 @@ export default function Header({
             >
               {labels.map((item, index) => (
                 <div
-                  className={
-                    index == 6
-                      ? "section disabled flex-column-center-start"
-                      : "section flex-column-center-start"
-                  }
+                  className={"section flex-column-center-start"}
                   key={"header-section-" + index}
                 >
                   <div className="title font-text-bold">
                     {item}
-                    {index == 6 && " - coming soon"}
                   </div>
                   {pages[index].map((op, i) => (
                     <Link
