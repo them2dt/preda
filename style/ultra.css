@@ -13,10 +13,31 @@
     gap: 10px;
 
     --form-width: 330px;
+    color: var(--primary);
+}
+
+#ultra .palette {
+    gap: 10px;
+}
+
+#ultra .forms {
+    gap: 10px;
+    max-width: 90vw;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
 }
 
 #ultra .type-selectors {
-    gap: 10px;
+    gap: 5px;
+    max-width: 90vw;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
 }
 
 #ultra .type-selector {
@@ -24,10 +45,7 @@
     height: fit-content;
 
     padding: 10px;
-
-    background-color: var(--secondary);
-    border: 1px solid var(--secondary-faded-4);
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 #ultra .type-selector .type {
@@ -42,11 +60,12 @@
 }
 
 #ultra .forms {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+#ultra .forms .column {
+    gap: 5px;
 }
 
 #ultra .form {
@@ -54,7 +73,7 @@
 
     background-color: var(--secondary-faded-1);
     border: 1px solid var(--secondary-faded-4);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px;
     gap: 5px;
 }
@@ -77,9 +96,10 @@
     height: 40px;
     padding: 10px;
 
+    color: var(--primary);
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-2);
-    border-radius: 5px;
+    border-radius: 2.5px;
     outline: none;
     box-sizing: border-box;
 }
@@ -105,26 +125,26 @@
     gap: 20px;
 }
 
-#ultra .creators input {
-    width: calc((var(--form-width) - 50px) / 2) !important;
+#ultra .creators-button {
+    width: var(--form-width);
+    padding: 10px;
+
+    color: var(--primary);
+    background-color: var(--secondary-faded-2);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 2.5px;
+
+    cursor: pointer;
 }
 
-#ultra .creators .creator {
-    gap: 5px;
-}
-
-#ultra .creators .creator button {
-    width: 40px;
-    height: 40px;
-    background-color: transparent;
-    border: 1px solid var(--secondary-faded-2);
-    border-radius: 5px;
-    box-sizing: border-box;
+#ultra .creators-button:hover {
+    background-color: var(--secondary-faded-3);
+    border: 1px solid var(--secondary-faded-4);
 }
 
 #ultra .image-preview {
-    width: 300px;
-    height: 300px;
+    width: var(--form-width);
+    height: var(--form-width);
 
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-2);
@@ -144,22 +164,23 @@
 }
 
 #ultra .submit {
+    color: var(--primary);
     width: var(--form-width);
     height: 60px;
     box-sizing: border-box;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 #ultra .submit:not(:disabled) {
+    color: var(--primary);
     background-color: var(--accent-faded-1);
     border: 2px dashed var(--accent-faded-2);
-    color: var(--secondary);
     cursor: pointer;
 }
 
 
 #ultra .submit:not(:disabled):hover {
-    background-color: var(--accent-faded-1);
+    background-color: var(--accent-faded-2);
     border: 2px dashed var(--accent-faded-3);
 }
 

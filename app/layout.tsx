@@ -4,6 +4,7 @@ import "../style/globals.css";
 import "../style/navigation.css";
 import "../style/adapter.css";
 import "../style/gallery.css";
+import "../style/backdrop.css";
 import "../style/ultra.css";
 //
 import "../style/panel.css";
