@@ -22,9 +22,6 @@
     - a markdown-text explaining this file
 */
 
-
-/*the scrollbar should be invisible and the page should still be scrollable*/
-
 ::-webkit-scrollbar {
     width: 0;
     background: transparent;
@@ -37,8 +34,6 @@
 
 html {
     scroll-behavior: smooth;
-    background-color: var(--secondary);
-
     max-width: 100vw;
 }
 
@@ -58,37 +53,12 @@ a {
     color: inherit;
 }
 
-#skeleton {
-    width: 100vw;
-    height: 100vh;
-
-    margin: 0;
-    padding: 0;
-
-    background-color: var(--secondary);
-    color: var(--primary);
-}
-
-#mainboard {
-    width: 100vw;
-    height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow-y: scroll;
-
-    background-color: var(--secondary);
-    background: var(--background) no-repeat;
-    background-size: cover;
-}
-
 /*a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades, lets take a #B763FF for the accent*/
 
 :root {
     max-width: 100vw;
 
+    --black: rgb(0, 0, 0);
     --black-1: rgb(0, 0, 0);
     --black-2: rgb(10, 10, 10);
     --black-3: rgb(20, 20, 20);
@@ -101,6 +71,7 @@ a {
     --black-transparent-4: rgba(0, 0, 0, 0.4);
     --black-transparent-5: rgba(0, 0, 0, 0.5);
 
+    --white: #FFFFFF;
     --white-1: #FFFFFF;
     --white-2: #F2F2F2;
     --white-3: #E5E5E5;
@@ -113,12 +84,13 @@ a {
     --white-transparent-4: rgba(255, 255, 255, 0.4);
     --white-transparent-5: rgba(255, 255, 255, 0.5);
 
-    --accent-1: #B763FF;
-    --accent-2: #C17DFF;
-    --accent-3: #CA97FF;
-    --accent-4: #D3B1FF;
-    --accent-5: #DCCBFF;
+    --purple-1: #B763FF;
+    --purple-2: #C17DFF;
+    --purple-3: #CA97FF;
+    --purple-4: #D3B1FF;
+    --purple-5: #DCCBFF;
 
+    --pink: #ff62b3;
     --pink-light-1: #ff62b3;
     --pink-light-2: #ff7cc0;
     --pink-light-3: #ff8fc9;
@@ -131,6 +103,7 @@ a {
     --pink-dark-4: #e23b91;
     --pink-dark-5: #ff50aa;
 
+    --navy: #62b8ff;
     --navy-light-1: #62b8ff;
     --navy-light-2: #7cc4ff;
     --navy-light-3: #8fd2ff;
@@ -143,18 +116,13 @@ a {
     --navy-dark-4: #3bade2;
     --navy-dark-5: #50bfff;
 
-    --bg-white: url("../media/mesh-white.png");
-    --bg-black: url("../media/mesh-black.png");
-    --bg-navy: url("../media/mesh-blue.png");
-    --bg-pink: url("../media/mesh-pink.png");
-
     color: var(--primary);
 
 }
 
 /*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
 
-[data-theme="light"] {
+[data-theme="white"] {
     --background: var(--bg-white);
     --primary: var(--black-1);
     --primary-faded-1: var(--black-2);
@@ -180,14 +148,14 @@ a {
     --secondary-transparent-4: var(--white-transparent-4);
     --secondary-transparent-5: var(--white-transparent-5);
 
-    --accent: var(--accent-1);
-    --accent-faded-1: var(--accent-2);
-    --accent-faded-2: var(--accent-3);
-    --accent-faded-3: var(--accent-4);
-    --accent-faded-4: var(--accent-5);
+    --accent: var(--purple-1);
+    --accent-faded-1: var(--purple-2);
+    --accent-faded-2: var(--purple-3);
+    --accent-faded-3: var(--purple-4);
+    --accent-faded-4: var(--purple-5);
 }
 
-[data-theme="dark"] {
+[data-theme="black"] {
     --background: var(--bg-black);
     --primary: var(--white-1);
     --primary-faded-1: var(--white-2);
@@ -213,14 +181,14 @@ a {
     --secondary-transparent-4: var(--black-transparent-4);
     --secondary-transparent-5: var(--black-transparent-5);
 
-    --accent: var(--accent-1);
-    --accent-faded-1: var(--accent-2);
-    --accent-faded-2: var(--accent-3);
-    --accent-faded-3: var(--accent-4);
-    --accent-faded-4: var(--accent-5);
+    --accent: var(--purple-1);
+    --accent-faded-1: var(--purple-2);
+    --accent-faded-2: var(--purple-3);
+    --accent-faded-3: var(--purple-4);
+    --accent-faded-4: var(--purple-5);
 }
 
-[data-theme="candy"] {
+[data-theme="pink"] {
     --background: var(--bg-pink);
     --primary: var(--pink-dark-1);
     --primary-faded-1: var(--pink-dark-2);
@@ -329,6 +297,7 @@ a {
     font-family: "satoshi-bold";
     font-size: 18px;
     font-weight: 600;
+    letter-spacing: -0.05rem;
 }
 
 .font-text-light {

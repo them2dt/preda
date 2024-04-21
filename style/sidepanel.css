@@ -1,0 +1,129 @@
+.sidepanel-container {
+    width: fit-content;
+    padding: 10px;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    gap: 10px;
+    color: var(--primary);
+    --sp-width: 300px;
+}
+
+.sidepanel {
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    background-color: var(--secondary-faded-1);
+    border-radius: 20px;
+
+    gap: 5px
+}
+
+.sidepanel .logo-box {
+    width: var(--sp-width);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 10px;
+}
+
+.sidepanel .logo-box .naming {
+    gap: 5px;
+}
+
+.sidepanel .logo-box .name {
+    color: var(--primary);
+}
+
+.sidepanel .logo-box .variant {
+    color: var(--accent-faded-2);
+}
+
+.sidepanel .operations {
+    padding: 5px;
+    border-radius: 10px;
+    height: 60vh;
+    overflow: scroll;
+    gap: 5px;
+}
+
+.sidepanel .operations .operation-section {
+    gap: 5px;
+}
+
+.sidepanel .operations .operation-section-header {
+
+    width: var(--sp-width);
+    height: fit-content;
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+    color: var(--primary);
+}
+
+.sidepanel .operations .operation {
+
+    width: var(--sp-width);
+    height: fit-content;
+    padding: 5px 10px;
+
+    border-radius: 5px;
+    box-sizing: border-box;
+
+    color: var(--secondary-faded-4);
+}
+
+.sidepanel .operations .operation.active {
+    background-color: var(--secondary-faded-2);
+    color: var(--accent);
+}
+
+.sidepanel .operations .operation:hover {
+    color: var(--primary);
+}
+
+.sidepanel .more {
+    width: calc(var(--sp-width) + 10px);
+    gap: 5px;
+}
+
+.sidepanel .more button {
+    width: 100%;
+    padding: 10px;
+
+    background-color: var(--secondary-faded-2);
+    border: none;
+    border-radius: 10px;
+
+    color: var(--secondary-faded-4);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sidepanel .more button:hover {
+    color: var(--secondary-faded-3);
+
+}
+
+.modal {
+    width: 330px;
+    padding: 20px;
+
+    background-color: var(--secondary-faded-1);
+    border-radius: 20px;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+.sidepanel-container .modal .modal-content {
+    gap: 10px;
+}
+
+.sidepanel-container .modal .theme-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--accent);
+    border: 5px solid var(--secondary-transparent-5);
+    border-radius: 100px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
