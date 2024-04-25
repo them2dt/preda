@@ -1,26 +1,20 @@
-#ultra {
+.form {
+    --form-width: 330px;
+
     position: relative;
 
-    width: 100vw;
-    min-height: 100vh;
-
-    padding-top: 200px;
-    padding-bottom: 200px;
-
-    background: var(--background) no-repeat;
-    box-sizing: border-box;
-
-    gap: 10px;
-
-    --form-width: 330px;
-    color: var(--primary);
+    background-color: var(--secondary-faded-1);
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 5px;
 }
 
-#ultra .palette {
+.form .palette {
     gap: 10px;
 }
 
-#ultra .forms {
+.form .forms {
     gap: 10px;
     max-width: 90vw;
     padding: 10px;
@@ -28,9 +22,11 @@
     backdrop-filter: blur(8px);
     border: 1px solid var(--secondary-faded-1);
     border-radius: 10px;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
-#ultra .type-selectors {
+.form .type-selectors {
     gap: 5px;
     max-width: 90vw;
     padding: 5px;
@@ -40,7 +36,7 @@
     border-radius: 10px;
 }
 
-#ultra .type-selector {
+.form .type-selector {
     width: fit-content;
     height: fit-content;
 
@@ -48,33 +44,18 @@
     border-radius: 5px;
 }
 
-#ultra .type-selector .type {
+.form .type-selector .type {
     background-color: transparent;
     color: var(--primary);
     border: none;
     cursor: pointer;
 }
 
-#ultra .type-selector .type.active {
+.form .type-selector .type.active {
     color: var(--accent-1);
 }
 
-#ultra .forms {
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-#ultra .forms .column {
-    gap: 5px;
-}
-
-#ultra .form {
-    position: relative;
-
-    background-color: var(--secondary-faded-1);
-    border: 1px solid var(--secondary-faded-4);
-    border-radius: 5px;
-    padding: 10px;
+.form .forms .column {
     gap: 5px;
 }
 
@@ -83,7 +64,7 @@
 }
 
 .input-field .label {
-    color: var(--secondary-faded-4);
+    color: var(--accent-faded-3);
 }
 
 .input-field .label.active {
@@ -99,7 +80,7 @@
     color: var(--primary);
     background-color: var(--secondary);
     border: 1px solid var(--secondary-faded-2);
-    border-radius: 2.5px;
+    border-radius: 5px;
     outline: none;
     box-sizing: border-box;
 }
@@ -125,7 +106,7 @@
     gap: 20px;
 }
 
-#ultra .creators-button {
+.form .creators-button {
     width: var(--form-width);
     padding: 10px;
 
@@ -137,12 +118,12 @@
     cursor: pointer;
 }
 
-#ultra .creators-button:hover {
+.form .creators-button:hover {
     background-color: var(--secondary-faded-3);
     border: 1px solid var(--secondary-faded-4);
 }
 
-#ultra .image-preview {
+.form .image-preview {
     width: var(--form-width);
     height: var(--form-width);
 
@@ -154,39 +135,39 @@
     overflow: hidden;
 }
 
-#ultra .image-preview input {
+.form .image-preview input {
     display: none;
 }
 
-#ultra .image-preview img {
-    width: 300px;
-    height: 300px;
+.form .image-preview img {
+    width: var(--form-width);
+    height: var(--form-width);
+
 }
 
-#ultra .submit {
-    color: var(--primary);
+.form .submit {
     width: var(--form-width);
     height: 60px;
     box-sizing: border-box;
     border-radius: 10px;
 }
 
-#ultra .submit:not(:disabled) {
-    color: var(--primary);
+.form .submit:not(:disabled) {
+    color: var(--secondary);
     background-color: var(--accent-faded-1);
-    border: 2px dashed var(--accent-faded-2);
+    border: 2px solid var(--accent-faded-2);
     cursor: pointer;
 }
 
 
-#ultra .submit:not(:disabled):hover {
+.form .submit:not(:disabled):hover {
     background-color: var(--accent-faded-2);
-    border: 2px dashed var(--accent-faded-3);
+    border: 2px solid var(--accent-faded-3);
 }
 
-#ultra .submit:disabled {
+.form .submit:disabled {
     background-color: var(--accent-faded-4);
-    border: 2px dashed var(--accent-faded-1);
+    border: 2px solid var(--accent-faded-1);
     color: var(--accent-faded-2);
     cursor: not-allowed;
     pointer-events: none;

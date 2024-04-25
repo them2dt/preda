@@ -502,3 +502,10 @@ a {
     justify-content: flex-end;
     align-items: flex-end;
 }
+
+.flex-column-between-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}

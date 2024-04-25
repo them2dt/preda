@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { WalletProvider } from "@solana/wallet-adapter-react";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
@@ -9,6 +9,7 @@ import { SnackbarProvider } from "notistack";
 import { closeSnackbar } from "notistack";
 import { MaterialDesignContent } from "notistack";
 import { styled } from "@mui/material";
+import { clusterApiUrl } from "@solana/web3.js";
 export default function ClientWrapper({
   children,
 }: Readonly<{
@@ -16,8 +17,7 @@ export default function ClientWrapper({
 }>) {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Devnet;
-  const endpoint =
-    "https://devnet.helius-rpc.com/?api-key=73670a22-627e-4405-b80f-8fe0583892a9";
+  const endpoint = clusterApiUrl(network);
   const wallets = useMemo(() => [], [network]);
 
   //custom snackbar

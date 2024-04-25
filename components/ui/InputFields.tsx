@@ -150,8 +150,8 @@ export function ImageInput({
   setImage,
   setImagePreview,
 }: {
-  image: File;
-  imagePreview: string;
+  image: File | undefined;
+  imagePreview: string | undefined;
   setImage: Function;
   setImagePreview: Function;
 }) {

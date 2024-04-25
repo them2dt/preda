@@ -1,4 +1,7 @@
 .sidepanel-container {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: fit-content;
     padding: 10px;
     height: 100vh;
@@ -11,12 +14,13 @@
 
 .sidepanel {
     width: fit-content;
-    height: fit-content;
+    height: calc(100vh - 40px);
     padding: 10px;
     background-color: var(--secondary-faded-1);
     border-radius: 20px;
 
-    gap: 5px
+    gap: 5px;
+
 }
 
 .sidepanel .logo-box {
@@ -112,9 +116,14 @@
     border-radius: 20px;
     box-sizing: border-box;
     gap: 10px;
+
 }
 
 .sidepanel-container .modal .modal-content {
+    gap: 5px;
+}
+
+.sidepanel-container .theme-modal .modal-content {
     gap: 10px;
 }
 
@@ -125,5 +134,22 @@
     border: 5px solid var(--secondary-transparent-5);
     border-radius: 100px;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.sidepanel-container .rpc-modal input,
+.sidepanel-container .rpc-modal button {
+    width: calc(var(--sp-width) - 10px);
+    padding: 10px;
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-3);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.sidepanel-container .rpc-modal button {
+    background-color: var(--primary);
+    color: var(--secondary);
     cursor: pointer;
 }

@@ -7,73 +7,91 @@ import {
   faWallet,
   faPalette,
   faQuestion,
-  faLightbulb,
-  faMoon,
-  faCandyCane,
-  faAnchor,
   faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
-import { themes } from "../utils/simples";
+import { themes, sections, operations, links } from "../utils/simples";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { enqueueSnackbar } from "notistack";
+
+const WalletMultiButtonDynamic = dynamic(
+  async () =>
+    (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 export default function SidePanel({
   sectionID,
   operationID,
+  theme,
   setTheme,
+  rpc,
+  setRpc,
 }: {
   sectionID: number;
   operationID: number;
-  setTheme: (id: number) => void;
+  theme: number;
+  setTheme: React.Dispatch<React.SetStateAction<number>>;
+  rpc: string;
+  setRpc: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [modal, setModal] = useState(0);
-  const sections = ["Create", "Manage"];
-  const operations = [
-    ["NFT", "Compressed", "SPL Token"],
-    [
-      "Update Token Metadata",
-      "Create a Collection (CORE)",
-      "Mint SPL-Tokens",
-      "Burn Assets",
-    ],
-  ];
-  const links = [
-    ["create-nft", "create-cnft", "create"],
-    ["update", "core-collection", "mint-spl", "burn"],
-  ];
+  const [rpcInput, setRpcInput] = useState("");
+  const connection = new Connection(rpc, { commitment: "finalized" });
+
+  const verifyConnection = async () => {
+    try {
+      enqueueSnackbar("Connecting to RPC: " + rpcInput, { variant: "info" });
+      const response = await new Connection(rpcInput).getSlot();
+      if (response > 1) {
+        setRpc(rpcInput);
+        enqueueSnackbar("Connected successfully.", { variant: "success" });
+      }
+    } catch (e) {
+      enqueueSnackbar("RPC is invalid.", { variant: "error" });
+    }
+  };
+
   return (
-    <div className="sidepanel-container flex-column-start-center">
-      <div className="sidepanel flex-column-start-start">
-        <div className="logo-box flex-row-center-center">
-          <Image src={Logo} alt="Preda" />
-          <div className="naming flex-row-center-center">
-            <div className="name font-h3">Preda</div>
-            <div className=" variant font-h3">Lite</div>
-          </div>
-        </div>
-        <div className="operations flex-column-start-center">
-          {sections.map((item, SECindex) => (
-            <div className="operation-section flex-column-start-center">
-              <div
-                className="operation-section-header flex-row-start-center"
-                key={"section " + SECindex}
-              >
-                <div className="font-text-bold">{item}</div>
-              </div>
-              {operations[SECindex].map((item, OPindex) => (
-                <Link href={links[SECindex][OPindex]}>
-                  <div
-                    className={
-                      SECindex == sectionID && OPindex == operationID
-                        ? "operation active flex-row-start-center"
-                        : "operation flex-row-start-center"
-                    }
-                  >
-                    <div className="font-text">{item}</div>
-                  </div>
-                </Link>
-              ))}
+    <div
+      className={"sidepanel-container flex-row-end-end"}
+      data-theme={themes[theme]}
+    >
+      <div className="sidepanel flex-column-between-center">
+        <div className="flex-column-start-center">
+          <div className="logo-box flex-row-center-center">
+            <Image src={Logo} alt="Preda" />
+            <div className="naming flex-row-center-center">
+              <div className="name font-h3">Preda</div>
+              <div className=" variant font-h3">Lite</div>
             </div>
-          ))}
+          </div>
+          <div className="operations flex-column-start-center">
+            {sections.map((item, SECindex) => (
+              <div className="operation-section flex-column-start-center">
+                <div
+                  className="operation-section-header flex-row-start-center"
+                  key={"section " + SECindex}
+                >
+                  <div className="font-text-bold">{item}</div>
+                </div>
+                {operations[SECindex].map((item, OPindex) => (
+                  <Link href={links[SECindex][OPindex]}>
+                    <div
+                      className={
+                        SECindex == sectionID && OPindex == operationID
+                          ? "operation active flex-row-start-center"
+                          : "operation flex-row-start-center"
+                      }
+                    >
+                      <div className="font-text">{item}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
         <div className="more flex-row-center-center">
           <button
@@ -90,7 +108,7 @@ export default function SidePanel({
               setModal(modal == 2 ? 0 : 2);
             }}
           >
-            <FontAwesomeIcon icon={faPalette} />
+            <FontAwesomeIcon icon={faNetworkWired} />
           </button>
           <button
             className="flex-row-center-center"
@@ -98,7 +116,7 @@ export default function SidePanel({
               setModal(modal == 3 ? 0 : 3);
             }}
           >
-            <FontAwesomeIcon icon={faNetworkWired} />
+            <FontAwesomeIcon icon={faPalette} />
           </button>
           <button
             className="flex-row-center-center"
@@ -111,34 +129,30 @@ export default function SidePanel({
         </div>
       </div>
       {modal == 1 && (
-        <div className="modal theme-modal flex-column-start-start">
-          <div className="modal-name flex-row-start-start font-h4">Wallet</div>
-          <div className="modal-content flex-row-start-start">
-            {themes.map((item, index) => (
-              <button
-                className="theme-button"
-                style={{ backgroundColor: "var(--" + item + ")" }}
-                onClick={() => {
-                  setTheme(index);
-                }}
-              ></button>
-            ))}
-          </div>
+        <div className="modal theme-modal flex-column-center-center">
+          <WalletMultiButtonDynamic />
         </div>
       )}
       {modal == 2 && (
-        <div className="modal theme-modal flex-column-start-start">
-          <div className="modal-name flex-row-start-start font-h4">Network</div>
-          <div className="modal-content flex-row-start-start">
-            {themes.map((item, index) => (
-              <button
-                className="theme-button"
-                style={{ backgroundColor: "var(--" + item + ")" }}
-                onClick={() => {
-                  setTheme(index);
-                }}
-              ></button>
-            ))}
+        <div className="modal rpc-modal flex-column-start-start">
+          <div className="modal-name flex-row-start-start font-h4">
+            Choose your network
+          </div>
+          <div className="modal-content flex-column-center-center">
+            <input
+              className="font-text-small"
+              type="text"
+              placeholder="Enter your custom RPC URL"
+              onChange={(e) => {
+                setRpcInput(e.target.value);
+              }}
+            />
+            <button
+              className="submit font-text-small-bold"
+              onClick={verifyConnection}
+            >
+              Set RPC
+            </button>
           </div>
         </div>
       )}
