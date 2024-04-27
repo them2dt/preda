@@ -13,6 +13,8 @@ import {
   createCollectionV1,
   updateV1,
   collectionAddress,
+  createPlugin,
+  ruleSet,
 } from "@metaplex-foundation/mpl-core";
 import base58 from "bs58";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
@@ -44,6 +46,26 @@ export const createCoreAsset = async ({
         name: name,
         uri: metadata,
         collection: publicKey(collection),
+        plugins: [{
+          plugin: createPlugin({
+            type: 'Royalties',
+            data: {
+              basisPoints: 500,
+              creators: [
+                {
+                  address: publicKey("creator1"),
+                  percentage: 20,
+                },
+                {
+                  address: publicKey("creator2"),
+                  percentage: 80,
+                },
+              ],
+              ruleSet: ruleSet('None'), // Compatibility rule set
+            },
+          }),
+          authority: null
+        }],
       });
 
       const result = await transaction.sendAndConfirm(umi);

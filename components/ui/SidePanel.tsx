@@ -64,7 +64,7 @@ export default function SidePanel({
             <Image src={Logo} alt="Preda" />
             <div className="naming flex-row-center-center">
               <div className="name font-h3">Preda</div>
-              <div className=" variant font-h3">Lite</div>
+              <div className=" variant font-h3"></div>
             </div>
           </div>
           <div className="operations flex-column-start-center">

@@ -3,6 +3,7 @@ import "../style/sidepanel.css";
 import "../style/forms.css";
 import "../style/home.css";
 import "../style/adapter.css";
+import "../style/backdrop.css";
 //
 import ClientWrapper from "./ClientWrapper";
 import Head from "next/head";

@@ -20,7 +20,7 @@ import { colors, createTheme } from "@mui/material";
 
 export default function page() {
   const { wallet } = useWallet();
-  const [theme, setTheme] = useState(1);
+  const [theme, setTheme] = useState(0);
   const [rpc, setRpc] = useState(
     "https://devnet.helius-rpc.com/?api-key=256baa19-0d74-4b32-a403-bbf83037df6a"
   );
@@ -164,6 +164,7 @@ export default function page() {
                                         initialMessage: "Create NFT",
                                         backendCall: async () => await runner,
                                       });
+                                      setProgressing(false);
                                       setResult(response);
                                     } else {
                                       enqueueSnackbar(
@@ -344,17 +345,7 @@ export default function page() {
         >
           <div id="processing-panel" className="flex-column-center-center">
             <div className="symbol">
-              <ThemeProvider
-                theme={createTheme({
-                  palette: {
-                    primary: {
-                      500: "rgb(255, 255, 255)",
-                    },
-                  },
-                })}
-              >
                 <CircularProgress color="primary" />
-              </ThemeProvider>
             </div>
             <div className="font-h4">processing...</div>
           </div>

@@ -96,29 +96,42 @@ export async function uploadFileToIrys({
 }: {
   wallet: Wallet;
   connection: Connection;
-  file: File;
-}): Promise<string> {
-  const bundler = await getIrys({ wallet: wallet, connection: connection });
-  const state = await bundler.ready();
-  const imagePrice = await bundler.getPrice(file.size + 1048576);
-  const funds = await bundler.fund(imagePrice);
+  file: File | undefined;
+}): Promise<BackendResponse> {
+  try {
+    if (wallet) {
+      if (connection) {
+        if (file) {
+          const bundler = await getIrys({
+            wallet: wallet,
+            connection: connection,
+          });
+          const state = await bundler.ready();
+          const imagePrice = await bundler.getPrice(file.size + 1048576);
+          const funds = await bundler.fund(imagePrice);
 
-  console.log(
-    "Upload price: " + imagePrice.toNumber() / LAMPORTS_PER_SOL + " SOL"
-  );
+          console.log(
+            "Upload price: " + imagePrice.toNumber() / LAMPORTS_PER_SOL + " SOL"
+          );
 
-  const fileArrayBuffer = await file.arrayBuffer();
-  const fileBuffer = Buffer.from(fileArrayBuffer);
-  const imageUpload = bundler.createTransaction(fileBuffer, {
-    tags: [{ name: "Content-Type", value: file.type }],
-  });
-  const sign = await imageUpload.sign();
-  const upload = await imageUpload.upload();
-  console.log(
-    file.name + "." + file.type + ": https://arweave.net/" + upload.id
-  );
+          const fileArrayBuffer = await file.arrayBuffer();
+          const fileBuffer = Buffer.from(fileArrayBuffer);
+          const imageUpload = bundler.createTransaction(fileBuffer, {
+            tags: [{ name: "Content-Type", value: file.type }],
+          });
+          const sign = await imageUpload.sign();
+          const upload = await imageUpload.upload();
+          console.log(
+            file.name + "." + file.type + ": https://arweave.net/" + upload.id
+          );
 
-  return "https://arweave.net/" + upload.id;
+          return { status: 200, assetID: "https://arweave.net/"+upload.id };
+        } else return { status: 500 };
+      } else return { status: 500 };
+    } else return { status: 500 };
+  } catch (e) {
+    return { status: 500 };
+  }
 }
 export async function getAsset({
   wallet,
