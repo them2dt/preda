@@ -149,9 +149,19 @@ export default function PluginBackdrop({
           <div className="plugin-operator flex-column-center-center">
             <div className="plugin-options flex-column-center-center">
               {pluginTypes.map((item, index) => (
-                <div className="flex-row-center-center">
+                <div
+                  className="plugin-option flex-row-center-center"
+                  key={"plugin-option-" + index}
+                >
                   <button
-                    key={"plugin-option-" + index}
+                    className="plugin-activator flex-row-center-center"
+                    onClick={() => {
+                      changeActiveRoyalties(index);
+                    }}
+                  >
+                    <Signal state={activeRoyalties[index].active} />
+                  </button>
+                  <button
                     className={
                       pluginForm == index
                         ? "option active font-text-bold flex-row-start-center"
@@ -159,8 +169,6 @@ export default function PluginBackdrop({
                     }
                     onClick={() => setPluginForm(index)}
                   >
-                    <Signal state={activeRoyalties[index].active} />
-
                     {item}
                   </button>
                 </div>
@@ -194,16 +202,6 @@ export default function PluginBackdrop({
               >
                 update
               </button>
-              <button
-                className="close font-text-bold"
-                onClick={() => {
-                  if (address && share) {
-                    setPlugins;
-                  }
-                }}
-              >
-                close
-              </button>
             </div>
           </div>
           {pluginForm == 0 && (
@@ -211,15 +209,6 @@ export default function PluginBackdrop({
               className="plugin-form flex-column-start-start"
               key={"Plugin-Form " + renderHook}
             >
-              <div className="switch-container flex-row-start-center">
-                <div className="font-text">Enable Plugin</div>
-                <Switch
-                  hook={() => {
-                    changeActiveRoyalties(0);
-                  }}
-                  state={activeRoyalties[0].active}
-                />
-              </div>
               <div className="elements flex-column-start-start">
                 {creators.map((item, index) => (
                   <button
@@ -292,25 +281,6 @@ export default function PluginBackdrop({
                   />
                 </div>
               </div>
-              <div className="rulesets flex-column-start-start">
-                <div className="font-h4">Add rules</div>
-                <div className="flex-row-start-start">
-                  <div className="ruleset-types flex-flex-column-start-start">
-                    <div className="ruleset-type flex-row-start-center">
-                      <input type="radio" name="ruleset" value={0} />
-                      <div className="font-text">None</div>
-                    </div>
-                    <div className="ruleset-type flex-row-start-start">
-                      <input type="radio" name="ruleset" value={0} />
-                      <div className="font-text">Allow programs</div>
-                    </div>
-                    <div className="ruleset-type flex-row-start-start">
-                      <input type="radio" name="ruleset" value={0} />
-                      <div className="font-text">Block programs</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
           {pluginForm == 1 && (
@@ -318,117 +288,6 @@ export default function PluginBackdrop({
               className="plugin-form flex-column-start-start"
               key={"Plugin-Form " + renderHook}
             >
-              <div className="switch-container flex-row-start-center">
-                <div className="font-text">Enable Plugin</div>
-                <Switch
-                  hook={() => {
-                    changeActiveRoyalties(1);
-                  }}
-                  state={activeRoyalties[1].active}
-                />
-              </div>
-              <div className="elements flex-column-start-start">
-                {attributes.map((item, index) => (
-                  <button
-                    className="element flex-start-center-center"
-                    onClick={() => {
-                      removeAttribute(index);
-                      setRenderHook(renderHook + 1);
-                    }}
-                  >
-                    <div className="font-text-tiny">{item.trait_type}</div>
-                    <div className="font-text-tiny-bold">{item.value}</div>
-                  </button>
-                ))}
-              </div>
-              <div className="inputs flex-row-center-end">
-                <TextField label="Attribute name" setValue={setAttributeKey} />
-                <TextField label="Value" setValue={setAttributeValue} />
-                <button
-                  disabled={validateAttribute()}
-                  className="submit font-text"
-                  onClick={() => {
-                    if (attributeKey && attributeValue) {
-                      attributes.push({
-                        trait_type: attributeKey,
-                        value: attributeValue,
-                      });
-                      setAttributeKey(undefined);
-                      setAttributeValue(undefined);
-                      setRenderHook(renderHook + 1);
-                    }
-                  }}
-                >
-                  add
-                </button>
-              </div>
-            </div>
-          )}
-          {pluginForm == 2 && (
-            <div
-              className="plugin-form flex-column-start-start"
-              key={"Plugin-Form " + renderHook}
-            >
-              <div className="switch-container flex-row-start-center">
-                <div className="font-text">Enable Plugin</div>
-                <Switch
-                  hook={() => {
-                    changeActiveRoyalties(2);
-                  }}
-                  state={activeRoyalties[2].active}
-                />
-              </div>
-              <div className="elements flex-column-start-start">
-                {attributes.map((item, index) => (
-                  <button
-                    className="element flex-start-center-center"
-                    onClick={() => {
-                      removeAttribute(index);
-                      setRenderHook(renderHook + 1);
-                    }}
-                  >
-                    <div className="font-text-tiny">{item.trait_type}</div>
-                    <div className="font-text-tiny-bold">{item.value}</div>
-                  </button>
-                ))}
-              </div>
-              <div className="inputs flex-row-center-end">
-                <TextField label="Attribute name" setValue={setAttributeKey} />
-                <TextField label="Value" setValue={setAttributeValue} />
-                <button
-                  disabled={validateAttribute()}
-                  className="submit font-text"
-                  onClick={() => {
-                    if (attributeKey && attributeValue) {
-                      attributes.push({
-                        trait_type: attributeKey,
-                        value: attributeValue,
-                      });
-                      setAttributeKey(undefined);
-                      setAttributeValue(undefined);
-                      setRenderHook(renderHook + 1);
-                    }
-                  }}
-                >
-                  add
-                </button>
-              </div>
-            </div>
-          )}
-          {pluginForm == 3 && (
-            <div
-              className="plugin-form flex-column-start-start"
-              key={"Plugin-Form " + renderHook}
-            >
-              <div className="switch-container flex-row-start-center">
-                <div className="font-text">Enable Plugin</div>
-                <Switch
-                  hook={() => {
-                    changeActiveRoyalties(3);
-                  }}
-                  state={activeRoyalties[3].active}
-                />
-              </div>
               <div className="elements flex-column-start-start">
                 {attributes.map((item, index) => (
                   <button
