@@ -1,7 +1,8 @@
+"use client";
 import { styled, alpha } from "@mui/system";
 import { Slider as BaseSlider, sliderClasses } from "@mui/base/Slider";
 
-export const CustomSlider = styled(BaseSlider)(
+export const Slider = styled(BaseSlider)(
   ({ theme }) => `
   color: var(--accent);
   height: 4px;
@@ -57,34 +58,52 @@ export const CustomSlider = styled(BaseSlider)(
     transform-origin: center;
 
     &:hover {
-      box-shadow: 0 0 0 6px ${alpha(
-        "#111111",
-        0.3
-      )};
+      box-shadow: 0 0 0 6px ${alpha("#111111", 0.3)};
     }
 
     &.${sliderClasses.focusVisible} {
-      box-shadow: 0 0 0 8px ${alpha(
-        "#111111",
-        0.5
-      )};
+      box-shadow: 0 0 0 8px ${alpha("#111111", 0.5)};
       outline: none;
     }
 
     &.${sliderClasses.active} {
-      box-shadow: 0 0 0 8px ${alpha(
-        "#111111",
-        0.5
-      )};
+      box-shadow: 0 0 0 8px ${alpha("#111111", 0.5)};
       outline: none;
       transform: scale(1.2);
     }
     
     &.${sliderClasses.disabled} {
-      background-color: ${
-        "var(-accent)"
-      };
+      background-color: ${"var(-accent)"};
     }
   }
 `
 );
+
+export const Switch = ({
+  hook,
+  state,
+}: {
+  hook: () => void;
+  state: boolean;
+}) => {
+  const run = () => {
+    hook();
+  };
+  return (
+    <button onClick={run} className={state ? "switch active" : "switch"}>
+      <div className="button"></div>
+    </button>
+  );
+};
+export const Signal = ({ state }: { state: boolean }) => {
+  return (
+    <div
+      className={
+        state
+          ? "signal active flex-row-center-center"
+          : "signal flex-row-center-center"
+      }
+    >
+    </div>
+  );
+};

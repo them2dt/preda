@@ -2,7 +2,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { themes } from "../utils/simples";
-import { CustomSlider } from "./Slider";
+import { CustomSlider } from "./TeaUI";
 
 export default function CreatorBackdrop({
   renderHook,

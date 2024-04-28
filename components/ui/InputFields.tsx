@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { CustomSlider } from "./Slider";
+import { CustomSlider } from "./TeaUI";
 import { validateImage } from "@/components/backend/General";
 
 export function TextField({

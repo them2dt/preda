@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { themes } from "../utils/simples";
 import { NumberField, TextField } from "./InputFields";
-import { CustomSlider } from "./Slider";
+import { Signal, Slider, Switch } from "./TeaUI";
 import { enqueueSnackbar } from "notistack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -38,6 +38,10 @@ export default function PluginBackdrop({
   >([]);
 
   //General plugin hooks
+  const [activeRoyalties, setActiveRoyalties] = useState<{ active: boolean }[]>(
+    [{ active: false }, { active: false }, { active: false }, { active: false }]
+  );
+
   const [pluginForm, setPluginForm] = useState<number>(0);
   const [royaltyPlugin, setRoyaltyPlugin] = useState<Plugin>();
   const [plugins, setPlugins] = useState<
@@ -61,11 +65,29 @@ export default function PluginBackdrop({
     }
   };
 
+  const changeActiveRoyalties = (x: number) => {
+    const old = activeRoyalties;
+    const result: { active: boolean }[] = [];
+
+    for (let i = 0; i < old.length; i++) {
+      if (i == x) {
+        result.push({ active: !old[i].active });
+      } else {
+        result.push(old[i]);
+      }
+    }
+    setActiveRoyalties(result);
+  };
+
+  //Royalty validators
   const validateCreator = () => {
     if (address && share) {
       var totalShare = 0;
       for (let i = 0; i < creators.length; i++) {
         totalShare += creators[i].percentage;
+        if (address == creators[i].address) {
+          return true;
+        }
       }
       totalShare += share;
 
@@ -81,12 +103,31 @@ export default function PluginBackdrop({
       var totalShare = 0;
       for (let i = 0; i < creators.length; i++) {
         totalShare += creators[i].percentage;
+
+        for (let j = 0; j < creators.length; j++) {
+          if (i != j && creators[i].address == creators[j].address) {
+            return true;
+          }
+        }
       }
       if (totalShare == 100) {
         return false;
       } else {
         return true;
       }
+    } else {
+      return true;
+    }
+  };
+
+  const validateAttribute = () => {
+    if (attributeKey && attributeValue) {
+      for (let i = 0; i < attributes.length; i++) {
+        if (attributes[i].trait_type == attributeKey) {
+          return true;
+        }
+      }
+      return false;
     } else {
       return true;
     }
@@ -105,26 +146,84 @@ export default function PluginBackdrop({
       >
         <div className="font-h4">Plugin configurator</div>
         <div className="plugin-modal flex-row-start-start">
-          <div className="plugin-options flex-column-center-center">
-            {pluginTypes.map((item, index) => (
+          <div className="plugin-operator flex-column-center-center">
+            <div className="plugin-options flex-column-center-center">
+              {pluginTypes.map((item, index) => (
+                <div className="flex-row-center-center">
+                  <button
+                    key={"plugin-option-" + index}
+                    className={
+                      pluginForm == index
+                        ? "option active font-text-bold flex-row-start-center"
+                        : "option font-text-bold flex-row-start-center"
+                    }
+                    onClick={() => setPluginForm(index)}
+                  >
+                    <Signal state={activeRoyalties[index].active} />
+
+                    {item}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="plugin-submitters flex-column-center-center">
               <button
-                key={"plugin-option-" + index}
-                className={"option font-text-bold flex-row-start-center"}
-                onClick={() => setPluginForm(index)}
+                disabled={validateRoyaltyPlugin()}
+                className="update font-text-bold"
+                onClick={() => {
+                  if (creators) {
+                    var totalShare = 0;
+                    for (let i = 0; i < creators.length; i++) {
+                      totalShare += creators[i].percentage;
+                    }
+                    if (totalShare == 100) {
+                      setRoyaltyPlugin(
+                        createPlugin({
+                          type: "Royalties",
+                          data: {
+                            basisPoints: royalty,
+                            creators: creators,
+                            ruleSet: ruleSet("None"),
+                          },
+                        })
+                      );
+                    }
+                  }
+                }}
               >
-                {item}
+                update
               </button>
-            ))}
+              <button
+                className="close font-text-bold"
+                onClick={() => {
+                  if (address && share) {
+                    setPlugins;
+                  }
+                }}
+              >
+                close
+              </button>
+            </div>
           </div>
           {pluginForm == 0 && (
             <div
-              className="plugin-form flex-column-start-center"
+              className="plugin-form flex-column-start-start"
               key={"Plugin-Form " + renderHook}
             >
-              <div className="attributes flex-row-start-start">
+              <div className="switch-container flex-row-start-center">
+                <div className="font-text">Enable Plugin</div>
+                <Switch
+                  hook={() => {
+                    changeActiveRoyalties(0);
+                  }}
+                  state={activeRoyalties[0].active}
+                />
+              </div>
+              <div className="elements flex-column-start-start">
                 {creators.map((item, index) => (
                   <button
-                    className="attribute flex-start-center-center"
+                    className="element flex-start-center-center"
                     onClick={() => {
                       removeCreator(index);
                       setRenderHook(renderHook + 1);
@@ -137,11 +236,10 @@ export default function PluginBackdrop({
                   </button>
                 ))}
               </div>
-
-              <div className="input row flex-row-center-end">
+              <div className="inputs flex-row-center-end">
                 <TextField label="Addresss" setValue={setAdress} />
                 <NumberField
-                  label="Share"
+                  label="Share (%)"
                   setValue={setShare}
                   min={0}
                   max={100}
@@ -155,6 +253,8 @@ export default function PluginBackdrop({
                         address: publicKey(address),
                         percentage: share,
                       });
+                      setAdress(undefined);
+                      setShare(0);
                       setRenderHook(renderHook + 1);
                     }
                   }}
@@ -175,9 +275,9 @@ export default function PluginBackdrop({
                   </div>
                 </div>
                 <div className="slider-container">
-                  <CustomSlider
+                  <Slider
                     min={0}
-                    max={20}
+                    max={100}
                     step={1}
                     value={royalty} // Fix: Change the type of sliderValue to number
                     onChange={(
@@ -192,55 +292,45 @@ export default function PluginBackdrop({
                   />
                 </div>
               </div>
-              <div className="plugin-submitters flex-row-center-center">
-                <button
-                  disabled={validateRoyaltyPlugin()}
-                  className="update font-text-bold"
-                  onClick={() => {
-                    if (creators) {
-                      var totalShare = 0;
-                      for (let i = 0; i < creators.length; i++) {
-                        totalShare += creators[i].percentage;
-                      }
-                      if (totalShare == 100) {
-                        setRoyaltyPlugin(
-                          createPlugin({
-                            type: "Royalties",
-                            data: {
-                              basisPoints: royalty,
-                              creators: creators,
-                              ruleSet: ruleSet("None"),
-                            },
-                          })
-                        );
-                      }
-                    }
-                  }}
-                >
-                  update
-                </button>
-                <button
-                  className="clear font-text-bold"
-                  onClick={() => {
-                    if (address && share) {
-                      setPlugins;
-                    }
-                  }}
-                >
-                  clear
-                </button>
+              <div className="rulesets flex-column-start-start">
+                <div className="font-h4">Add rules</div>
+                <div className="flex-row-start-start">
+                  <div className="ruleset-types flex-flex-column-start-start">
+                    <div className="ruleset-type flex-row-start-center">
+                      <input type="radio" name="ruleset" value={0} />
+                      <div className="font-text">None</div>
+                    </div>
+                    <div className="ruleset-type flex-row-start-start">
+                      <input type="radio" name="ruleset" value={0} />
+                      <div className="font-text">Allow programs</div>
+                    </div>
+                    <div className="ruleset-type flex-row-start-start">
+                      <input type="radio" name="ruleset" value={0} />
+                      <div className="font-text">Block programs</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
           {pluginForm == 1 && (
             <div
-              className="plugin-form flex-column-start-center"
+              className="plugin-form flex-column-start-start"
               key={"Plugin-Form " + renderHook}
             >
-              <div className="attributes flex-row-start-start">
+              <div className="switch-container flex-row-start-center">
+                <div className="font-text">Enable Plugin</div>
+                <Switch
+                  hook={() => {
+                    changeActiveRoyalties(1);
+                  }}
+                  state={activeRoyalties[1].active}
+                />
+              </div>
+              <div className="elements flex-column-start-start">
                 {attributes.map((item, index) => (
                   <button
-                    className="attribute flex-row-center-center"
+                    className="element flex-start-center-center"
                     onClick={() => {
                       removeAttribute(index);
                       setRenderHook(renderHook + 1);
@@ -251,11 +341,11 @@ export default function PluginBackdrop({
                   </button>
                 ))}
               </div>
-              <div className="input row flex-row-center-end">
-                <TextField label="Name" setValue={setAttributeKey} />
+              <div className="inputs flex-row-center-end">
+                <TextField label="Attribute name" setValue={setAttributeKey} />
                 <TextField label="Value" setValue={setAttributeValue} />
                 <button
-                  disabled={!attributeKey || !attributeValue}
+                  disabled={validateAttribute()}
                   className="submit font-text"
                   onClick={() => {
                     if (attributeKey && attributeValue) {
@@ -272,16 +362,106 @@ export default function PluginBackdrop({
                   add
                 </button>
               </div>
-              <div className="plugin-submitters flex-row-center-center">
-                <button className="clear font-text-bold" onClick={() => {}}>
-                  cancel
-                </button>
+            </div>
+          )}
+          {pluginForm == 2 && (
+            <div
+              className="plugin-form flex-column-start-start"
+              key={"Plugin-Form " + renderHook}
+            >
+              <div className="switch-container flex-row-start-center">
+                <div className="font-text">Enable Plugin</div>
+                <Switch
+                  hook={() => {
+                    changeActiveRoyalties(2);
+                  }}
+                  state={activeRoyalties[2].active}
+                />
+              </div>
+              <div className="elements flex-column-start-start">
+                {attributes.map((item, index) => (
+                  <button
+                    className="element flex-start-center-center"
+                    onClick={() => {
+                      removeAttribute(index);
+                      setRenderHook(renderHook + 1);
+                    }}
+                  >
+                    <div className="font-text-tiny">{item.trait_type}</div>
+                    <div className="font-text-tiny-bold">{item.value}</div>
+                  </button>
+                ))}
+              </div>
+              <div className="inputs flex-row-center-end">
+                <TextField label="Attribute name" setValue={setAttributeKey} />
+                <TextField label="Value" setValue={setAttributeValue} />
                 <button
-                  disabled={validateRoyaltyPlugin()}
-                  className="update font-text-bold"
-                  onClick={() => {}}
+                  disabled={validateAttribute()}
+                  className="submit font-text"
+                  onClick={() => {
+                    if (attributeKey && attributeValue) {
+                      attributes.push({
+                        trait_type: attributeKey,
+                        value: attributeValue,
+                      });
+                      setAttributeKey(undefined);
+                      setAttributeValue(undefined);
+                      setRenderHook(renderHook + 1);
+                    }
+                  }}
                 >
-                  update
+                  add
+                </button>
+              </div>
+            </div>
+          )}
+          {pluginForm == 3 && (
+            <div
+              className="plugin-form flex-column-start-start"
+              key={"Plugin-Form " + renderHook}
+            >
+              <div className="switch-container flex-row-start-center">
+                <div className="font-text">Enable Plugin</div>
+                <Switch
+                  hook={() => {
+                    changeActiveRoyalties(3);
+                  }}
+                  state={activeRoyalties[3].active}
+                />
+              </div>
+              <div className="elements flex-column-start-start">
+                {attributes.map((item, index) => (
+                  <button
+                    className="element flex-start-center-center"
+                    onClick={() => {
+                      removeAttribute(index);
+                      setRenderHook(renderHook + 1);
+                    }}
+                  >
+                    <div className="font-text-tiny">{item.trait_type}</div>
+                    <div className="font-text-tiny-bold">{item.value}</div>
+                  </button>
+                ))}
+              </div>
+              <div className="inputs flex-row-center-end">
+                <TextField label="Attribute name" setValue={setAttributeKey} />
+                <TextField label="Value" setValue={setAttributeValue} />
+                <button
+                  disabled={validateAttribute()}
+                  className="submit font-text"
+                  onClick={() => {
+                    if (attributeKey && attributeValue) {
+                      attributes.push({
+                        trait_type: attributeKey,
+                        value: attributeValue,
+                      });
+                      setAttributeKey(undefined);
+                      setAttributeValue(undefined);
+                      setRenderHook(renderHook + 1);
+                    }
+                  }}
+                >
+                  add
                 </button>
               </div>
             </div>
