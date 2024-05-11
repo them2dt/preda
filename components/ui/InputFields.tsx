@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { CustomSlider } from "./TeaUI";
+import { Slider } from "./TeaUI";
 import { validateImage } from "@/components/backend/General";
 
 export function TextField({
@@ -124,7 +124,7 @@ export function Slidable({
       <div className="label font-text-tiny">{label}</div>
       <div className="slider-container flex-row-center-center">
         <div className="font-text-small-bold">{value}%</div>
-        <CustomSlider
+        <Slider
           min={min}
           max={max}
           step={steps}

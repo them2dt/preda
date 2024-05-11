@@ -2,7 +2,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { themes } from "../utils/simples";
-import { CustomSlider } from "./TeaUI";
+import { Slider } from "./TeaUI";
 
 export default function CreatorBackdrop({
   renderHook,
@@ -87,7 +87,7 @@ export default function CreatorBackdrop({
           <div className="font-text-small-bold">{sliderValue.toString()}%</div>
         </div>
         <div className="slider-container">
-          <CustomSlider
+          <Slider
             min={0}
             max={20}
             step={1}

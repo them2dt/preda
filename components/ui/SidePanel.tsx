@@ -37,15 +37,17 @@ export default function SidePanel({
   setRpc: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [modal, setModal] = useState(0);
+  const [rpcOption, setRpcOption] = useState(1);
   const [rpcInput, setRpcInput] = useState("");
   const connection = new Connection(rpc, { commitment: "finalized" });
 
-  const verifyConnection = async () => {
+  const verifyConnection = async (option: number, url: string) => {
     try {
-      enqueueSnackbar("Connecting to RPC: " + rpcInput, { variant: "info" });
-      const response = await new Connection(rpcInput).getSlot();
+      enqueueSnackbar("Connecting to RPC.", { variant: "info" });
+      const response = await new Connection(url).getSlot();
       if (response > 1) {
-        setRpc(rpcInput);
+        setRpc(url);
+        setRpcOption(option);
         enqueueSnackbar("Connected successfully.", { variant: "success" });
       }
     } catch (e) {
@@ -64,7 +66,7 @@ export default function SidePanel({
             <Image src={Logo} alt="Preda" />
             <div className="naming flex-row-center-center">
               <div className="name font-h3">Preda</div>
-              <div className=" variant font-h3"></div>
+              <div className=" variant font-h3">Beta 2</div>
             </div>
           </div>
           <div className="operations flex-column-start-center">
@@ -138,9 +140,41 @@ export default function SidePanel({
           <div className="modal-name flex-row-start-start font-h4">
             Choose your network
           </div>
+          <button
+            className={
+              rpcOption == 0
+                ? "rpc-option font-text-small-bold active"
+                : "rpc-option font-text-small-bold"
+            }
+            onClick={async () =>
+              await verifyConnection(
+                0,
+                "https://mainnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+              )
+            }
+          >
+            Mainnet
+          </button>
+          <button
+            className={
+              rpcOption == 1
+                ? "rpc-option font-text-small-bold active"
+                : "rpc-option font-text-small-bold"
+            }
+            onClick={async () =>
+              await verifyConnection(
+                1,
+                "https://devnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+              )
+            }
+          >
+            Devnet
+          </button>
           <div className="modal-content flex-column-center-center">
             <input
-              className="font-text-small"
+              className={
+                rpcOption == 2 ? "font-text-small active" : "font-text-small"
+              }
               type="text"
               placeholder="Enter your custom RPC URL"
               onChange={(e) => {
@@ -149,7 +183,7 @@ export default function SidePanel({
             />
             <button
               className="submit font-text-small-bold"
-              onClick={verifyConnection}
+              onClick={async () => await verifyConnection(2, rpcInput)}
             >
               Set RPC
             </button>

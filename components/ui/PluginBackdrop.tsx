@@ -5,7 +5,7 @@ import { NumberField, TextField } from "./InputFields";
 import { Signal, Slider, Switch } from "./TeaUI";
 import { enqueueSnackbar } from "notistack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { faPowerOff, faX } from "@fortawesome/free-solid-svg-icons";
 import {
   Creator,
   Plugin,
@@ -14,6 +14,7 @@ import {
   ruleSet,
 } from "@metaplex-foundation/mpl-core";
 import { OptionOrNullable, publicKey } from "@metaplex-foundation/umi";
+//TODO: Add delegates plugin-form
 
 export default function PluginBackdrop({
   theme,
@@ -22,7 +23,7 @@ export default function PluginBackdrop({
   theme: number;
   setModal: (i: boolean) => void;
 }) {
-  const pluginTypes = ["Royalties", "Attributes", "Freeze", "Transfer"];
+  const pluginTypes = ["Royalties", "Attributes", "Transferrable", "Delegates"];
   const [renderHook, setRenderHook] = useState<number>(0);
   //Royalties
   const [royalty, setRoyalty] = useState<number>(0);
@@ -37,10 +38,17 @@ export default function PluginBackdrop({
     { trait_type: string; value: string }[]
   >([]);
 
+  //Transferrables
+  const [frozen, setFrozen] = useState<boolean>(false);
+  const [soulbond, setSoulbond] = useState<boolean>(false);
+
   //General plugin hooks
-  const [activeRoyalties, setActiveRoyalties] = useState<{ active: boolean }[]>(
-    [{ active: false }, { active: false }, { active: false }, { active: false }]
-  );
+  const [activePlugins, setActivePlugins] = useState<{ active: boolean }[]>([
+    { active: false },
+    { active: false },
+    { active: false },
+    { active: false },
+  ]);
 
   const [pluginForm, setPluginForm] = useState<number>(0);
   const [royaltyPlugin, setRoyaltyPlugin] = useState<Plugin>();
@@ -65,8 +73,8 @@ export default function PluginBackdrop({
     }
   };
 
-  const changeActiveRoyalties = (x: number) => {
-    const old = activeRoyalties;
+  const changeActivePlugins = (x: number) => {
+    const old = activePlugins;
     const result: { active: boolean }[] = [];
 
     for (let i = 0; i < old.length; i++) {
@@ -76,7 +84,7 @@ export default function PluginBackdrop({
         result.push(old[i]);
       }
     }
-    setActiveRoyalties(result);
+    setActivePlugins(result);
   };
 
   //Royalty validators
@@ -156,12 +164,20 @@ export default function PluginBackdrop({
                   <button
                     className="plugin-activator flex-row-center-center"
                     onClick={() => {
-                      changeActiveRoyalties(index);
+                      changeActivePlugins(index);
                     }}
                   >
-                    <Signal state={activeRoyalties[index].active} />
+                    <FontAwesomeIcon
+                      icon={faPowerOff}
+                      color={
+                        activePlugins[index].active
+                          ? "#1ee67e"
+                          : "var(--secondary-faded-4)"
+                      }
+                    />
                   </button>
                   <button
+                    disabled={!activePlugins[index].active}
                     className={
                       pluginForm == index
                         ? "option active font-text-bold flex-row-start-center"
@@ -212,7 +228,7 @@ export default function PluginBackdrop({
               <div className="elements flex-column-start-start">
                 {creators.map((item, index) => (
                   <button
-                    className="element flex-start-center-center"
+                    className="element flex-column-start-start"
                     onClick={() => {
                       removeCreator(index);
                       setRenderHook(renderHook + 1);
@@ -322,6 +338,46 @@ export default function PluginBackdrop({
                 >
                   add
                 </button>
+              </div>
+            </div>
+          )}
+          {pluginForm == 2 && (
+            <div
+              className="plugin-form flex-column-start-start"
+              key={"Plugin-Form " + renderHook}
+            >
+              <div className="inputs flex-row-start-center">
+                <div className="font-text-bold">
+                  An asset can't be frozen and soulbond.
+                </div>
+              </div>
+              <div className="inputs flex-row-start-center">
+                <div className="font-text">Freeze</div>
+                <Switch
+                  hook={() => {
+                    if (frozen) {
+                      setFrozen(false);
+                    } else {
+                      setFrozen(true);
+                      setSoulbond(false);
+                    }
+                  }}
+                  state={frozen}
+                />
+              </div>
+              <div className="inputs flex-row-start-center">
+                <div className="font-text">Soulbond</div>
+                <Switch
+                  hook={() => {
+                    if (soulbond) {
+                      setSoulbond(false);
+                    } else {
+                      setFrozen(false);
+                      setSoulbond(true);
+                    }
+                  }}
+                  state={soulbond}
+                />
               </div>
             </div>
           )}

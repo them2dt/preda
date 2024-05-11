@@ -21,6 +21,7 @@ import { colors, createTheme } from "@mui/material";
 export default function page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(1);
+
   const [rpc, setRpc] = useState(
     "https://devnet.helius-rpc.com/?api-key=256baa19-0d74-4b32-a403-bbf83037df6a"
   );

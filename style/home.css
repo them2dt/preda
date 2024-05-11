@@ -22,9 +22,9 @@
     position: relative;
 
     width: 60px;
-    height: 30px;
-    background-color: var(--secondary-faded-2);
-    border: none;
+    height: 30px !important;
+    background-color: var(--secondary-faded-2) !important;
+    border: none !important;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -44,7 +44,7 @@
 }
 
 .switch.active {
-    background-color: var(--accent);
+    background-color: var(--accent) !important;
 }
 
 .switch.active .button {

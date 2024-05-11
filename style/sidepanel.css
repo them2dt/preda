@@ -146,10 +146,23 @@
     border: 1px solid var(--secondary-faded-3);
     border-radius: 10px;
     box-sizing: border-box;
+
+    color: var(--primary);
 }
 
 .sidepanel-container .rpc-modal button {
     background-color: var(--primary);
     color: var(--secondary);
     cursor: pointer;
+}
+
+.sidepanel-container .rpc-modal button.rpc-option {
+    background-color: var(--secondary-faded-1);
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.sidepanel-container .rpc-modal button.rpc-option.active {
+    background-color: var(--secondary-faded-4);
+
 }
