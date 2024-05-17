@@ -1,11 +1,11 @@
-import "../style/header.css";
-import "../style/homepage.css";
 import "../style/globals.css";
-import "../style/navigation.css";
+import "../style/sidepanel.css";
+import "../style/forms.css";
+import "../style/home.css";
 import "../style/adapter.css";
+import "../style/backdrop.css";
 //
-import "../style/panel.css";
-import RootComponent from "./RootComponent";
+import ClientWrapper from "./ClientWrapper";
 import Head from "next/head";
 
 export const metadata = {
@@ -45,7 +45,7 @@ export default function RootLayout({
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <RootComponent>{children}</RootComponent>
+      <ClientWrapper>{children}</ClientWrapper>
     </html>
   );
 }

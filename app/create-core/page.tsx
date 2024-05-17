@@ -1,27 +1,25 @@
 "use client";
-import { backendWrapper } from "@/components/BackendWrapper";
-import { uploadFileToIrys } from "@/components/backend/General";
-import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
-import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
-import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
+import { BackendResponse } from "@/types";
 import ResultPanel from "@/components/ui/Result";
 import SidePanel from "@/components/ui/SidePanel";
 import { themes } from "@/components/utils/simples";
-import { BackendResponse } from "@/types";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
-import { enqueueSnackbar } from "notistack";
-import React, { useState } from "react";
-import { createNFT } from "@/components/backend/NFT";
+import { createCoreAsset } from "@/components/backend/CORE";
+import { backendWrapper } from "@/components/BackendWrapper";
+import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
+import { uploadFileToIrys } from "@/components/backend/General";
+import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
+import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 
+import React, { useState } from "react";
+import { enqueueSnackbar } from "notistack";
+import { Connection } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ThemeProvider } from "@emotion/react";
-import { colors, createTheme } from "@mui/material";
+import PluginBackdrop from "@/components/ui/PluginBackdrop";
 
 export default function page() {
   const { wallet } = useWallet();
-  const [theme, setTheme] = useState(1);
-
+  const [theme, setTheme] = useState(0);
   const [rpc, setRpc] = useState(
     "https://devnet.helius-rpc.com/?api-key=256baa19-0d74-4b32-a403-bbf83037df6a"
   );
@@ -37,7 +35,7 @@ export default function page() {
   const [imagePreview, setImagePreview] = useState();
   const [sliderValue, setSliderValue] = useState<number>(0);
   //
-  const [attributeModal, setAttributeModal] = useState(false);
+  const [pluginModal, setPluginModal] = useState(false);
   const [renderHook, setRenderHook] = useState<number>(0);
   const [attributeKey, setAttributeKey] = useState<string>();
   const [attributeValue, setAttributeValue] = useState<string>();
@@ -142,22 +140,11 @@ export default function page() {
                                   });
                                   if (metadataUri.status == 200) {
                                     if (metadataUri.assetID) {
-                                      const runner = createNFT({
+                                      const runner = createCoreAsset({
                                         wallet: wallet,
                                         connection: connection,
-                                        title: title,
+                                        name: title,
                                         metadata: metadataUri.assetID,
-                                        sellerFeeBasisPoints: sliderValue,
-                                        creators:
-                                          creators.length > 0
-                                            ? creators
-                                            : [
-                                                {
-                                                  address:
-                                                    wallet.adapter.publicKey.toBase58(),
-                                                  share: 100,
-                                                },
-                                              ],
                                       });
                                       const response = await backendWrapper({
                                         wallet: wallet,
@@ -165,6 +152,7 @@ export default function page() {
                                         initialMessage: "Create NFT",
                                         backendCall: async () => await runner,
                                       });
+                                      setProgressing(false);
                                       setResult(response);
                                     } else {
                                       enqueueSnackbar(
@@ -284,18 +272,10 @@ export default function page() {
                 <button
                   className="backdrop-button font-text-bold"
                   onClick={() => {
-                    setAttributeModal(true);
+                    setPluginModal(true);
                   }}
                 >
-                  Add Attributes
-                </button>
-                <button
-                  className="backdrop-button font-text-bold"
-                  onClick={() => {
-                    setCreatorModal(true);
-                  }}
-                >
-                  Add Royalties
+                  Add plugins
                 </button>
               </div>
             </div>
@@ -308,35 +288,8 @@ export default function page() {
       {result && (
         <ResultPanel result={result} setResult={setResult} theme={theme} />
       )}
-      {attributeModal && (
-        <AttributeBackdrop
-          renderHook={renderHook}
-          attributes={attributes}
-          attributeKey={attributeKey}
-          attributeValue={attributeValue}
-          setRenderHook={setRenderHook}
-          setAttributes={setAttributes}
-          setAttributeKey={setAttributeKey}
-          setAttributeValue={setAttributeValue}
-          setAttributeModal={setAttributeModal}
-          theme={theme}
-        />
-      )}
-      {creatorModal && (
-        <CreatorBackdrop
-          renderHook={renderHook}
-          creators={creators}
-          creatorKey={creatorKey}
-          creatorValue={creatorValue}
-          setRenderHook={setRenderHook}
-          setCreators={setCreators}
-          setCreatorKey={setCreatorKey}
-          setCreatorValue={setCreatorValue}
-          setCreatorModal={setCreatorModal}
-          sliderValue={sliderValue}
-          setSliderValue={setSliderValue}
-          theme={theme}
-        />
+      {pluginModal && (
+        <PluginBackdrop theme={theme} setModal={setPluginModal} />
       )}
       {progressing && (
         <div
@@ -345,24 +298,14 @@ export default function page() {
         >
           <div id="processing-panel" className="flex-column-center-center">
             <div className="symbol">
-              <ThemeProvider
-                theme={createTheme({
-                  palette: {
-                    primary: {
-                      500: "rgb(255, 255, 255)",
-                    },
-                  },
-                })}
-              >
-                <CircularProgress color="primary" />
-              </ThemeProvider>
+              <CircularProgress color="primary" />
             </div>
             <div className="font-h4">processing...</div>
           </div>
         </div>
       )}
       <SidePanel
-        sectionID={0}
+        sectionID={1}
         operationID={0}
         theme={theme}
         setTheme={setTheme}

@@ -1,0 +1,218 @@
+.form {
+    --form-width: 250px;
+
+    position: relative;
+
+    background-color: var(--secondary-faded-1);
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 5px;
+}
+
+.form .palette {
+    gap: 10px;
+}
+
+.form .forms {
+    gap: 10px;
+    max-width: 90vw;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.form .type-selectors {
+    gap: 5px;
+    max-width: 90vw;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--secondary-faded-1);
+    border-radius: 10px;
+}
+
+.form .type-selector {
+    width: fit-content;
+    height: fit-content;
+
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.form .type-selector .type {
+    background-color: transparent;
+    color: var(--primary);
+    border: none;
+    cursor: pointer;
+}
+
+.form .type-selector .type.active {
+    color: var(--accent-1);
+}
+
+.form .row,
+.form .column {
+    gap: 10px;
+}
+
+.input-field {
+    gap: 5px;
+}
+
+.input-field .label {
+    color: var(--accent-faded-3);
+}
+
+.input-field .label.active {
+    color: var(--accent);
+}
+
+.input-field textarea,
+.input-field input {
+    width: var(--form-width);
+    height: 40px;
+    padding: 10px;
+
+    color: var(--primary);
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-field textarea {
+    min-height: 100px;
+    resize: vertical;
+
+}
+
+.slidable .slider-container {
+    width: var(--form-width);
+    padding: 10px;
+    padding-right: 40px;
+
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+
+    gap: 20px;
+}
+
+
+.form .image-preview {
+    width: var(--form-width);
+    height: var(--form-width);
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.form .image-preview input {
+    display: none;
+}
+
+.form .image-preview img {
+    width: var(--form-width);
+    height: var(--form-width);
+
+}
+
+.form .backdrop-button {
+    width: var(--form-width);
+    padding: 10px;
+
+    background-color: var(--secondary-faded-2);
+    border: 2px solid var(--secondary-faded-3);
+    border-radius: 5px;
+    box-sizing: border-box;
+
+    color: var(--primary);
+    cursor: pointer;
+
+}
+
+.form .backdrop-button:hover {
+    background-color: var(--secondary-faded-3);
+    border: 2px solid var(--secondary-faded-4);
+}
+
+.form .submit {
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.form .submit:not(:disabled) {
+    color: var(--secondary);
+    background-color: var(--accent-faded-1);
+    border: 2px solid var(--accent-faded-2);
+    cursor: pointer;
+}
+
+
+.form .submit:not(:disabled):hover {
+    background-color: var(--accent-faded-2);
+    border: 2px solid var(--accent-faded-3);
+}
+
+.form .submit:disabled {
+    background-color: var(--accent-faded-4);
+    border: 2px solid var(--accent-faded-1);
+    color: var(--accent-faded-2);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#result-panel {
+    padding: 10px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    gap: 10px;
+}
+
+#result-panel .column {
+    gap: 5px;
+}
+
+#result-panel button {
+    width: 200px;
+    padding: 10px;
+
+    background-color: var(--secondary-faded-1);
+    border: 2px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+#result-panel button.close {
+
+    background-color: var(--primary);
+    border: 2px solid var(--primary-faded-2);
+    color: var(--secondary);
+}
+
+
+#processing-panel {
+    padding: 40px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 20px;
+    color: var(--primary);
+    gap: 10px;
+}
