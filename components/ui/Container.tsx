@@ -87,7 +87,7 @@ export default function Container({
                     <div className="font-text-bold">{item}</div>
                   </div>
                   {operations[SECindex].map((item, OPindex) => (
-                    <Link href={links[SECindex][OPindex]}>
+                    <Link href={links[SECindex][OPindex]} key={"op-"+OPindex}>
                       <div
                         className={
                           SECindex == sectionID && OPindex == operationID
