@@ -21,7 +21,6 @@ const WalletMultiButtonDynamic = dynamic(
   { ssr: false }
 );
 
-
 export default function Container({
   sectionID,
   operationID,
@@ -79,7 +78,10 @@ export default function Container({
             </div>
             <div className="operations flex-column-start-center">
               {sections.map((item, SECindex) => (
-                <div className="operation-section flex-column-start-center">
+                <div
+                  className="operation-section flex-column-start-center"
+                  key={"sec-" + SECindex}
+                >
                   <div
                     className="operation-section-header flex-row-start-center"
                     key={"section " + SECindex}
@@ -87,7 +89,7 @@ export default function Container({
                     <div className="font-text-bold">{item}</div>
                   </div>
                   {operations[SECindex].map((item, OPindex) => (
-                    <Link href={links[SECindex][OPindex]} key={"op-"+OPindex}>
+                    <Link href={links[SECindex][OPindex]} key={"op-" + OPindex}>
                       <div
                         className={
                           SECindex == sectionID && OPindex == operationID
@@ -179,6 +181,7 @@ export default function Container({
                   onClick={() => {
                     setTheme(index);
                   }}
+                  key={"index-" + index}
                 ></button>
               ))}
             </div>
@@ -198,6 +201,7 @@ export default function Container({
                   onClick={() => {
                     setTheme(index);
                   }}
+                  key={"theme-" + index}
                 ></button>
               ))}
             </div>
