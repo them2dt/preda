@@ -18,7 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { ThemeProvider } from "@emotion/react";
 import { colors, createTheme } from "@mui/material";
 
-export default function page() {
+export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 

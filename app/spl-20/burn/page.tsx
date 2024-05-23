@@ -17,7 +17,7 @@ import { burnSPL20 } from "@/components/backend/SPL20";
 import { getAsset, getDigitalAssetBalance } from "@/components/backend/General";
 import { enqueueSnackbar } from "notistack";
 
-export default function page() {
+export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
   const [rpc, setRpc] = useState(

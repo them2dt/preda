@@ -19,7 +19,7 @@ import { ThemeProvider } from "@emotion/react";
 import { colors, createTheme } from "@mui/material";
 import { publicKey } from "@metaplex-foundation/umi";
 
-export default function page() {
+export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 

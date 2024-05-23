@@ -24,7 +24,7 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { createAndMintSPL20 } from "@/components/backend/SPL20";
 
-export default function page() {
+export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 
