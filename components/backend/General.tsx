@@ -153,6 +153,7 @@ export async function getAsset({
       status: 200,
       digitalAsset: asset,
       tokenStandard: unwrapOption(asset.metadata.tokenStandard) || 500,
+      tokenBalance:{decimals:asset.mint.decimals}
     };
   } catch (e) {
     return { status: 500, errorMessage: String(e) };
@@ -178,9 +179,10 @@ export async function getDigitalAssetBalance({
       umi.identity.publicKey,
       publicKey(assetId)
     );
+    console.log("Balance:"+asset[0].token.amount)
     return {
       status: 200,
-      tokenBalance: { balance: Number(asset[0].token.amount) },
+      tokenBalance: { balance: Number(asset[0].token.amount)},
     };
   } catch (e) {
     return { status: 500, errorMessage: String(e) };

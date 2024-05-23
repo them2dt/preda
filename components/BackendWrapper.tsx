@@ -36,7 +36,7 @@ export const backendWrapper = async ({
                 "----------------------------------------------------------"
               );
               console.log("Status: " + response.status);
-              console.log(response.status);
+              console.log("Message: " + response.errorMessage);
               console.log(
                 "----------------------------------------------------------"
               );

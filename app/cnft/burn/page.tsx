@@ -8,11 +8,10 @@ import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import React, { useState } from "react";
-import { burnNFT } from "@/components/backend/NFT";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
+import { burnCNFT } from "@/components/backend/CNFT";
 
 export default function page() {
   const { wallet } = useWallet();
@@ -33,19 +32,35 @@ export default function page() {
         if (wallet.adapter.connected) {
           if (wallet.adapter.publicKey) {
             if (adress) {
-              const runner = burnNFT({ wallet, connection, assetId: adress });
+              const runner = burnCNFT({ wallet, connection, assetId: adress });
               const response = await backendWrapper({
                 wallet: wallet,
                 connection: connection,
-                initialMessage: "Create NFT",
+                initialMessage: "Burning asset...",
                 backendCall: async () => await runner,
               });
               setProgressing(false);
               setResult(response);
             }
+          } else {
+            setProgressing(false);
+            enqueueSnackbar("Wallet has no public key.", {
+              variant: "error",
+            });
           }
+        } else {
+          setProgressing(false);
+          enqueueSnackbar("Wallet is not connected.", { variant: "error" });
         }
+      } else {
+        setProgressing(false);
+        enqueueSnackbar("Couldn't find a compatible wallet.", {
+          variant: "error",
+        });
       }
+    } else {
+      setProgressing(false);
+      enqueueSnackbar("Couldn't find a wallet-object.", { variant: "error" });
     }
   };
 
@@ -55,15 +70,15 @@ export default function page() {
         className="full-page-container flex-row-end-start"
         data-theme={themes[theme]}
       >
-        <div className="content flex-column-center-center">
+        <div className="content flex-column-start-center">
           <div className="form flex-column-center-center">
             <div className="row flex-row-center-start">
-              <div className="column flex-column-center-center">
+              <div className="flex-column-center-start">
                 <TextField label="Mint address" setValue={setAdress} />
               </div>
             </div>
             <button className="submit font-h4" onClick={run}>
-              Burn NFT
+              Burn asset
             </button>
           </div>
         </div>
@@ -85,7 +100,7 @@ export default function page() {
         </div>
       )}
       <SidePanel
-        sectionID={1}
+        sectionID={2}
         operationID={1}
         theme={theme}
         setTheme={setTheme}

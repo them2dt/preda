@@ -1,20 +1,18 @@
 //Simple exports
 
 //Menu objects
-export const sections = ["Standard", "CORE", "Compressed", "SPL-20", "SPL-22"];
+export const sections = ["NFT", "CORE", "CNFT", "SPL-20", ];
 export const operations = [
-  ["Create an asset", "Burn an asset"],
-  ["Create an asset", "Burn an asset"],
-  ["Create an asset", "Burn an asset"],
-  ["Create an asset", "Burn an asset"],
-  ["Create an asset", "Burn an asset"],
+  ["Create", "Burn"],
+  ["Create", "Burn"],
+  ["Create", "Burn"],
+  ["Create", "Burn"],
 ];
 export const links = [
-  ["create-nft", "burn-nft"],
-  ["create-core", "burn-core"],
-  ["create-cnft", "burn-cnft"],
-  ["create-spl20", "burn-spl20"],
-  ["create-spl22", "burn-spl22"],
+  ["/", "/burn"],
+  ["/core/create", "/core/burn"],
+  ["/cnft/create", "/cnft/burn"],
+  ["/spl-20/create", "/spl-20/burn"],
 ];
 
 // the themes of the platform

@@ -20,7 +20,7 @@ import { colors, createTheme } from "@mui/material";
 
 export default function page() {
   const { wallet } = useWallet();
-  const [theme, setTheme] = useState(1);
+  const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState(
     "https://devnet.helius-rpc.com/?api-key=256baa19-0d74-4b32-a403-bbf83037df6a"
@@ -162,7 +162,7 @@ export default function page() {
                                       const response = await backendWrapper({
                                         wallet: wallet,
                                         connection: connection,
-                                        initialMessage: "Create NFT",
+                                        initialMessage: "Burning asset",
                                         backendCall: async () => await runner,
                                       });
                                       setResult(response);
@@ -265,10 +265,10 @@ export default function page() {
         className="full-page-container flex-row-end-start"
         data-theme={themes[theme]}
       >
-        <div className="content flex-column-center-center">
+        <div className="content flex-column-start-center">
           <div className="form flex-column-center-center">
             <div className="row flex-row-center-start">
-              <div className="column flex-column-center-center">
+              <div className="flex-column-center-start">
                 <ImageInput
                   image={image}
                   setImage={setImage}
@@ -278,7 +278,7 @@ export default function page() {
                 <TextField label="Name" setValue={setTitle} />
                 <TextArea label="Description" setValue={setDescription} />
               </div>
-              <div className="column flex-column-center-center">
+              <div className="flex-column-center-start">
                 <TextField label="Symbol" setValue={setSymbol} />
                 <TextField label="Domain" setValue={setDomain} />
                 <button
@@ -338,7 +338,7 @@ export default function page() {
           theme={theme}
         />
       )}
-      {progressing && (
+      {progressing && !result && (
         <div
           className="backdrop flex-row-center-center"
           data-theme={themes[theme]}

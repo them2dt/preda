@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Slider } from "./TeaUI";
+import { Slider, Switch } from "./TeaUI";
 import { validateImage } from "@/components/backend/General";
 
 export function TextField({
@@ -103,6 +103,34 @@ export function NumberField({
     </div>
   );
 }
+export function SwitchField({
+  label,
+  value,
+  setValue,
+}: {
+  label: string;
+  value: boolean;
+  setValue: (i: boolean) => void;
+}) {
+  const [active, setActive] = useState<boolean>(false);
+  return (
+    <div className="input-field flex-column-center-start">
+      <div
+        className={
+          active ? "label active font-text-tiny" : "label font-text-tiny"
+        }
+      >
+        {label}
+      </div>
+      <Switch
+        hook={() => {
+          setValue(!value);
+        }}
+        state={value}
+      />
+    </div>
+  );
+}
 
 export function Slidable({
   label,
@@ -128,7 +156,6 @@ export function Slidable({
           min={min}
           max={max}
           step={steps}
-          value={value} // Fix: Change the type of sliderValue to number
           onChange={(
             event: Event,
             value: number | number[],
@@ -170,7 +197,7 @@ export function ImageInput({
         {image ? (
           <img src={imagePreview} alt="image-preview" />
         ) : (
-          <div className="placeholder font-text-small">
+          <div className="placeholder flex-column-center-center font-text-small">
             click here to import an image
           </div>
         )}

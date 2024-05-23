@@ -198,6 +198,7 @@ a {
     font-size: 52px;
     font-weight: 1000;
     letter-spacing: -0.2rem;
+    line-height: 90%;
 }
 
 .font-h2 {
@@ -205,6 +206,7 @@ a {
     font-size: 40px;
     font-weight: 1000;
     letter-spacing: -0.1rem;
+    line-height: 90%;
 }
 
 .font-h3 {
@@ -212,6 +214,7 @@ a {
     font-size: 28px;
     font-weight: 1000;
     letter-spacing: -0.1rem;
+    line-height: 90%;
 }
 
 .font-h4 {
@@ -219,6 +222,7 @@ a {
     font-size: 22px;
     font-weight: 1000;
     letter-spacing: -0.1rem;
+    line-height: 90%;
 
 }
 
@@ -227,6 +231,7 @@ a {
     font-size: 18px;
     font-weight: 400;
     letter-spacing: -0.05rem;
+    line-height: 90%;
 
 }
 
@@ -235,42 +240,49 @@ a {
     font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.05rem;
+    line-height: 90%;
 }
 
 .font-text-light {
     font-family: "satoshi-regular";
     font-size: 18px;
     font-weight: 300;
+    line-height: 90%;
 }
 
 .font-text-small {
     font-family: "satoshi-regular";
     font-size: 16px;
     font-weight: 400;
+    line-height: 90%;
 }
 
 .font-text-small-bold {
     font-family: "satoshi-bold";
     font-size: 16px;
     font-weight: 1000;
+    line-height: 90%;
 }
 
 .font-text-small-light {
     font-family: "satoshi-regular";
     font-size: 16px;
     font-weight: 300;
+    line-height: 90%;
 }
 
 .font-text-tiny {
     font-family: "satoshi-regular";
     font-size: 14px;
     font-weight: 400;
+    line-height: 90%;
 }
 
 .font-text-tiny-bold {
     font-family: "satoshi-bold";
     font-size: 14px;
     font-weight: 1000;
+    line-height: 90%;
 }
 
 
@@ -279,6 +291,7 @@ a {
     font-family: "satoshi-regular";
     font-size: 14px;
     font-weight: 300;
+    line-height: 90%;
 }
 
 
@@ -289,6 +302,7 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
+    gap: 5px;
 }
 
 .flex-row-start-center {
@@ -296,6 +310,8 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-start-end {
@@ -303,6 +319,8 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 /*row-center**/
@@ -311,6 +329,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-row-center-center {
@@ -318,6 +338,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-between-center {
@@ -325,6 +347,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-row-center-end {
@@ -332,6 +356,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 /*row-end**/
@@ -340,6 +366,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-start;
+    gap: 5px;
+    
 }
 
 .flex-row-end-center {
@@ -347,6 +375,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-row-end-end {
@@ -354,6 +384,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 .flex-row-between-start {
@@ -361,6 +393,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 5px;
+    
 }
 
 .flex-row-between-center {
@@ -368,6 +402,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-row-between-end {
@@ -375,6 +411,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 .flex-column-center-center {
@@ -382,6 +420,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-column-center-start {
@@ -389,6 +429,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    gap: 5px;
+    
 }
 
 .flex-column-center-end {
@@ -396,6 +438,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 .flex-column-start-center {
@@ -403,6 +447,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-column-start-start {
@@ -410,6 +456,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    gap: 5px;
+    
 }
 
 .flex-column-start-end {
@@ -417,6 +465,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 .flex-column-end-center {
@@ -424,6 +474,8 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+    gap: 5px;
+    
 }
 
 .flex-column-end-start {
@@ -431,6 +483,8 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
+    gap: 5px;
+    
 }
 
 .flex-column-end-end {
@@ -438,6 +492,8 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
+    gap: 5px;
+    
 }
 
 .flex-column-between-center {
@@ -445,4 +501,6 @@ a {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
+    
 }

@@ -148,7 +148,7 @@ export default function Container({
             <div className="modal-name flex-row-start-start font-h4">
               Choose your network
             </div>
-            <div className="modal-content flex-column-center-center">
+            <div className="modal-content flex-column-start-center">
               <input
                 className="font-text-small"
                 type="text"
@@ -204,7 +204,7 @@ export default function Container({
           </div>
         )}
       </div>
-      <div className="content flex-column-center-start">
+      <div className="content flex-column-start-center">
         <div className="font-h1">Create a NFT</div>
       </div>
     </div>

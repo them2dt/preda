@@ -23,21 +23,25 @@
 
 .backdrop .royalties {
     width: 694px;
+    max-width: 70vw;
     padding: 40px;
 
     background-color: var(--secondary-faded-1);
     border: 1px solid var(--secondary-faded-2);
     border-radius: 20px;
-    box-sizing: border-box;
 }
 
 .backdrop .royalties .slider-container {
     width: 600px;
+    max-width: 80vw;
+
 }
 
 .backdrop .royalties .legend {
     gap: 10px;
     width: 600px;
+    max-width: 80vw;
+
 
     box-sizing: border-box;
 
@@ -117,7 +121,7 @@
 
 .backdrop .modal .create-attributes .submit {
 
-    width: 654px;
+    width: fill;
     height: 20px;
 
     display: flex;
@@ -343,4 +347,19 @@
 
     border: 1px solid var(--secondary-faded-1);
     border-radius: 5px;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .backdrop .attributes {
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100vw;
+        max-height: 50vh;
+        overflow-y: scroll;
+    }
+
+    .backdrop .modal .create-attributes .input {
+        flex-direction: column;
+    }
 }

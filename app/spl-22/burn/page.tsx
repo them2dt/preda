@@ -55,10 +55,10 @@ export default function page() {
         className="full-page-container flex-row-end-start"
         data-theme={themes[theme]}
       >
-        <div className="content flex-column-center-center">
+        <div className="content flex-column-start-center">
           <div className="form flex-column-center-center">
             <div className="row flex-row-center-start">
-              <div className="column flex-column-center-center">
+              <div className="flex-column-center-start">
                 <TextField label="Mint address" setValue={setAdress} />
               </div>
             </div>
@@ -78,14 +78,14 @@ export default function page() {
         >
           <div id="processing-panel" className="flex-column-center-center">
             <div className="symbol">
-                <CircularProgress color="primary" />
+              <CircularProgress color="primary" />
             </div>
             <div className="font-h4">processing...</div>
           </div>
         </div>
       )}
       <SidePanel
-        sectionID={0}
+        sectionID={1}
         operationID={1}
         theme={theme}
         setTheme={setTheme}

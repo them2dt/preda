@@ -101,7 +101,7 @@ export const loadAssets = async ({
   }
 };
 
-export const mintCNFT = async ({
+export const createCNFT = async ({
   wallet,
   connection,
   merkleTree,
