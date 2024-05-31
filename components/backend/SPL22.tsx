@@ -156,7 +156,7 @@ export const burnSPL22 = async ({
 
     return response;
   } catch (e) {
-    return { status: 500};
+    return { status: 500 };
   }
 };
 
@@ -172,7 +172,7 @@ export async function fetchToken22({
   try {
     const tokenAccount = getAssociatedTokenAddressSync(
       new PublicKey(assetId),
-      wallet.adapter.publicKey,
+      wallet.adapter.publicKey || new PublicKey(""),
       true,
       new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
     );
@@ -195,6 +195,6 @@ export async function fetchToken22({
       status: 200,
     };
   } catch (e) {
-    return { status: 500};
+    return { status: 500 };
   }
 }
