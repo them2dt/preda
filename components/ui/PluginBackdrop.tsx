@@ -228,6 +228,7 @@ export default function PluginBackdrop({
               <div className="elements flex-column-start-start">
                 {creators.map((item, index) => (
                   <button
+                    key={"creator-" + index}
                     className="element flex-column-start-start"
                     onClick={() => {
                       removeCreator(index);
@@ -349,7 +350,7 @@ export default function PluginBackdrop({
             >
               <div className="inputs flex-row-start-center">
                 <div className="font-text-bold">
-                  An asset can't be frozen and soulbond.
+                  An asset can&apos;t be frozen and soulbond.
                 </div>
               </div>
               <div className="inputs flex-row-start-center">
