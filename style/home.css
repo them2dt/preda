@@ -4,15 +4,12 @@
 
     margin: 0;
     padding: 0;
-
-    background-color: var(--secondary);
+    background-color: var(--secondary-faded-1);
 }
 
 .full-page-container .content {
     width: calc(100vw - 340px);
-    height: 100vh;
-
-    padding: 10px;
+    height: fill;
 
     box-sizing: border-box;
     overflow-y: scroll;

@@ -1,4 +1,5 @@
-"use client";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
 import { styled, alpha } from "@mui/system";
 import { Slider as BaseSlider, sliderClasses } from "@mui/base/Slider";
 

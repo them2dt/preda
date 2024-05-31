@@ -1,4 +1,5 @@
-"use client";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
 import { backendWrapper } from "@/components/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
@@ -282,7 +283,7 @@ export default function Page() {
                 <TextField label="Symbol" setValue={setSymbol} />
                 <TextField label="Domain" setValue={setDomain} />
                 <button
-                  className="backdrop-button font-text-bold"
+                  className="backdrop-button font-text"
                   onClick={() => {
                     setAttributeModal(true);
                   }}
@@ -290,7 +291,7 @@ export default function Page() {
                   Add Attributes
                 </button>
                 <button
-                  className="backdrop-button font-text-bold"
+                  className="backdrop-button font-text"
                   onClick={() => {
                     setCreatorModal(true);
                   }}
@@ -299,9 +300,9 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <button className="submit font-h4" onClick={run}>
+            <motion.div className="submit-container flex-column-center-center"><button className="submit font-h4" onClick={run}>
               Create
-            </button>
+            </button></motion.div>
           </div>
         </div>
       </div>

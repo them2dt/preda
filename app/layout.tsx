@@ -1,5 +1,7 @@
 import "../style/globals.css";
 import "../style/sidepanel.css";
+import "../style/mobile-nav.css";
+import "../style/loader.css";
 import "../style/forms.css";
 import "../style/home.css";
 import "../style/adapter.css";

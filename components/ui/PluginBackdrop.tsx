@@ -312,6 +312,7 @@ export default function PluginBackdrop({
                       removeAttribute(index);
                       setRenderHook(renderHook + 1);
                     }}
+                    key={"attrib-" + index}
                   >
                     <div className="font-text-tiny">{item.trait_type}</div>
                     <div className="font-text-tiny-bold">{item.value}</div>

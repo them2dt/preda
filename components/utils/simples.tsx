@@ -1,14 +1,20 @@
+import labs from "../../media/emptea-labs/app-icons/emptea labs.png";
+import preda from "../../media/emptea-labs/app-icons/emptea preda.png";
+import distriDoc from "../../media/emptea-labs/app-icons/emptea distriDoc.png";
+import crowdSwift from "../../media/emptea-labs/app-icons/emptea crowdSwift.png";
+import academy from "../../media/emptea-labs/app-icons/emptea academy.png";
+
 //Simple exports
 
 //Menu objects
-export const sections = ["NFT", "CORE", "CNFT", "SPL-20", ];
+export const sections = ["NFT", "CORE", "CNFT", "SPL-20"];
 export const operations = [
   ["Create", "Burn"],
   ["Create", "Burn"],
   ["Create", "Burn"],
   ["Create", "Burn"],
 ];
-export const links = [
+export const paths = [
   ["/", "/burn"],
   ["/core/create", "/core/burn"],
   ["/cnft/create", "/cnft/burn"],
@@ -46,3 +52,13 @@ export const palette = [
     ["#62b8ff", "#7cc4ff", "#8fd2ff", "#b0e6ff", "#c1e8ff"],
   ],
 ];
+
+export const emptea_links = [
+  "https://emptea.xyz",
+  "https://preda.emptea.xyz",
+  "https://distridoc.emptea.xyz",
+  "https://crowdswift.emptea.xyz",
+  "https://academy.emptea.xyz",
+];
+export const emptea_app_name = ["Home","preda","DistriDoc","CrowdSwift","Academy",];
+export const emptea_app_icons = [labs, preda, distriDoc, crowdSwift, academy];

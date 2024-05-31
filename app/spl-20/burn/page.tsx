@@ -1,4 +1,5 @@
-"use client";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
 import { backendWrapper } from "@/components/BackendWrapper";
 import { NumberField, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";

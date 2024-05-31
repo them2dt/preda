@@ -1,4 +1,5 @@
-"use client";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
 import React, { useState } from "react";
 import { Slider, Switch } from "./TeaUI";
 import { validateImage } from "@/components/backend/General";
@@ -197,7 +198,7 @@ export function ImageInput({
         {image ? (
           <img src={imagePreview} alt="image-preview" />
         ) : (
-          <div className="placeholder flex-column-center-center font-text-small">
+          <div className="placeholder flex-column-center-center font-text-tiny">
             click here to import an image
           </div>
         )}

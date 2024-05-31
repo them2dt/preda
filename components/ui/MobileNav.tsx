@@ -9,6 +9,8 @@ import {
   faQuestion,
   faNetworkWired,
   faPlus,
+  faHandSparkles,
+  faCubesStacked,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -29,7 +31,6 @@ import {
   emptea_app_icons,
 } from "../utils/simples";
 import Loader from "./Loader";
-import MobileNav from "./MobileNav";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -37,7 +38,7 @@ const WalletMultiButtonDynamic = dynamic(
   { ssr: false }
 );
 
-export default function SidePanel({
+export default function MobileNav({
   sectionID,
   operationID,
   theme,
@@ -76,18 +77,91 @@ export default function SidePanel({
   return (
     <>
       <motion.div
-        className={"sidepanel-container flex-row-end-end"}
+        onClick={(event) => {
+          if (menu) {
+            event.stopPropagation();
+          }
+        }}
+        className={
+          menu
+            ? "mobile-nav-container active flex-column-start-start"
+            : "mobile-nav-container flex-column-start-start"
+        }
         data-theme={themes[theme]}
       >
-        <motion.div className="sidepanel flex-column-start-center">
-          <motion.div className="logo-box flex-row-between-center">
-            <motion.div className="naming flex-row-start-center">
-              <Image src={Logo} alt="Preda" />
-              <motion.div className=" variant font-text-bold">Preda</motion.div>
-            </motion.div>
+        <motion.div className={"mobile-nav flex-row-between-start"}>
+          <motion.div className="naming flex-row-start-center">
+            <Image src={Logo} alt="Preda" />
+            <motion.div className=" variant font-text-bold">Preda</motion.div>
           </motion.div>
-          <motion.div className="operations flex-column-start-center">
-            {sections.map((item, SECindex) => (
+          <motion.div
+            className={
+              menu
+                ? "menu active flex-row-center-center"
+                : "menu flex-row-center-center"
+            }
+            onClick={() => {
+              setModal(0);
+              setMenu(!menu);
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </motion.div>
+        </motion.div>
+
+        <AnimatePresence>
+          {menu && (
+            <motion.div
+              className="menu-options flex-column-center-center"
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <motion.div
+                className="option flex-row-center-center"
+                onClick={() => setModal(modal == 1 ? 0 : 1)}
+              >
+                <FontAwesomeIcon icon={faCubesStacked} />
+                <motion.div className="font-text-bold">Tools</motion.div>
+              </motion.div>
+              <motion.div
+                className="option flex-row-center-center"
+                onClick={() => setModal(modal == 2 ? 0 : 2)}
+              >
+                <FontAwesomeIcon icon={faWallet} />
+                <motion.div className="font-text-bold">Wallet</motion.div>
+              </motion.div>
+              <motion.div
+                className="option flex-row-center-center"
+                onClick={() => setModal(modal == 3 ? 0 : 3)}
+              >
+                <FontAwesomeIcon icon={faPalette} />
+                <motion.div className="font-text-bold">Theme</motion.div>
+              </motion.div>
+              <motion.div
+                className="option flex-row-center-center"
+                onClick={() => setModal(modal == 4 ? 0 : 4)}
+              >
+                <FontAwesomeIcon icon={faNetworkWired} />
+                <motion.div className="font-text-bold">RPC</motion.div>
+              </motion.div>
+              <motion.div
+                className="option tea-button flex-row-center-center"
+                onClick={() => setModal(modal == 5 ? 0 : 5)}
+              >
+                <Image src={teacup} alt="teacup" />
+              </motion.div>
+            </motion.div>
+          )}
+          {modal == 1 && (
+            <motion.div
+              className="modal tool-modal flex-column-start-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >{sections.map((item, SECindex) => (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -121,57 +195,9 @@ export default function SidePanel({
                 ))}
               </motion.div>
             ))}
-          </motion.div>
-
-          <motion.div className="more flex-row-center-center">
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0 }}
-              className="flex-row-center-center"
-              onClick={() => {
-                setModal(modal == 1 ? 0 : 1);
-              }}
-            >
-              <FontAwesomeIcon icon={faWallet} />
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0.1 }}
-              className="flex-row-center-center"
-              onClick={() => {
-                setModal(modal == 2 ? 0 : 2);
-              }}
-            >
-              <FontAwesomeIcon icon={faNetworkWired} />
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0.2 }}
-              className="flex-row-center-center"
-              onClick={() => {
-                setModal(modal == 3 ? 0 : 3);
-              }}
-            >
-              <FontAwesomeIcon icon={faPalette} />
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: 0.3 }}
-              className="tea-button flex-row-center-center"
-              onClick={() => {
-                setModal(modal == 4 ? 0 : 4);
-              }}
-            >
-              <Image src={teacup} alt="teacup" />
-            </motion.button>
-          </motion.div>
-        </motion.div>
-        <AnimatePresence>
-          {modal == 1 && (
+            </motion.div>
+          )}
+          {modal == 2 && (
             <motion.div
               className="modal wallet-modal flex-column-center-center"
               initial={{ opacity: 0 }}
@@ -182,7 +208,32 @@ export default function SidePanel({
               <WalletMultiButtonDynamic />
             </motion.div>
           )}
-          {modal == 2 && (
+          {modal == 3 && (
+            <motion.div
+              className="modal theme-modal flex-column-start-start"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div className="modal-name flex-row-start-start font-h4">
+                Themes
+              </motion.div>
+              <motion.div className="modal-content flex-row-start-start">
+                {themes.map((item, index) => (
+                  <button
+                    className="theme-button"
+                    style={{ backgroundColor: "var(--" + item + ")" }}
+                    onClick={() => {
+                      setTheme(index);
+                    }}
+                    key={"theme-" + index}
+                  ></button>
+                ))}
+              </motion.div>
+            </motion.div>
+          )}
+          {modal == 4 && (
             <motion.div
               className="modal rpc-modal flex-column-start-start"
               initial={{ opacity: 0 }}
@@ -245,32 +296,7 @@ export default function SidePanel({
               </motion.div>
             </motion.div>
           )}
-          {modal == 3 && (
-            <motion.div
-              className="modal theme-modal flex-column-start-start"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div className="modal-name flex-row-start-start font-h4">
-                Themes
-              </motion.div>
-              <motion.div className="modal-content flex-row-start-start">
-                {themes.map((item, index) => (
-                  <button
-                    className="theme-button"
-                    style={{ backgroundColor: "var(--" + item + ")" }}
-                    onClick={() => {
-                      setTheme(index);
-                    }}
-                    key={"theme-" + index}
-                  ></button>
-                ))}
-              </motion.div>
-            </motion.div>
-          )}
-          {modal == 4 && (
+          {modal == 5 && (
             <motion.div
               className="modal app-modal flex-column-start-start"
               initial={{ opacity: 0 }}
@@ -306,23 +332,7 @@ export default function SidePanel({
           )}
         </AnimatePresence>
       </motion.div>
-      <MobileNav
-        sectionID={sectionID}
-        operationID={operationID}
-        theme={theme}
-        setTheme={setTheme}
-        rpc={rpc}
-        setRpc={setRpc}
-      />
       <Loader />
-      {blend && (
-        <motion.div
-          className="sidepanel-blender"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2, delay: 0 }}
-        ></motion.div>
-      )}
     </>
   );
 }
