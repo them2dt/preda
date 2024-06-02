@@ -1,8 +1,6 @@
 import labs from "../../media/emptea-labs/app-icons/emptea labs.png";
 import preda from "../../media/emptea-labs/app-icons/emptea preda.png";
-import distriDoc from "../../media/emptea-labs/app-icons/emptea distriDoc.png";
-import crowdSwift from "../../media/emptea-labs/app-icons/emptea crowdSwift.png";
-import academy from "../../media/emptea-labs/app-icons/emptea academy.png";
+import galaxy from "../../media/emptea-labs/app-icons/emptea galaxy.png";
 import {
   faAtom,
   faBolt,
@@ -68,15 +66,7 @@ export const palette = [
 export const emptea_links = [
   "https://emptea.xyz",
   "https://preda.emptea.xyz",
-  "https://distridoc.emptea.xyz",
-  "https://crowdswift.emptea.xyz",
-  "https://academy.emptea.xyz",
+  "https://galaxy.emptea.xyz",
 ];
-export const emptea_app_name = [
-  "Home",
-  "preda",
-  "DistriDoc",
-  "CrowdSwift",
-  "Academy",
-];
-export const emptea_app_icons = [labs, preda, distriDoc, crowdSwift, academy];
+export const emptea_app_name = ["Home", "Preda", "Galaxy"];
+export const emptea_app_icons = [labs, preda, galaxy];
