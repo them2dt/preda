@@ -3,11 +3,23 @@ import preda from "../../media/emptea-labs/app-icons/emptea preda.png";
 import distriDoc from "../../media/emptea-labs/app-icons/emptea distriDoc.png";
 import crowdSwift from "../../media/emptea-labs/app-icons/emptea crowdSwift.png";
 import academy from "../../media/emptea-labs/app-icons/emptea academy.png";
+import {
+  faAtom,
+  faBolt,
+  faCoins,
+  faDiamond,
+  faFire,
+  faFireFlameCurved,
+  faImage,
+  faWandMagicSparkles,
+} from "@fortawesome/free-solid-svg-icons";
 
 //Simple exports
 
 //Menu objects
 export const sections = ["NFT", "CORE", "CNFT", "SPL-20"];
+export const icons = [faImage, faBolt, faAtom, faCoins];
+export const opIcons = [faWandMagicSparkles, faFire];
 export const operations = [
   ["Create", "Burn"],
   ["Create", "Burn"],
@@ -60,5 +72,11 @@ export const emptea_links = [
   "https://crowdswift.emptea.xyz",
   "https://academy.emptea.xyz",
 ];
-export const emptea_app_name = ["Home","preda","DistriDoc","CrowdSwift","Academy",];
+export const emptea_app_name = [
+  "Home",
+  "preda",
+  "DistriDoc",
+  "CrowdSwift",
+  "Academy",
+];
 export const emptea_app_icons = [labs, preda, distriDoc, crowdSwift, academy];

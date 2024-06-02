@@ -27,6 +27,8 @@ import {
   emptea_links,
   emptea_app_name,
   emptea_app_icons,
+  icons,
+  opIcons,
 } from "../utils/simples";
 import Loader from "./Loader";
 import MobileNav from "./MobileNav";
@@ -96,6 +98,10 @@ export default function SidePanel({
                 key={"section " + SECindex}
               >
                 <motion.div className="operation-section-header flex-row-start-center">
+                  <FontAwesomeIcon
+                    icon={icons[SECindex]}
+                    color="var(--accent-1)"
+                  />
                   <motion.div className="font-text-bold">{item}</motion.div>
                 </motion.div>
                 {operations[SECindex].map((item, OPindex) => (

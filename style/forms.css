@@ -96,7 +96,8 @@
     border: 1px solid var(--secondary-faded-2);
     border-radius: 5px;
     box-sizing: border-box;
-    box-shadow: inset 0px 1px 1px 0px var(--secondary-faded-4 ), inset 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 2px 1px 0px rgba(255, 255, 255, 0.6), inset 0px -2px 1px 0px rgba(0, 0, 0, 0.1);
+
 
     color: var(--primary);
     cursor: pointer;
@@ -131,7 +132,7 @@
     box-sizing: border-box;
     border: none;
     border-radius: 10px;
-    box-shadow: inset 0px 2px 1px 0px var(--accent-faded-4 ), inset 0px -2px 1px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 2px 1px 0px var(--accent-faded-4), inset 0px -2px 1px 0px rgba(0, 0, 0, 0.1);
     color: var(--secondary);
     cursor: pointer;
 }
