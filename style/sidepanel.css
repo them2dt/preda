@@ -1,6 +1,6 @@
 @media only screen and (min-width: 768px) {
     .mobile-nav-container {
-        display: none;
+        display: none !important;
     }
 
     .sidepanel-container {
