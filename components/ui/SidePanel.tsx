@@ -29,6 +29,8 @@ import {
   emptea_app_icons,
   icons,
   opIcons,
+  RPC_DEVNET,
+  RPC_MAINNET,
 } from "../utils/simples";
 import Loader from "./Loader";
 import MobileNav from "./MobileNav";
@@ -60,6 +62,9 @@ export default function SidePanel({
   const [rpcInput, setRpcInput] = useState("");
 
   const verifyConnection = async (option: number, url: string) => {
+    console.log("----------------")
+    console.log("Connecting to RPC URL: ", url);
+    console.log("----------------")
     try {
       if (url.includes(".helius-rpc.com")) {
         enqueueSnackbar("Connecting to RPC.", { variant: "info" });
@@ -212,7 +217,7 @@ export default function SidePanel({
                 onClick={async () =>
                   await verifyConnection(
                     0,
-                    "https://mainnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+                    RPC_MAINNET
                   )
                 }
               >
@@ -227,7 +232,7 @@ export default function SidePanel({
                 onClick={async () =>
                   await verifyConnection(
                     1,
-                    process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.devnet.solana.com"
+                    RPC_DEVNET
                   )
                 }
               >

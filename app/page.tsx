@@ -1,12 +1,14 @@
-"use client"
-import { AnimatePresence, motion } from "framer-motion";;
+"use client";
+import { AnimatePresence, motion } from "framer-motion";
 import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
 import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
 import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
+
 import SidePanel from "@/components/ui/SidePanel";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
 import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -19,13 +21,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { ThemeProvider } from "@emotion/react";
 import { colors, createTheme } from "@mui/material";
 
-
 export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState(
-    process.env.NEXT_PUBLIC_RPC_MAINNET|| "https://api.mainnet-beta.solana.com"
+    RPC_MAINNET
   );
   const connection = new Connection(rpc);
   //
@@ -301,9 +302,11 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <motion.div className="submit-container flex-column-center-center"><button className="submit font-h4" onClick={run}>
-              Create
-            </button></motion.div>
+            <motion.div className="submit-container flex-column-center-center">
+              <button className="submit font-h4" onClick={run}>
+                Create
+              </button>
+            </motion.div>
           </div>
         </div>
       </div>

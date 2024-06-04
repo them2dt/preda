@@ -1,19 +1,17 @@
-"use client"
-import { AnimatePresence, motion } from "framer-motion";;
+"use client";
 import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { NumberField, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
+
 import SidePanel from "@/components/ui/SidePanel";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
 import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import React, { useState } from "react";
-import { burnNFT } from "@/components/backend/NFT";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
 import { burnSPL20 } from "@/components/backend/SPL20";
 import { getAsset, getDigitalAssetBalance } from "@/components/backend/General";
 import { enqueueSnackbar } from "notistack";
@@ -22,7 +20,7 @@ export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
   const [rpc, setRpc] = useState(
-    process.env.NEXT_PUBLIC_RPC_MAINNET|| "https://api.mainnet-beta.solana.com"
+    RPC_MAINNET
   );
   const connection = new Connection(rpc);
   //

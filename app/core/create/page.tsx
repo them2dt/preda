@@ -4,8 +4,9 @@ import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
+
 import SidePanel from "@/components/ui/SidePanel";
-import { themes } from "@/components/utils/simples";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
@@ -22,7 +23,7 @@ export default function Page() {
   const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState(
-    process.env.NEXT_PUBLIC_RPC_MAINNET|| "https://api.mainnet-beta.solana.com"
+    RPC_MAINNET
   );
   const connection = new Connection(rpc);
   //

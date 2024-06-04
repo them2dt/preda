@@ -253,7 +253,7 @@ export default function MobileNav({
                 onClick={async () =>
                   await verifyConnection(
                     0,
-                    "https://mainnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+                    RPC_MAINNET
                   )
                 }
               >
@@ -268,7 +268,7 @@ export default function MobileNav({
                 onClick={async () =>
                   await verifyConnection(
                     1,
-                    "https://devnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+                    RPC_DEVNET
                   )
                 }
               >

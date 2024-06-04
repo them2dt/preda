@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { uploadFileToIrys } from "@/components/backend/General";
 import { ImageInput } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
+
 import SidePanel from "@/components/ui/SidePanel";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
 import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -21,9 +23,7 @@ export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 
-  const [rpc, setRpc] = useState<string>(
-    process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.devnet.solana.com"
-  );
+  const [rpc, setRpc] = useState<string>(RPC_MAINNET);
   const connection = new Connection(rpc);
   //
 

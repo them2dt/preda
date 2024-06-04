@@ -13,8 +13,8 @@ import {
 //Simple exports
 
 //Menu objects
-export const sections = ["NFT", "CORE", "CNFT", "SPL-20","More"];
-export const icons = [faImage, faBolt, faAtom, faCoins,faWandMagicSparkles];
+export const sections = ["NFT", "CORE", "CNFT", "SPL-20", "More"];
+export const icons = [faImage, faBolt, faAtom, faCoins, faWandMagicSparkles];
 export const opIcons = [faWandMagicSparkles, faFire];
 export const operations = [
   ["Create", "Burn"],
@@ -28,7 +28,7 @@ export const paths = [
   ["/core/create", "/core/burn"],
   ["/cnft/create", "/cnft/burn"],
   ["/spl-20/create", "/spl-20/burn"],
-  ["/more/image-uploader", ],
+  ["/more/image-uploader"],
 ];
 
 // the themes of the platform
@@ -70,3 +70,8 @@ export const emptea_links = [
 ];
 export const emptea_app_name = ["Home", "Preda", "Galaxy"];
 export const emptea_app_icons = [labs, preda, galaxy];
+
+export const RPC_MAINNET =
+  process.env.NEXT_PUBLIC_RPC_MAINNET || "https://api.mainnet-beta.solana.com";
+export const RPC_DEVNET =
+  process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.mainnet-beta.solana.com";

@@ -1,19 +1,18 @@
-"use client"
-import { AnimatePresence, motion } from "framer-motion";;
+"use client";
+import { motion } from "framer-motion";
 import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
-import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
-import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
 import {
   ImageInput,
   NumberField,
-  Slidable,
   SwitchField,
   TextArea,
   TextField,
 } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
+
 import SidePanel from "@/components/ui/SidePanel";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
 import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -30,7 +29,7 @@ export default function Page() {
   const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState(
-    "https://devnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+    RPC_MAINNET
   );
   const connection = new Connection(rpc, { commitment: "confirmed" });
   //
@@ -243,9 +242,11 @@ export default function Page() {
                 />
               </div>
             </div>
-            <motion.div className="submit-container flex-column-center-center"><button className="submit font-h4" onClick={run}>
-              Create
-            </button></motion.div>
+            <motion.div className="submit-container flex-column-center-center">
+              <button className="submit font-h4" onClick={run}>
+                Create
+              </button>
+            </motion.div>
           </div>
         </div>
       </div>
