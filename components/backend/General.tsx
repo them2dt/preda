@@ -30,7 +30,7 @@ export function validateImage(
   input: File,
   setImage: Function,
   setImagePreview: Function
-): boolean {
+): {} {
   if (input != undefined) {
     // Check if input is defined
     if (input.type == "image/png") {
@@ -40,19 +40,10 @@ export function validateImage(
         var img = new Image();
         img.src = e.target?.result?.toString() || "";
         img.onload = function () {
-          if (img.width == img.height) {
-            // Check if image is square
-            setImage(input); // Set the image if it meets the criteria
-            enqueueSnackbar("Image is valid", { variant: "success" });
-            setImagePreview([reader.result]);
-            return true; // Return the image if it meets the criteria
-          } else {
-            console.log("not square");
-            enqueueSnackbar("Image has to be square format.", {
-              variant: "warning",
-            });
-            return false; // Return undefined if image is not square
-          }
+          setImage(input); // Set the image if it meets the criteria
+          enqueueSnackbar("Image is valid", { variant: "success" });
+          setImagePreview([reader.result]);
+          return true; // Return the image if it meets the criteria
         };
       };
       reader.readAsDataURL(input); // Read the image file
@@ -68,6 +59,7 @@ export function validateImage(
   return false;
 }
 
+
 async function getIrys({
   wallet,
   connection,
@@ -79,8 +71,14 @@ async function getIrys({
   const useProvider = wallet?.adapter as Adapter;
   await useProvider.connect();
 
+  providerUrl.includes("mainnet")
+    ? console.log("Sending from Mainnet")
+    : console.log("Sending from Devnet");
   const irys = new WebIrys({
-    url: "https://devnet.irys.xyz", // URL of the node you want to connect to
+    // URL of the node you want to connect to
+    url: providerUrl.includes("mainnet")
+      ? "https://arweave.mainnet.irys.xyz"
+      : "https://arweave.devnet.irys.xyz",
     token: "solana", // Token used for payment
     wallet: {
       provider: useProvider,
@@ -125,7 +123,7 @@ export async function uploadFileToIrys({
             file.name + "." + file.type + ": https://arweave.net/" + upload.id
           );
 
-          return { status: 200, assetID: "https://arweave.net/"+upload.id };
+          return { status: 200, assetID: "https://arweave.net/"+upload.id};
         } else return { status: 500 };
       } else return { status: 500 };
     } else return { status: 500 };

@@ -55,20 +55,24 @@ export default function SidePanel({
   setRpc: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [modal, setModal] = useState(0);
-  const [menu, setMenu] = useState(false);
   const [blend, setBlend] = useState(false);
-  const [rpcOption, setRpcOption] = useState(1);
+  const [rpcOption, setRpcOption] = useState(0);
   const [rpcInput, setRpcInput] = useState("");
-  const connection = new Connection(rpc, { commitment: "finalized" });
 
   const verifyConnection = async (option: number, url: string) => {
     try {
-      enqueueSnackbar("Connecting to RPC.", { variant: "info" });
-      const response = await new Connection(url).getSlot();
-      if (response > 1) {
-        setRpc(url);
-        setRpcOption(option);
-        enqueueSnackbar("Connected successfully.", { variant: "success" });
+      if (url.includes(".helius-rpc.com")) {
+        enqueueSnackbar("Connecting to RPC.", { variant: "info" });
+        const response = await new Connection(url).getSlot();
+        if (response > 1) {
+          setRpc(url);
+          setRpcOption(option);
+          enqueueSnackbar("Connected successfully.", { variant: "success" });
+        } else {
+          enqueueSnackbar("RPC is invalid.", { variant: "error" });
+        }
+      } else {
+        enqueueSnackbar("Use a helius RPC.", { variant: "error" });
       }
     } catch (e) {
       enqueueSnackbar("RPC is invalid.", { variant: "error" });
@@ -223,7 +227,7 @@ export default function SidePanel({
                 onClick={async () =>
                   await verifyConnection(
                     1,
-                    "https://devnet.helius-rpc.com/?api-key=23b1f54f-f281-4c55-b62a-51620f91a050"
+                    process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.devnet.solana.com"
                   )
                 }
               >
@@ -237,7 +241,7 @@ export default function SidePanel({
                       : "font-text-small"
                   }
                   type="text"
-                  placeholder="Enter your custom RPC URL"
+                  placeholder="Enter your Helius RPC URL"
                   onChange={(e) => {
                     setRpcInput(e.target.value);
                   }}

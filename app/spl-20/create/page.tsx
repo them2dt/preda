@@ -1,6 +1,6 @@
 "use client"
 import { AnimatePresence, motion } from "framer-motion";;
-import { backendWrapper } from "@/components/BackendWrapper";
+import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
 import CreatorBackdrop from "@/components/ui/CreatorBackdrop";

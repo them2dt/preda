@@ -5,9 +5,7 @@ import {
   faAtom,
   faBolt,
   faCoins,
-  faDiamond,
   faFire,
-  faFireFlameCurved,
   faImage,
   faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,20 +13,22 @@ import {
 //Simple exports
 
 //Menu objects
-export const sections = ["NFT", "CORE", "CNFT", "SPL-20"];
-export const icons = [faImage, faBolt, faAtom, faCoins];
+export const sections = ["NFT", "CORE", "CNFT", "SPL-20","More"];
+export const icons = [faImage, faBolt, faAtom, faCoins,faWandMagicSparkles];
 export const opIcons = [faWandMagicSparkles, faFire];
 export const operations = [
   ["Create", "Burn"],
   ["Create", "Burn"],
   ["Create", "Burn"],
   ["Create", "Burn"],
+  ["Image uploader"],
 ];
 export const paths = [
   ["/", "/burn"],
   ["/core/create", "/core/burn"],
   ["/cnft/create", "/cnft/burn"],
   ["/spl-20/create", "/spl-20/burn"],
+  ["/more/image-uploader", ],
 ];
 
 // the themes of the platform

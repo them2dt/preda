@@ -1,9 +1,7 @@
 "use client"
 import { AnimatePresence, motion } from "framer-motion";;
-import { backendWrapper } from "@/components/BackendWrapper";
+import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
-import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
-import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
 import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
 import SidePanel from "@/components/ui/SidePanel";
@@ -24,7 +22,7 @@ export default function Page() {
   const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState(
-    "https://devnet.helius-rpc.com/?api-key=256baa19-0d74-4b32-a403-bbf83037df6a"
+    process.env.NEXT_PUBLIC_RPC_MAINNET|| "https://api.mainnet-beta.solana.com"
   );
   const connection = new Connection(rpc);
   //
