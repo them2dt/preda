@@ -227,7 +227,7 @@ export default function SidePanel({
                 onClick={async () =>
                   await verifyConnection(
                     1,
-                    process.env.RPC_DEVNET || "https://api.devnet.solana.com"
+                    process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.devnet.solana.com"
                   )
                 }
               >
