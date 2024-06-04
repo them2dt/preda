@@ -62,9 +62,6 @@ export default function SidePanel({
   const [rpcInput, setRpcInput] = useState("");
 
   const verifyConnection = async (option: number, url: string) => {
-    console.log("----------------")
-    console.log("Connecting to RPC URL: ", url);
-    console.log("----------------")
     try {
       if (url.includes(".helius-rpc.com")) {
         enqueueSnackbar("Connecting to RPC.", { variant: "info" });
