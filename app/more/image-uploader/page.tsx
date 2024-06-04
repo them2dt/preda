@@ -22,7 +22,7 @@ export default function Page() {
   const [theme, setTheme] = useState(0);
 
   const [rpc, setRpc] = useState<string>(
-    process.env.NEXT_PUBLIC_RPC_DEVNET || "https://api.devnet.solana.com"
+    process.env.RPC_DEVNET || "https://api.devnet.solana.com"
   );
   const connection = new Connection(rpc);
   //
