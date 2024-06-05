@@ -20,9 +20,9 @@ export const metadata = {
     siteName: "Preda",
     images: [
       {
-        url: "https://bafybeig65argso4eqbepq63kjyu35e6inwfgfahaord2tt2trmi62nnive.ipfs.nftstorage.link/",
-        width: "2000",
-        height: "1200",
+        url: "https://xznxkqpr4hrwmizfsd5fahu3bcojuelofogb7kb5w6fm3jfdmxcq.arweave.net/vlt1QfHh42YjJZD6UB6bCJyaEW4rjB-oPbeKzaSjZcU",
+        width: "500",
+        height: "300",
       },
     ],
   },
@@ -32,7 +32,7 @@ export const metadata = {
     description: "The powerhouse for solana tokens.",
     creator: "@THEM2DT",
     images: [
-      "https://bafybeig65argso4eqbepq63kjyu35e6inwfgfahaord2tt2trmi62nnive.ipfs.nftstorage.link/",
+      "https://xznxkqpr4hrwmizfsd5fahu3bcojuelofogb7kb5w6fm3jfdmxcq.arweave.net/vlt1QfHh42YjJZD6UB6bCJyaEW4rjB-oPbeKzaSjZcU",
     ],
   },
 };
