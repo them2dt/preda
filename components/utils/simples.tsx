@@ -71,5 +71,5 @@ export const emptea_links = [
 export const emptea_app_name = ["Home", "Preda", "Galaxy"];
 export const emptea_app_icons = [labs, preda, galaxy];
 
-export const RPC_MAINNET ="https://mainnet.helius-rpc.com/?api-key=73670a22-627e-4405-b80f-8fe0583892a9"
-export const RPC_DEVNET ="https://devnet.helius-rpc.com/?api-key=73670a22-627e-4405-b80f-8fe0583892a9"
+export const RPC_MAINNET = process.env.NEXT_PUBLIC_RPC_MAINNET || "double fuck";
+export const RPC_DEVNET = process.env.NEXT_PUBLIC_RPC_DEVNET || "fuck";
