@@ -62,6 +62,8 @@ export default function SidePanel({
   const [rpcInput, setRpcInput] = useState("");
 
   const verifyConnection = async (option: number, url: string) => {
+    console.log("----------------")
+    console.log(process.env.NEXT_PUBLIC_RPC_MAINNET);
     try {
       if (url.includes(".helius-rpc.com")) {
         enqueueSnackbar("Connecting to RPC.", { variant: "info" });
@@ -211,12 +213,7 @@ export default function SidePanel({
                     ? "rpc-option font-text-small-bold active"
                     : "rpc-option font-text-small-bold"
                 }
-                onClick={async () =>
-                  await verifyConnection(
-                    0,
-                    RPC_MAINNET
-                  )
-                }
+                onClick={async () => await verifyConnection(0, RPC_MAINNET)}
               >
                 Mainnet
               </motion.button>
@@ -226,12 +223,7 @@ export default function SidePanel({
                     ? "rpc-option font-text-small-bold active"
                     : "rpc-option font-text-small-bold"
                 }
-                onClick={async () =>
-                  await verifyConnection(
-                    1,
-                    RPC_DEVNET
-                  )
-                }
+                onClick={async () => await verifyConnection(1, RPC_DEVNET)}
               >
                 Devnet
               </motion.button>
