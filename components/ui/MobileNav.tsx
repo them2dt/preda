@@ -29,6 +29,8 @@ import {
   emptea_links,
   emptea_app_name,
   emptea_app_icons,
+  RPC_MAINNET,
+  RPC_DEVNET,
 } from "../utils/simples";
 import Loader from "./Loader";
 
