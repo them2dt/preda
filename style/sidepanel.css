@@ -68,7 +68,10 @@
 
         width: fill;
         height: fit-content;
-        padding: 5px 15px;
+        padding: 10px 15px;
+
+        border-bottom: 1px solid var(--secondary-faded-3);
+        border-radius: 10px;
         box-sizing: border-box;
         color: var(--secondary-faded-4);
     }
@@ -80,7 +83,7 @@
     .sidepanel .operations .operation {
         width: fill;
         height: fit-content;
-        padding: 20px 15px;
+        padding: 10px 15px;
 
         border-radius: 10px;
         box-sizing: border-box;

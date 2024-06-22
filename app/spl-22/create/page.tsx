@@ -1,5 +1,5 @@
-"use client"
-import { AnimatePresence, motion } from "framer-motion";;
+"use client";
+import { AnimatePresence, motion } from "framer-motion";
 import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
@@ -8,7 +8,8 @@ import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
 
 import SidePanel from "@/components/ui/SidePanel";
-import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";import { themes } from "@/components/utils/simples";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
+import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
@@ -24,9 +25,7 @@ export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 
-  const [rpc, setRpc] = useState(
-    RPC_MAINNET
-  );
+  const [rpc, setRpc] = useState(RPC_MAINNET);
   const connection = new Connection(rpc);
   //
 
@@ -164,7 +163,7 @@ export default function Page() {
                                       const response = await backendWrapper({
                                         wallet: wallet,
                                         connection: connection,
-                                        initialMessage: "Burning asset",
+                                        initialMessage: "Create tokens",
                                         backendCall: async () => await runner,
                                       });
                                       setResult(response);
@@ -301,9 +300,11 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <motion.div className="submit-container flex-column-center-center"><button className="submit font-h4" onClick={run}>
-              Create
-            </button></motion.div>
+            <motion.div className="submit-container flex-column-center-center">
+              <button className="submit font-h4" onClick={run}>
+                Create
+              </button>
+            </motion.div>
           </div>
         </div>
       </div>

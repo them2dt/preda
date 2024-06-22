@@ -165,7 +165,7 @@ export default function Page() {
                                       const response = await backendWrapper({
                                         wallet: wallet,
                                         connection: connection,
-                                        initialMessage: "Burning asset",
+                                        initialMessage: "Creating asset",
                                         backendCall: async () => await runner,
                                       });
                                       setResult(response);

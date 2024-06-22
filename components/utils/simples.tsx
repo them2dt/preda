@@ -17,16 +17,16 @@ export const sections = ["NFT", "CORE", "CNFT", "SPL-20", "More"];
 export const icons = [faImage, faBolt, faAtom, faCoins, faWandMagicSparkles];
 export const opIcons = [faWandMagicSparkles, faFire];
 export const operations = [
-  ["Create", "Burn"],
-  ["Create", "Burn"],
-  ["Create", "Burn"],
-  ["Create", "Burn"],
+  ["Create an asset", "Burn an asset"],
+  ["Create an asset", "Burn an asset", "Create a collection"],
+  ["Create an asset", "Burn an asset", "Create a collection"],
+  ["Create an asset", "Burn an asset"],
   ["Image uploader"],
 ];
 export const paths = [
   ["/", "/burn"],
-  ["/core/create", "/core/burn"],
-  ["/cnft/create", "/cnft/burn"],
+  ["/core/create", "/core/burn", "/core/create-collection"],
+  ["/cnft/create", "/cnft/burn", "/cnft/create-collection"],
   ["/spl-20/create", "/spl-20/burn"],
   ["/more/image-uploader"],
 ];

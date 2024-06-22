@@ -46,26 +46,28 @@ export const createCoreAsset = async ({
         name: name,
         uri: metadata,
         collection: publicKey(collection),
-        plugins: [{
-          plugin: createPlugin({
-            type: 'Royalties',
-            data: {
-              basisPoints: 500,
-              creators: [
-                {
-                  address: publicKey("creator1"),
-                  percentage: 20,
-                },
-                {
-                  address: publicKey("creator2"),
-                  percentage: 80,
-                },
-              ],
-              ruleSet: ruleSet('None'), // Compatibility rule set
-            },
-          }),
-          authority: null
-        }],
+        plugins: [
+          {
+            plugin: createPlugin({
+              type: "Royalties",
+              data: {
+                basisPoints: 500,
+                creators: [
+                  {
+                    address: publicKey("creator1"),
+                    percentage: 20,
+                  },
+                  {
+                    address: publicKey("creator2"),
+                    percentage: 80,
+                  },
+                ],
+                ruleSet: ruleSet("None"), // Compatibility rule set
+              },
+            }),
+            authority: null,
+          },
+        ],
       });
 
       const result = await transaction.sendAndConfirm(umi);
