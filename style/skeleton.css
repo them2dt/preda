@@ -1,0 +1,146 @@
+@media only screen and (max-width: 768px) {
+    #skeleton {
+        display: none;
+    }
+
+    .skeleton-mobile {
+        display: block;
+        height: 100vh;
+        width: 100vw;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #skeleton {
+        display: block;
+    }
+
+    .skeleton-mobile {
+        display: none;
+    }
+}
+
+#skeleton {
+    width: 100vw;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+
+    background-color: var(--secondary);
+    color: var(--primary);
+
+}
+
+#header {
+    position: fixed;
+    width: calc(100vw - 40px);
+    height: 80px;
+
+
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#header .logo {
+    color: var(--primary);
+    gap: 20px;
+}
+
+#header .logo img {
+    width: 40px;
+    height: 40px;
+}
+
+#header .operator {
+    width: 100px;
+    height: 40px;
+
+    color: var(--primary);
+    border: none;
+
+    padding: 5px 12px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+#header .operator.font-text-small-bold {
+    border-right: 1px solid var(--secondary-faded-2);
+}
+
+#header .operator.active {
+    color: var(--accent);
+}
+
+#header .operator:hover {
+    color: var(--primary-faded-4);
+
+}
+
+
+#header .tabs {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+
+    opacity: 0;
+
+    padding: 5px;
+    gap: 5px;
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+    border-top-right-radius: 0px;
+    box-sizing: border-box;
+}
+
+#header .tabs.active {
+    opacity: 1;
+}
+
+#header .tabs.section-0 {
+    right: 520px;
+}#header .tabs.section-1 {
+    right: 420px;
+}
+
+#header .tabs.section-2 {
+    right: 320px;
+}
+
+#header .tabs.section-3 {
+    right: 220px;
+}
+
+#header .tabs.section-4 {
+    right: 120px;
+}
+
+#header .tab {
+    width: 200px;
+    padding: 10px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: var(--primary);
+}
+
+#mainboard {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow-y: scroll;
+
+    background-color: var(--secondary);
+    background: var(--background) no-repeat;
+    background-size: cover;
+}
