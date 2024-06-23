@@ -15,10 +15,11 @@
 
   padding: 10px;
 
-  background-color: var(--secondary-faded-1);
-  border: 1px solid var(--secondary-faded-2);
-  border-radius: 10px;
   backdrop-filter: blur(5px);
+  background-color: var(--secondary);
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1), inset 0px 2px 2px 0px rgba(255, 255, 255, 0.1);
+
   z-index: 100;
 }
 
@@ -29,19 +30,21 @@
   margin-left: 5px;
 
   background-color: var(--secondary-faded-2);
-  border: 1px solid var(--secondary-faded-3);
+
   border-radius: 5px;
   box-sizing: border-box;
 
   color: var(--secondary-faded-4);
 
   cursor: pointer;
+
+  transition-duration: 0.4s;
+
 }
 
 .navigation-button:hover {
 
   background-color: var(--secondary-faded-3);
-  border: 1px solid var(--secondary-faded-4);
   color: var(--primary-faded-4);
 }
 
@@ -87,78 +90,63 @@
   position: relative;
 
   margin: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  width: 440px;
-  background-color: var(--secondary-faded-1);
-  border: 1px solid var(--secondary-faded-2);
+  padding: 10px;
+  width: 355px;
+  background-color: var(--secondary);
   border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1), inset 0px 2px 2px 0px rgba(255, 255, 255, 0.1);
+
+}
+
+.nav-modal .rpc-option {
+  width: fill;
+  height: fit-content;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: var(--secondary-faded-1);
+  gap: 10px;
+  cursor: pointer;
+}
+
+.nav-modal .rpc-option:hover {
+  transition-duration: 0.2s;
+  background-color: var(--secondary-faded-2);
+}
+
+.nav-modal .rpc-option:active {
+  background-color: var(--secondary-faded-3);
 }
 
 .nav-modal-settings .modal-content {
+  width: fill;
   gap: 10px;
 }
 
 .nav-modal-settings .modal-content .button {
-  width: 420px;
+  width: fill;
   height: 40px;
 
   gap: 5px;
 
   background-color: var(--secondary-faded-2);
-  border: 1px solid var(--secondary-faded-3);
   border-radius: 5px;
 
   color: var(--primary);
 
   user-select: none;
   cursor: pointer;
+
+  transition-duration: 0.2s;
 }
 
 .nav-modal-settings .modal-content .button:hover {
   background-color: var(--secondary-faded-3);
-  border: 1px solid var(--secondary-faded-4);
 }
-
-.nav-modal-help {
-  text-align: center;
-}
-
-.help-window {
-  position: fixed;
-  top: 0;
-  left: 0;
-
-  width: 100vw;
-  height: 100vh;
-
-  background-color: var(--secondary-transparent);
-  backdrop-filter: blur(5px);
-}
-
-.help-window .help-container {
-  width: 1000px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.help-window .help-container .help-panel {
-  width: 200px;
-  height: 200px;
-
-  padding: 20px;
-  background-color: var(--secondary-faded-1);
-  border: 1px solid var(--secondary-faded-2);
-  border-radius: 20px;
-  box-sizing: border-box;
-
-  text-align: center;
-}
-
-.help-window .help-container .help-panel:nth-child(1) {
-  width: 500px;
-}
-
-.help-window .help-container .help-panel:nth-child(2) {
-  width: 500px;
+.nav-modal-settings .modal-content .button.submit{
+  background-color: var(--accent);
+  color: var(--secondary);
+} 
+.nav-modal-settings .modal-content .button.submit:hover{
+  background-color: var(--accent-faded-1);
 }

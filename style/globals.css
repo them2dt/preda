@@ -1,13 +1,23 @@
 @font-face {
-    font-family: "satoshi";
-    src: url(./fonts/Satoshi-Variable.ttf);
+    font-family: "font-primary-regular";
+    src: url(./fonts/Switzer-Regular.otf);
+}
+
+@font-face {
+    font-family: "font-primary-semibold";
+    src: url(./fonts/Switzer-Semibold.otf);
+}
+
+@font-face {
+    font-family: "font-primary-bold";
+    src: url(./fonts/Switzer-Bold.otf);
 }
 
 /* This file is a global stylesheet that contains the following:
-    - a font-face for the Satoshi font
+    - a font-face for the font
     - a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades
     - a light and a dark variant for the following elements: primary, primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4)
-    - a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights
+    - a set of font-classes using the font-primary-regular font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights
     - a set of classes for display:flex variations - like .flex-(row / column)-(justify-content)-(align-items)
     - a markdown-text explaining this file
 */
@@ -30,7 +40,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     background-color: var(--secondary);
     color: var(--primary);
     overflow-x: hidden;
@@ -69,11 +79,11 @@ a {
     --white-transparent-4: rgba(255, 255, 255, 0.4);
     --white-transparent-5: rgba(255, 255, 255, 0.5);
 
-    --accent-1: #B763FF;
-    --accent-2: #C17DFF;
-    --accent-3: #CA97FF;
-    --accent-4: #D3B1FF;
-    --accent-5: #DCCBFF;
+    --purple-1: #B763FF;
+    --purple-2: #C17DFF;
+    --purple-3: #CA97FF;
+    --purple-4: #D3B1FF;
+    --purple-5: #DCCBFF;
 
     --pink-light-1: #ff62b3;
     --pink-light-2: #ff7cc0;
@@ -99,11 +109,7 @@ a {
     --navy-dark-4: #3bade2;
     --navy-dark-5: #50bfff;
 
-    --bg-white: url("../media/bg-white.png");
-    --bg-black: url("../media/bg-black.png");
-    --bg-navy: url("../media/bg-navy.png");
-    --bg-pink: url("../media/bg-pink.png");
-
+    --bg-default: radial-gradient(var(--secondary-5), var(--secondary-1));
     color: var(--primary);
 
 }
@@ -111,7 +117,7 @@ a {
 /*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
 
 [data-theme="light"] {
-    --background: var(--bg-white);
+    --background: var(--bg-default);
     --primary: var(--black-1);
     --primary-faded-1: var(--black-2);
     --primary-faded-2: var(--black-3);
@@ -136,15 +142,15 @@ a {
     --secondary-transparent-4: var(--white-transparent-4);
     --secondary-transparent-5: var(--white-transparent-5);
 
-    --accent: var(--accent-1);
-    --accent-faded-1: var(--accent-2);
-    --accent-faded-2: var(--accent-3);
-    --accent-faded-3: var(--accent-4);
-    --accent-faded-4: var(--accent-5);
+    --accent: var(--purple-1);
+    --accent-faded-1: var(--purple-2);
+    --accent-faded-2: var(--purple-3);
+    --accent-faded-3: var(--purple-4);
+    --accent-faded-4: var(--purple-5);
 }
 
 [data-theme="dark"] {
-    --background: var(--bg-black);
+    --background: var(--bg-default);
     --primary: var(--white-1);
     --primary-faded-1: var(--white-2);
     --primary-faded-2: var(--white-3);
@@ -169,15 +175,15 @@ a {
     --secondary-transparent-4: var(--black-transparent-4);
     --secondary-transparent-5: var(--black-transparent-5);
 
-    --accent: var(--accent-1);
-    --accent-faded-1: var(--accent-2);
-    --accent-faded-2: var(--accent-3);
-    --accent-faded-3: var(--accent-4);
-    --accent-faded-4: var(--accent-5);
+    --accent: var(--purple-1);
+    --accent-faded-1: var(--purple-2);
+    --accent-faded-2: var(--purple-3);
+    --accent-faded-3: var(--purple-4);
+    --accent-faded-4: var(--purple-5);
 }
 
 [data-theme="candy"] {
-    --background: var(--bg-pink);
+    --background: var(--bg-default);
     --primary: var(--pink-dark-1);
     --primary-faded-1: var(--pink-dark-2);
     --primary-faded-2: var(--pink-dark-3);
@@ -210,7 +216,7 @@ a {
 }
 
 [data-theme="navy"] {
-    --background: var(--bg-navy);
+    --background: var(--bg-default);
     --primary: var(--navy-dark-1);
     --primary-faded-1: var(--navy-dark-2);
     --primary-faded-2: var(--navy-dark-3);
@@ -242,93 +248,75 @@ a {
     --accent-faded-4: var(--navy-dark-5);
 }
 
-/* a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/
+/* a set of font-classes using the font-primary-regular font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/
 
 .font-h1 {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 52px;
-    font-weight: 1000;
-    letter-spacing: -0.2rem;
 }
 
 .font-h2 {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 40px;
-    font-weight: 1000;
-    letter-spacing: -0.1rem;
 }
 
 .font-h3 {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 28px;
-    font-weight: 1000;
-    letter-spacing: -0.1rem;
 }
 
 .font-h4 {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 22px;
-    font-weight: 1000;
-    letter-spacing: -0.1rem;
 
 }
 
 .font-text {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 18px;
-    font-weight: 400;
-    letter-spacing: -0.05rem;
 
 }
 
 .font-text-bold {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 18px;
-    font-weight: 600;
 }
 
 .font-text-light {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 18px;
-    font-weight: 300;
 }
 
 .font-text-small {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 16px;
-    font-weight: 400;
 }
 
 .font-text-small-bold {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 16px;
-    font-weight: 1000;
 }
 
 .font-text-small-light {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 16px;
-    font-weight: 300;
 }
 
 .font-text-tiny {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 14px;
-    font-weight: 400;
 }
 
 .font-text-tiny-bold {
-    font-family: "satoshi";
+    font-family: "font-primary-bold";
     font-size: 14px;
-    font-weight: 1000;
 }
 
 
 
 .font-text-tiny-light {
-    font-family: "satoshi";
+    font-family: "font-primary-regular";
     font-size: 14px;
-    font-weight: 300;
 }
 
 /* a set of classes for display:flex variations, like this: .flex-(row / column)-(justify-content)-(align-items)*/

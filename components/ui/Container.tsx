@@ -1,0 +1,31 @@
+"use client";
+import { themes } from "../backend/AppData";
+import Header from "./Header";
+import Navigation from "./Navigation";
+import React, { useState } from "react";
+//Container to wrap all elements of a page into a container.
+
+export default function PanelContainer({
+  id,
+  panel,
+}: {
+  id: number;
+  panel: React.JSX.Element;
+}) {
+  const [theme, setTheme] = useState(0);
+  return (
+    <div>
+      <div id="skeleton" className="skeleton" data-theme={themes[theme]}>
+        <Header id={id} theme={theme} themes={themes} />
+        <div id="mainboard" className="flex-row-center-start">
+          {panel}
+        </div>
+        <Navigation
+          theme={theme}
+          themes={themes}
+          toggleTheme={(themeIdParameter: number) => setTheme(themeIdParameter)}
+        />
+      </div>
+    </div>
+  );
+}
