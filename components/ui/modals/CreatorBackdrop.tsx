@@ -1,8 +1,7 @@
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { themes } from "../utils/simples";
-import { Slider } from "./TeaUI";
+import { Slider } from "@/components/ui/TeaUI";
 
 export default function CreatorBackdrop({
   renderHook,
@@ -14,7 +13,6 @@ export default function CreatorBackdrop({
   setCreatorKey,
   setCreatorValue,
   setCreatorModal,
-  theme,
   sliderValue,
   setSliderValue,
 }: {
@@ -27,7 +25,6 @@ export default function CreatorBackdrop({
   setCreatorValue: (i: number) => void;
   creators: { address: string; share: number }[];
   setCreators: (i: { address: string; share: number }[]) => void;
-  theme: number;
   sliderValue: number;
   setSliderValue: (i: number) => void;
 }) {
@@ -42,7 +39,6 @@ export default function CreatorBackdrop({
   return (
     <div
       className="backdrop flex-column-center-center"
-      data-theme={themes[theme]}
       onClick={() => {
         setCreatorModal(false);
       }}

@@ -1,11 +1,9 @@
 "use state";
 import React, { useState } from "react";
-import { themes } from "../utils/simples";
-import { NumberField, TextField } from "./InputFields";
-import { Signal, Slider, Switch } from "./TeaUI";
-import { enqueueSnackbar } from "notistack";
+import { themes } from "@/components/backend/AppData";
+import { NumberField, TextField, Slider, Switch } from "@/components/ui/TeaUI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPowerOff, faX } from "@fortawesome/free-solid-svg-icons";
+import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import {
   Creator,
   Plugin,

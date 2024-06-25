@@ -1,7 +1,6 @@
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { themes } from "../utils/simples";
 
 export default function AttributeBackdrop({
   renderHook,
@@ -13,7 +12,6 @@ export default function AttributeBackdrop({
   setAttributeKey,
   setAttributeValue,
   setAttributeModal,
-  theme,
 }: {
   setAttributeModal: (i: boolean) => void;
   renderHook: number;
@@ -24,7 +22,6 @@ export default function AttributeBackdrop({
   setAttributeValue: (i: string) => void;
   attributes: { trait_type: string; value: string }[];
   setAttributes: (i: { trait_type: string; value: string }[]) => void;
-  theme: number;
 }) {
   const removeAttribute = (index: number) => {
     const oldArray = attributes;
@@ -40,7 +37,6 @@ export default function AttributeBackdrop({
       onClick={() => {
         setAttributeModal(false);
       }}
-      data-theme={themes[theme]}
     >
       <div
         className="attributes"

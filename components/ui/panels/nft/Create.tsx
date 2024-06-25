@@ -13,6 +13,8 @@ import { enqueueSnackbar } from "notistack";
 import { ImageInput, Slider, TextArea, TextField } from "@/components/ui/TeaUI";
 import { uploadFileToIrys, validateImage } from "@/components/backend/General";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import AttributeBackdrop from "../../modals/AttributeBackdrop";
+import CreatorBackdrop from "../../modals/CreatorBackdrop";
 
 export default function Panel() {
   const [title, setTitle] = useState<string>();
@@ -257,239 +259,33 @@ export default function Panel() {
         </div>
       </div>
       {attributeModal && (
-        <div
-          className="attribute-modal"
-          id="attribute-modal"
-          onClick={() => {
-            setAttributeModal(false);
-          }}
-        >
-          <div
-            className="attributes"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            key={renderHook}
-          >
-            {attributes?.map((attribute, index) => {
-              return (
-                <div
-                  className="attribute"
-                  key={"nft-attribute-" + index}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log("clicked.");
-                    removeAttribute(index);
-                    setRenderHook(renderHook + 1);
-                  }}
-                >
-                  <div className="key font-text-bold">
-                    {attribute.trait_type}
-                  </div>
-
-                  <div className="line"></div>
-                  <div className="value font-text-light">{attribute.value}</div>
-                </div>
-              );
-            })}
-          </div>
-          {/*Modal component. Frames the modal content.*/}
-          <div
-            className="modal"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <div className="create-attributes font-text">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="input">
-                  <input
-                    type="text"
-                    className="key font-text"
-                    placeholder="key"
-                    required
-                    onChange={(e) => {
-                      setAttributeKey(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    className="value font-text"
-                    placeholder="value"
-                    required
-                    onChange={(e) => {
-                      setAttributeValue(e.target.value);
-                    }}
-                  />
-                </div>
-                <button
-                  className="submit font-text"
-                  type="submit"
-                  disabled={!attributeKey || !attributeValue}
-                  onClick={() => {
-                    setAttributes([
-                      ...(attributes || []),
-                      {
-                        trait_type: attributeKey || "",
-                        value: attributeValue || "",
-                      },
-                    ]);
-                  }}
-                >
-                  {!attributeKey || !attributeValue
-                    ? "fill in the fields"
-                    : "add"}
-                </button>
-              </form>
-            </div>
-          </div>
-          {/* Button with x symbol */}
-          <button
-            onClick={() => setAttributeModal(false)}
-            className="close-button"
-          >
-            <FontAwesomeIcon icon={faX} />
-          </button>
-        </div>
+        <AttributeBackdrop
+          renderHook={renderHook}
+          attributes={attributes}
+          attributeKey={attributeKey}
+          attributeValue={attributeValue}
+          setRenderHook={setRenderHook}
+          setAttributes={setAttributes}
+          setAttributeKey={setAttributeKey}
+          setAttributeValue={setAttributeValue}
+          setAttributeModal={setAttributeModal}
+        />
       )}
-
       {creatorModal && (
-        <div
-          className="attribute-modal"
-          id="attribute-modal"
-          onClick={() => {
-            setAttributeModal(false);
-          }}
-        >
-          <div
-            className="attributes"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            key={"creator-" + renderHook}
-          >
-            {creators?.map((attribute, index) => {
-              return (
-                <div
-                  className="attribute"
-                  key={"nft-creator-" + index}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log("clicked.");
-                    removeCreator(index);
-                    setRenderHook(renderHook + 1);
-                  }}
-                >
-                  <div className="key font-text-bold">{attribute.address}</div>
-
-                  <div className="line"></div>
-                  <div className="value font-text-light">
-                    {attribute.share.toString()}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="royalties flex-column-center-center">
-            <div className="legend flex-row-between-center">
-              <div className="font-text-small">royalties</div>
-              <div className="font-text-small-bold">
-                {sliderValue.toString()}%
-              </div>
-            </div>
-            <div className="slider-container">
-              <Slider
-                min={0}
-                max={20}
-                step={1}
-                value={sliderValue} // Fix: Change the type of sliderValue to number
-                onChange={(
-                  event: Event,
-                  value: number | number[],
-                  activeThumb: number
-                ) => {
-                  if (typeof value == "number") {
-                    setSliderValue(value);
-                  }
-                }}
-              />
-            </div>
-          </div>
-          <div
-            className="modal"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <div className="create-attributes font-text">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="input">
-                  <input
-                    type="text"
-                    className="key font-text"
-                    placeholder="Creator"
-                    required
-                    value={creatorKey}
-                    onChange={(e) => {
-                      setCreatorKey(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={creatorValue}
-                    className="value font-text"
-                    placeholder="Share (%)"
-                    required
-                    onChange={(e) => {
-                      setCreatorValue(Number(e.target.value));
-                    }}
-                  />
-                </div>
-                <button
-                  className="submit font-text"
-                  type="submit"
-                  disabled={
-                    !creatorKey ||
-                    !/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(creatorKey) ||
-                    !creatorValue ||
-                    creatorValue < 0
-                  }
-                  onClick={() => {
-                    setCreators([
-                      ...(creators || []),
-                      {
-                        address: creatorKey || "",
-                        share: creatorValue || 0,
-                      },
-                    ]);
-                    setCreatorKey("");
-                    setCreatorValue(100 - creatorValue);
-                  }}
-                >
-                  {!creatorKey ||
-                  !/[1-9A-HJ-NP-Za-km-z]{32,44}/.test(creatorKey) ||
-                  !creatorValue ||
-                  creatorValue < 0
-                    ? "fill correctly in the fields"
-                    : "add"}
-                </button>
-              </form>
-            </div>
-          </div>
-          {/* Button with x symbol */}
-          <button
-            onClick={() => {
-              setCreatorModal(false);
-            }}
-            className="close-button"
-          >
-            <FontAwesomeIcon icon={faX} />
-          </button>
-        </div>
+        <CreatorBackdrop
+          renderHook={renderHook}
+          creators={creators}
+          creatorKey={creatorKey}
+          creatorValue={creatorValue}
+          setRenderHook={setRenderHook}
+          setCreators={setCreators}
+          setCreatorKey={setCreatorKey}
+          setCreatorValue={setCreatorValue}
+          setCreatorModal={setCreatorModal}
+          sliderValue={sliderValue}
+          setSliderValue={setSliderValue}
+        />
       )}
-
       {result && success && (
         <div id="result-backdrop" className="flex-row-center-center">
           <div id="result-panel" className="flex-column-center-center">
