@@ -14,7 +14,7 @@ import {
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 import base58 from "bs58";
 
 export const createNFT = async ({

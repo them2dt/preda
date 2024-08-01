@@ -1,49 +1,61 @@
 @font-face {
-    font-family: "font-primary-regular";
-    src: url(./fonts/Switzer-Regular.otf);
+    font-family: "satoshi-light";
+    src: url(./fonts/Satoshi-Light.otf);
 }
 
 @font-face {
-    font-family: "font-primary-semibold";
-    src: url(./fonts/Switzer-Semibold.otf);
+    font-family: "satoshi-regular";
+    src: url(./fonts/Satoshi-Regular.otf);
 }
 
 @font-face {
-    font-family: "font-primary-bold";
-    src: url(./fonts/Switzer-Bold.otf);
+    font-family: "satoshi-medium";
+    src: url(./fonts/Satoshi-Medium.otf);
+}
+
+@font-face {
+    font-family: "satoshi-bold";
+    src: url(./fonts/Satoshi-Bold.otf);
+}
+
+@font-face {
+    font-family: "satoshi-black";
+    src: url(./fonts/Satoshi-Black.otf);
 }
 
 /* This file is a global stylesheet that contains the following:
-    - a font-face for the font
+    - a font-face for the Satoshi font
     - a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades
     - a light and a dark variant for the following elements: primary, primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4)
-    - a set of font-classes using the font-primary-regular font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights
+    - a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights
     - a set of classes for display:flex variations - like .flex-(row / column)-(justify-content)-(align-items)
     - a markdown-text explaining this file
 */
-
-
-/*the scrollbar should be invisible and the page should still be scrollable*/
 
 ::-webkit-scrollbar {
     width: 0;
     background: transparent;
 }
 
+:root {
+    background-color: var(--secondary);
+
+}
 
 html {
     scroll-behavior: smooth;
-    background-color: var(--secondary);
-
+    max-width: 100vw;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: "font-primary-regular";
+    font-family: "satoshi-regular";
     background-color: var(--secondary);
     color: var(--primary);
     overflow-x: hidden;
+
+    max-width: 100vw;
 }
 
 a {
@@ -54,30 +66,21 @@ a {
 /*a set of themes including the color black & white in 5 different grades and one accent color (named accent) in 5 different grades, lets take a #B763FF for the accent*/
 
 :root {
+    max-width: 100vw;
 
-    --black-1: rgb(0, 0, 0);
-    --black-2: rgb(10, 10, 10);
-    --black-3: rgb(20, 20, 20);
-    --black-4: rgb(30, 30, 30);
-    --black-5: rgb(40, 40, 40);
+    --black: #000000;
+    --black-1: #000000;
+    --black-2: #0a0a0a;
+    --black-3: #141414;
+    --black-4: #1e1e1e;
+    --black-5: #282828;
 
-    --black-transparent-1: rgba(0, 0, 0, 0.1);
-    --black-transparent-2: rgba(0, 0, 0, 0.2);
-    --black-transparent-3: rgba(0, 0, 0, 0.3);
-    --black-transparent-4: rgba(0, 0, 0, 0.4);
-    --black-transparent-5: rgba(0, 0, 0, 0.5);
-
+    --white: #FFFFFF;
     --white-1: #FFFFFF;
     --white-2: #F2F2F2;
     --white-3: #E5E5E5;
     --white-4: #D9D9D9;
     --white-5: #CCCCCC;
-
-    --white-transparent-1: rgba(255, 255, 255, 0.1);
-    --white-transparent-2: rgba(255, 255, 255, 0.2);
-    --white-transparent-3: rgba(255, 255, 255, 0.3);
-    --white-transparent-4: rgba(255, 255, 255, 0.4);
-    --white-transparent-5: rgba(255, 255, 255, 0.5);
 
     --purple-1: #B763FF;
     --purple-2: #C17DFF;
@@ -85,50 +88,51 @@ a {
     --purple-4: #D3B1FF;
     --purple-5: #DCCBFF;
 
-    --pink-light-1: #ff62b3;
-    --pink-light-2: #ff7cc0;
-    --pink-light-3: #ff8fc9;
-    --pink-light-4: #ffb0d9;
-    --pink-light-5: #ffc1e1;
+    --accent-1: #B763FF;
+    --accent-2: #C17DFF;
+    --accent-3: #CA97FF;
+    --accent-4: #D3B1FF;
+    --accent-5: #DCCBFF;
 
-    --pink-dark-1: #6b1742;
-    --pink-dark-2: #94215d;
-    --pink-dark-3: #c42f7c;
-    --pink-dark-4: #e23b91;
-    --pink-dark-5: #ff50aa;
+    --pink: #ff55cc;
+    --pink-light-1: #ff55cc;
+    --pink-light-2: #ff77cc;
+    --pink-light-3: #ff99cc;
+    --pink-light-4: #ffbbdd;
+    --pink-light-5: #ffddee;
 
+    --pink-dark-1: #550022;
+    --pink-dark-2: #50172d;
+    --pink-dark-3: #5c283d;
+    --pink-dark-4: #5e3948;
+    --pink-dark-5: #614952;
+
+    --navy: #62b8ff;
     --navy-light-1: #62b8ff;
     --navy-light-2: #7cc4ff;
     --navy-light-3: #8fd2ff;
     --navy-light-4: #b0e6ff;
     --navy-light-5: #c1e8ff;
 
-    --navy-dark-1: #17506b;
-    --navy-dark-2: #217094;
-    --navy-dark-3: #2f95c4;
-    --navy-dark-4: #3bade2;
-    --navy-dark-5: #50bfff;
+    --navy-dark-1: #083347;
+    --navy-dark-2: #133849;
+    --navy-dark-3: #163847;
+    --navy-dark-4: #1d343f;
+    --navy-dark-5: #36505c;
 
-    --bg-default: radial-gradient(var(--secondary-5), var(--secondary-1));
-    color: var(--primary);
+    color: var(--white);
+    color: var(--black);
 
 }
 
 /*a light and a dark variant for the following elements:primary,primary-faded-(1 to 4), secondary-faded-(1 to 4), accent, accent-faded-(1-4) each variant named like this: [data-theme="light"] */
 
-[data-theme="light"] {
-    --background: var(--bg-default);
+[data-theme="white"] {
     --primary: var(--black-1);
     --primary-faded-1: var(--black-2);
     --primary-faded-2: var(--black-3);
     --primary-faded-3: var(--black-4);
     --primary-faded-4: var(--black-5);
-
-    --primary-transparent-1: var(--black-transparent-1);
-    --primary-transparent-2: var(--black-transparent-2);
-    --primary-transparent-3: var(--black-transparent-3);
-    --primary-transparent-4: var(--black-transparent-4);
-    --primary-transparent-5: var(--black-transparent-5);
 
     --secondary: var(--white-1);
     --secondary-faded-1: var(--white-2);
@@ -136,12 +140,6 @@ a {
     --secondary-faded-3: var(--white-4);
     --secondary-faded-4: var(--white-5);
 
-    --secondary-transparent-1: var(--white-transparent-1);
-    --secondary-transparent-2: var(--white-transparent-2);
-    --secondary-transparent-3: var(--white-transparent-3);
-    --secondary-transparent-4: var(--white-transparent-4);
-    --secondary-transparent-5: var(--white-transparent-5);
-
     --accent: var(--purple-1);
     --accent-faded-1: var(--purple-2);
     --accent-faded-2: var(--purple-3);
@@ -149,19 +147,12 @@ a {
     --accent-faded-4: var(--purple-5);
 }
 
-[data-theme="dark"] {
-    --background: var(--bg-default);
+[data-theme="black"] {
     --primary: var(--white-1);
     --primary-faded-1: var(--white-2);
     --primary-faded-2: var(--white-3);
     --primary-faded-3: var(--white-4);
     --primary-faded-4: var(--white-5);
-
-    --primary-transparent-1: var(--white-transparent-1);
-    --primary-transparent-2: var(--white-transparent-2);
-    --primary-transparent-3: var(--white-transparent-3);
-    --primary-transparent-4: var(--white-transparent-4);
-    --primary-transparent-5: var(--white-transparent-5);
 
     --secondary: var(--black-1);
     --secondary-faded-1: var(--black-2);
@@ -169,12 +160,6 @@ a {
     --secondary-faded-3: var(--black-4);
     --secondary-faded-4: var(--black-5);
 
-    --secondary-transparent-1: var(--black-transparent-1);
-    --secondary-transparent-2: var(--black-transparent-2);
-    --secondary-transparent-3: var(--black-transparent-3);
-    --secondary-transparent-4: var(--black-transparent-4);
-    --secondary-transparent-5: var(--black-transparent-5);
-
     --accent: var(--purple-1);
     --accent-faded-1: var(--purple-2);
     --accent-faded-2: var(--purple-3);
@@ -182,31 +167,18 @@ a {
     --accent-faded-4: var(--purple-5);
 }
 
-[data-theme="candy"] {
-    --background: var(--bg-default);
+[data-theme="pink"] {
     --primary: var(--pink-dark-1);
     --primary-faded-1: var(--pink-dark-2);
     --primary-faded-2: var(--pink-dark-3);
     --primary-faded-3: var(--pink-dark-4);
     --primary-faded-4: var(--pink-dark-5);
 
-    --primary-transparent-1: var(--white-transparent-1);
-    --primary-transparent-2: var(--white-transparent-2);
-    --primary-transparent-3: var(--white-transparent-3);
-    --primary-transparent-4: var(--white-transparent-4);
-    --primary-transparent-5: var(--white-transparent-5);
-
     --secondary: var(--pink-light-5);
     --secondary-faded-1: var(--pink-light-4);
     --secondary-faded-2: var(--pink-light-3);
     --secondary-faded-3: var(--pink-light-2);
     --secondary-faded-4: var(--pink-light-1);
-
-    --secondary-transparent-1: var(--black-transparent-1);
-    --secondary-transparent-2: var(--black-transparent-2);
-    --secondary-transparent-3: var(--black-transparent-3);
-    --secondary-transparent-4: var(--black-transparent-4);
-    --secondary-transparent-5: var(--black-transparent-5);
 
     --accent: var(--pink-dark-1);
     --accent-faded-1: var(--pink-dark-2);
@@ -216,30 +188,17 @@ a {
 }
 
 [data-theme="navy"] {
-    --background: var(--bg-default);
     --primary: var(--navy-dark-1);
     --primary-faded-1: var(--navy-dark-2);
     --primary-faded-2: var(--navy-dark-3);
     --primary-faded-3: var(--navy-dark-4);
     --primary-faded-4: var(--navy-dark-5);
 
-    --primary-transparent-1: var(--white-transparent-1);
-    --primary-transparent-2: var(--white-transparent-2);
-    --primary-transparent-3: var(--white-transparent-3);
-    --primary-transparent-4: var(--white-transparent-4);
-    --primary-transparent-5: var(--white-transparent-5);
-
     --secondary: var(--navy-light-5);
     --secondary-faded-1: var(--navy-light-4);
     --secondary-faded-2: var(--navy-light-3);
     --secondary-faded-3: var(--navy-light-2);
     --secondary-faded-4: var(--navy-light-1);
-
-    --secondary-transparent-1: var(--black-transparent-1);
-    --secondary-transparent-2: var(--black-transparent-2);
-    --secondary-transparent-3: var(--black-transparent-3);
-    --secondary-transparent-4: var(--black-transparent-4);
-    --secondary-transparent-5: var(--black-transparent-5);
 
     --accent: var(--navy-dark-1);
     --accent-faded-1: var(--navy-dark-2);
@@ -248,75 +207,68 @@ a {
     --accent-faded-4: var(--navy-dark-5);
 }
 
-/* a set of font-classes using the font-primary-regular font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/
+/* a set of font-classes using the satoshi font-face including one for h1,h2,h3,h4 and a few text variations each with the appropriate sizes and weights. and each one should start with font- and the element*/
 
 .font-h1 {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-black";
     font-size: 52px;
+    line-height: 90%;
 }
 
 .font-h2 {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-black";
     font-size: 40px;
+    line-height: 90%;
 }
 
 .font-h3 {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-black";
     font-size: 28px;
+    line-height: 90%;
 }
 
 .font-h4 {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-black";
     font-size: 22px;
+    line-height: 90%;
 
 }
 
 .font-text {
-    font-family: "font-primary-regular";
+    font-family: "satoshi-medium";
     font-size: 18px;
+    line-height: 90%;
 
 }
 
 .font-text-bold {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-black";
     font-size: 18px;
-}
-
-.font-text-light {
-    font-family: "font-primary-regular";
-    font-size: 18px;
+    line-height: 90%;
 }
 
 .font-text-small {
-    font-family: "font-primary-regular";
+    font-family: "satoshi-medium";
     font-size: 16px;
+    line-height: 90%;
 }
 
 .font-text-small-bold {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-bold";
     font-size: 16px;
-}
-
-.font-text-small-light {
-    font-family: "font-primary-regular";
-    font-size: 16px;
+    line-height: 90%;
 }
 
 .font-text-tiny {
-    font-family: "font-primary-regular";
+    font-family: "satoshi-medium";
     font-size: 14px;
+    line-height: 90%;
 }
 
 .font-text-tiny-bold {
-    font-family: "font-primary-bold";
+    font-family: "satoshi-bold";
     font-size: 14px;
-}
-
-
-
-.font-text-tiny-light {
-    font-family: "font-primary-regular";
-    font-size: 14px;
+    line-height: 90%;
 }
 
 /* a set of classes for display:flex variations, like this: .flex-(row / column)-(justify-content)-(align-items)*/
@@ -326,6 +278,7 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
+    gap: 5px;
 }
 
 .flex-row-start-center {
@@ -333,6 +286,8 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-start-end {
@@ -340,6 +295,8 @@ a {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 /*row-center**/
@@ -348,6 +305,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-row-center-center {
@@ -355,6 +314,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-between-center {
@@ -362,6 +323,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-center-end {
@@ -369,6 +332,8 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 /*row-end**/
@@ -377,6 +342,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-row-end-center {
@@ -384,6 +351,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-end-end {
@@ -391,6 +360,8 @@ a {
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 .flex-row-between-start {
@@ -398,6 +369,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-row-between-center {
@@ -405,6 +378,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-row-between-end {
@@ -412,6 +387,8 @@ a {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 .flex-column-center-center {
@@ -419,6 +396,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-column-center-start {
@@ -426,6 +405,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-column-center-end {
@@ -433,6 +414,8 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 .flex-column-start-center {
@@ -440,6 +423,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-column-start-start {
@@ -447,6 +432,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-column-start-end {
@@ -454,6 +441,8 @@ a {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-end;
+    gap: 5px;
+
 }
 
 .flex-column-end-center {
@@ -461,6 +450,8 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+    gap: 5px;
+
 }
 
 .flex-column-end-start {
@@ -468,6 +459,8 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
+    gap: 5px;
+
 }
 
 .flex-column-end-end {
@@ -475,4 +468,15 @@ a {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
+    gap: 5px;
+
+}
+
+.flex-column-between-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+
 }

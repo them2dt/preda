@@ -15,7 +15,7 @@ import {
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { publicKey, unwrapOption } from "@metaplex-foundation/umi";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 
 export const tokenStandard = [
   "NonFungible",

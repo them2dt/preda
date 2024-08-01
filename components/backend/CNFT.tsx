@@ -16,7 +16,7 @@ import { publicKey, generateSigner } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { enqueueSnackbar } from "notistack";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 const sizeChart = [
   { depth: 3, buffer: 8, amount: 8 },
   { depth: 5, buffer: 8, amount: 32 },

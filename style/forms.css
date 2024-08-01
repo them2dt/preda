@@ -1,0 +1,215 @@
+.form {
+    position: relative;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 20px;
+    margin: 10px;
+    padding: 20px;
+    margin-top: 100px;
+}
+
+
+
+
+.input-field {
+    width: fill;
+}
+
+.input-field .label {
+    color: var(--accent-faded-3);
+}
+
+.input-field .label.active {
+    color: var(--accent);
+}
+
+.input-field textarea,
+.input-field input {
+    width: fill;
+    height: 40px;
+    padding: 10px;
+
+    color: var(--primary);
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-field textarea {
+    min-height: 100px;
+    resize: vertical;
+
+}
+
+.slidable .slider-container {
+    width: fill;
+    padding: 10px;
+    padding-right: 40px;
+
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+
+}
+
+
+.form .image-preview {
+    position: relative;
+    width: fill;
+    min-width: 300px;
+    padding-top: 100%;
+
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.form .image-preview input {
+    display: none;
+}
+
+.form .image-preview .placeholder,
+.form .image-preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: fill;
+    height: fill;
+    cursor: pointer;
+
+
+}
+
+.form .image-preview img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.form .backdrop-button {
+    width: fill;
+    padding: 10px;
+
+    background-color: var(--secondary-faded-1);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: inset 0px 2px 1px 0px rgba(255, 255, 255, 0.6), inset 0px -2px 1px 0px rgba(0, 0, 0, 0.1);
+
+
+    color: var(--primary);
+    cursor: pointer;
+
+}
+
+.form .backdrop-button:not(:hover) {
+    transition-duration: 0.2s;
+}
+
+.form .backdrop-button:hover {
+    box-shadow: inset 0px 1px 1px 0px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.2s;
+
+}
+
+.form .backdrop-button:active {
+    background-color: var(--secondary-faded-2);
+    box-shadow: inset 0px 2px 1px 0px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.2s;
+}
+
+.form .submit-container {
+    width: fill;
+    overflow: visible;
+}
+
+.form .submit {
+    width: fill;
+    height: 60px;
+    background-color: var(--accent-faded-1);
+    box-sizing: border-box;
+    border: none;
+    border-radius: 10px;
+    box-shadow: inset 0px 2px 1px 0px var(--accent-faded-4), inset 0px -2px 1px 0px rgba(0, 0, 0, 0.1);
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+
+.form .submit:hover {
+    box-shadow: inset 0px 2px 1px 0px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.2s;
+}
+
+.form .submit:active {
+    background-color: var(--accent);
+    box-shadow: inset 0px 4px 2px 0px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.2s;
+}
+
+.form .submit:disabled {
+    background-color: var(--accent-faded-4);
+    color: var(--accent-faded-2);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+#result-panel {
+    padding: 10px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 10px;
+}
+
+#result-panel button {
+    width: 200px;
+    padding: 10px;
+
+    background-color: var(--secondary-faded-1);
+    border: 2px solid var(--secondary-faded-2);
+    border-radius: 5px;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+#result-panel button.close {
+
+    background-color: var(--primary);
+    border: 2px solid var(--primary-faded-2);
+    color: var(--secondary);
+}
+
+
+#processing-panel {
+    padding: 40px;
+    background-color: var(--secondary);
+    border: 1px solid var(--secondary-faded-2);
+    border-radius: 20px;
+    color: var(--primary);
+}
+
+@media only screen and (max-width: 768px) {
+    .form {
+        width: fill;
+        margin-top: 80px;
+
+    }
+
+    .form .row {
+        flex-direction: column;
+        width: fill;
+    }
+
+    .form .row .flex-column-center-start {
+        width: fill;
+    }
+}

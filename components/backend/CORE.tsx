@@ -18,7 +18,7 @@ import {
 } from "@metaplex-foundation/mpl-core";
 import base58 from "bs58";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 
 export const createCoreAsset = async ({
   wallet,

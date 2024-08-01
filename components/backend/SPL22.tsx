@@ -22,7 +22,7 @@ import {
   getAccount,
   getMint,
 } from "@solana/spl-token";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 
 export const createAndMintSPL22 = async ({
   wallet,
