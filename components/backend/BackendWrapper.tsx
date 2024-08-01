@@ -1,5 +1,5 @@
 // ARCHIVED
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 import { Wallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { enqueueSnackbar } from "notistack";

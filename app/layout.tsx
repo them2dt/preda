@@ -1,17 +1,11 @@
 import "../style/globals.css";
-import "../style/skeleton.css";
-
-import "../style/adapter.css";
-import "../style/navigation.css";
+import "../style/sidepanel.css";
 import "../style/mobile-nav.css";
-
 import "../style/loader.css";
-import "../style/form-components.css";
+import "../style/forms.css";
+import "../style/home.css";
+import "../style/adapter.css";
 import "../style/backdrop.css";
-
-import "../style/homepage.css";
-
-//
 //
 import ClientWrapper from "./ClientWrapper";
 import Head from "next/head";

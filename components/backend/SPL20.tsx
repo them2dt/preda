@@ -16,7 +16,7 @@ import {
 import { TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
 import { enqueueSnackbar } from "notistack";
 import { getAsset } from "./General";
-import { BackendResponse } from "@/components/backend/types";
+import { BackendResponse } from "@/types";
 import base58 from "bs58";
 
 export const createAndMintSPL20 = async ({

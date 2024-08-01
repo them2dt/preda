@@ -1,5 +1,5 @@
-"use client";
-import { AnimatePresence, motion } from "framer-motion";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
 import { backendWrapper } from "@/components/backend/BackendWrapper";
 import { uploadFileToIrys } from "@/components/backend/General";
 import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
@@ -8,24 +8,26 @@ import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
 
 import SidePanel from "@/components/ui/SidePanel";
-import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
-import { themes } from "@/components/utils/simples";
+import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
-import { createNFT } from "@/components/backend/NFT";
+import { createCNFT, createMerkleTree } from "@/components/backend/CNFT";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { ThemeProvider } from "@emotion/react";
 import { colors, createTheme } from "@mui/material";
+import { publicKey } from "@metaplex-foundation/umi";
 
 export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
 
-  const [rpc, setRpc] = useState(RPC_MAINNET);
+  const [rpc, setRpc] = useState(
+    RPC_MAINNET
+  );
   const connection = new Connection(rpc);
   //
 
@@ -69,9 +71,6 @@ export default function Page() {
                       if (attributes) {
                         if (creators) {
                           if (creators.length > 0) {
-                            enqueueSnackbar("Royalties are registered.", {
-                              variant: "success",
-                            });
                             var totalShare = 0;
                             var duplicates = false;
                             for (let i = 0; i < creators.length; i++) {
@@ -93,62 +92,44 @@ export default function Page() {
                             //check if share split sums up to 100.
                             if (totalShare == 100) {
                               setProgressing(true);
-                              const imageUri = await uploadFileToIrys({
-                                wallet: wallet,
+                              const runner = createMerkleTree({
                                 connection: connection,
-                                file: image,
+                                wallet: wallet,
+                                size: 1,
+                                visibility: true,
                               });
 
-                              if (imageUri.status == 200) {
-                                if (imageUri.assetID) {
-                                  const metadata = {
-                                    name: title,
-                                    symbol: symbol,
-                                    description: description,
-                                    seller_fee_basis_points: sliderValue,
-                                    image: imageUri,
-                                    external_url: "emptea.xyz",
-                                    attributes: attributes || [],
-                                    properties: {
-                                      files: [
-                                        {
-                                          uri: imageUri.assetID,
-                                          type: "image/png",
-                                        },
-                                      ],
-                                      category: "image",
-                                      creators:
-                                        creators.length > 0
-                                          ? creators
-                                          : [
-                                              {
-                                                address:
-                                                  wallet.adapter.publicKey.toBase58(),
-                                                share: 100,
-                                              },
-                                            ],
-                                    },
-                                    collection: {},
-                                  };
+                              const merkletreeResponse = await backendWrapper({
+                                wallet: wallet,
+                                connection: connection,
+                                initialMessage: "Creating merkle tree",
+                                backendCall: async () => await runner,
+                              });
+                              if (merkletreeResponse.status == 200) {
+                                const imageUri = await uploadFileToIrys({
+                                  wallet: wallet,
+                                  connection: connection,
+                                  file: image,
+                                });
 
-                                  const metadataFile = new File(
-                                    [JSON.stringify(metadata)],
-                                    "metadata.json",
-                                    { type: "application/json" }
-                                  );
-                                  const metadataUri = await uploadFileToIrys({
-                                    wallet: wallet,
-                                    connection: connection,
-                                    file: metadataFile,
-                                  });
-                                  if (metadataUri.status == 200) {
-                                    if (metadataUri.assetID) {
-                                      const runner = createNFT({
-                                        wallet: wallet,
-                                        connection: connection,
-                                        title: title,
-                                        metadata: metadataUri.assetID,
-                                        sellerFeeBasisPoints: sliderValue,
+                                if (imageUri.status == 200) {
+                                  if (imageUri.assetID) {
+                                    const metadata = {
+                                      name: title,
+                                      symbol: symbol,
+                                      description: description,
+                                      seller_fee_basis_points: sliderValue,
+                                      image: imageUri,
+                                      external_url: "emptea.xyz",
+                                      attributes: attributes || [],
+                                      properties: {
+                                        files: [
+                                          {
+                                            uri: imageUri.assetID,
+                                            type: "image/png",
+                                          },
+                                        ],
+                                        category: "image",
                                         creators:
                                           creators.length > 0
                                             ? creators
@@ -159,15 +140,59 @@ export default function Page() {
                                                   share: 100,
                                                 },
                                               ],
-                                      });
-                                      const response = await backendWrapper({
-                                        wallet: wallet,
-                                        connection: connection,
-                                        initialMessage: "Create tokens",
-                                        backendCall: async () => await runner,
-                                      });
-                                      setResult(response);
+                                      },
+                                      collection: {},
+                                    };
+
+                                    const metadataFile = new File(
+                                      [JSON.stringify(metadata)],
+                                      "metadata.json",
+                                      { type: "application/json" }
+                                    );
+                                    const metadataUri = await uploadFileToIrys({
+                                      wallet: wallet,
+                                      connection: connection,
+                                      file: metadataFile,
+                                    });
+                                    if (metadataUri.status == 200) {
+                                      if (metadataUri.assetID) {
+                                        const runner = createCNFT({
+                                          wallet: wallet,
+                                          connection: connection,
+                                          merkleTree: publicKey(
+                                            merkletreeResponse.assetID || ""
+                                          ),
+                                          title: title,
+                                          metadata: metadataUri.assetID,
+                                          sellerFeeBasisPoints: sliderValue,
+                                          creators:
+                                            creators.length > 0
+                                              ? creators
+                                              : [
+                                                  {
+                                                    address:
+                                                      wallet.adapter.publicKey.toBase58(),
+                                                    share: 100,
+                                                  },
+                                                ],
+                                        });
+                                        const response = await backendWrapper({
+                                          wallet: wallet,
+                                          connection: connection,
+                                          initialMessage: "creating asset",
+                                          backendCall: async () => await runner,
+                                        });
+                                        setResult(response);
+                                      } else {
+                                        enqueueSnackbar(
+                                          "Metadata upload failed.",
+                                          {
+                                            variant: "error",
+                                          }
+                                        );
+                                      }
                                     } else {
+                                      setProgressing(false);
                                       enqueueSnackbar(
                                         "Metadata upload failed.",
                                         {
@@ -177,7 +202,7 @@ export default function Page() {
                                     }
                                   } else {
                                     setProgressing(false);
-                                    enqueueSnackbar("Metadata upload failed.", {
+                                    enqueueSnackbar("Image upload failed.", {
                                       variant: "error",
                                     });
                                   }
@@ -189,9 +214,12 @@ export default function Page() {
                                 }
                               } else {
                                 setProgressing(false);
-                                enqueueSnackbar("Image upload failed.", {
-                                  variant: "error",
-                                });
+                                enqueueSnackbar(
+                                  "Couldn't create merkle tree.",
+                                  {
+                                    variant: "error",
+                                  }
+                                );
                               }
                             } else {
                               setProgressing(false);
@@ -300,11 +328,9 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <motion.div className="submit-container flex-column-center-center">
-              <button className="submit font-h4" onClick={run}>
-                Create
-              </button>
-            </motion.div>
+            <motion.div className="submit-container flex-column-center-center"><button className="submit font-h4" onClick={run}>
+              Create
+            </button></motion.div>
           </div>
         </div>
       </div>
@@ -365,7 +391,7 @@ export default function Page() {
         </div>
       )}
       <SidePanel
-        sectionID={0}
+        sectionID={2}
         operationID={0}
         theme={theme}
         setTheme={setTheme}

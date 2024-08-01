@@ -1,5 +1,6 @@
-"use client";
-import React, { useMemo } from "react";
+"use client"
+import { AnimatePresence, motion } from "framer-motion";;
+import React, { useMemo, useState } from "react";
 import { WalletProvider } from "@solana/wallet-adapter-react";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";

@@ -13,7 +13,7 @@ import React, { useState } from "react";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { enqueueSnackbar } from "notistack";
-import { burnAsset } from "@/components/backend/CORE";
+import { burnCNFT } from "@/components/backend/CNFT";
 
 export default function Page() {
   const { wallet } = useWallet();
@@ -34,7 +34,7 @@ export default function Page() {
         if (wallet.adapter.connected) {
           if (wallet.adapter.publicKey) {
             if (adress) {
-              const runner = burnAsset({ wallet, connection, assetId: adress });
+              const runner = burnCNFT({ wallet, connection, assetId: adress });
               const response = await backendWrapper({
                 wallet: wallet,
                 connection: connection,

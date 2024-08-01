@@ -1,30 +1,33 @@
-"use client"
-import { AnimatePresence, motion } from "framer-motion";;
+"use client";
+import { motion } from "framer-motion";
 import { backendWrapper } from "@/components/backend/BackendWrapper";
-import { TextField } from "@/components/ui/InputFields";
+import { NumberField } from "@/components/ui/InputFields";
 import ResultPanel from "@/components/ui/Result";
 
 import SidePanel from "@/components/ui/SidePanel";
-import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";import { themes } from "@/components/utils/simples";
+import { RPC_MAINNET } from "@/components/utils/simples";
+import { themes } from "@/components/utils/simples";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
+import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
+import { createMerkleTree } from "@/components/backend/CNFT";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { enqueueSnackbar } from "notistack";
-import { burnAsset } from "@/components/backend/CORE";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
 
 export default function Page() {
   const { wallet } = useWallet();
   const [theme, setTheme] = useState(0);
-  const [rpc, setRpc] = useState(
-    RPC_MAINNET
-  );
+
+  const [rpc, setRpc] = useState(RPC_MAINNET);
   const connection = new Connection(rpc);
   //
 
-  const [adress, setAdress] = useState<string>();
+  const [size, setSize] = useState<number>(0);
+
   const [progressing, setProgressing] = useState(false);
   const [result, setResult] = useState<BackendResponse>();
 
@@ -33,22 +36,31 @@ export default function Page() {
       if (wallet.adapter) {
         if (wallet.adapter.connected) {
           if (wallet.adapter.publicKey) {
-            if (adress) {
-              const runner = burnAsset({ wallet, connection, assetId: adress });
-              const response = await backendWrapper({
-                wallet: wallet,
-                connection: connection,
-                initialMessage: "Burning asset...",
-                backendCall: async () => await runner,
-              });
-              setProgressing(false);
+            setProgressing(true);
+            const runner = createMerkleTree({
+              connection: connection,
+              wallet: wallet,
+              size: size,
+              visibility: true,
+            });
+
+            const response = await backendWrapper({
+              wallet: wallet,
+              connection: connection,
+              initialMessage: "Creating merkle tree",
+              backendCall: async () => await runner,
+            });
+            if (response.status == 200) {
               setResult(response);
+            } else {
+              setProgressing(false);
+              enqueueSnackbar("Couldn't create merkle tree.", {
+                variant: "error",
+              });
             }
           } else {
             setProgressing(false);
-            enqueueSnackbar("Wallet has no public key.", {
-              variant: "error",
-            });
+            enqueueSnackbar("Wallet has no public key.", { variant: "error" });
           }
         } else {
           setProgressing(false);
@@ -76,26 +88,35 @@ export default function Page() {
           <div className="form flex-column-center-center">
             <div className="row flex-row-center-start">
               <div className="flex-column-center-start">
-                <TextField label="Mint address" setValue={setAdress} />
+                <NumberField
+                  label="Supply"
+                  min={0}
+                  max={1000000000000}
+                  setValue={setSize}
+                />
               </div>
             </div>
-            <button className="submit font-h4" onClick={run}>
-              Burn asset
-            </button>
+            <motion.div className="submit-container flex-column-center-center">
+              <button className="submit font-h4" onClick={run}>
+                Create
+              </button>
+            </motion.div>
           </div>
         </div>
       </div>
       {result && (
         <ResultPanel result={result} setResult={setResult} theme={theme} />
       )}
-      {progressing && (
+      {progressing && !result && (
         <div
           className="backdrop flex-row-center-center"
           data-theme={themes[theme]}
         >
           <div id="processing-panel" className="flex-column-center-center">
             <div className="symbol">
-              <CircularProgress color="primary" />
+              <ThemeProvider theme={createTheme()}>
+                <CircularProgress color="primary" />
+              </ThemeProvider>
             </div>
             <div className="font-h4">processing...</div>
           </div>
@@ -103,7 +124,7 @@ export default function Page() {
       )}
       <SidePanel
         sectionID={2}
-        operationID={1}
+        operationID={0}
         theme={theme}
         setTheme={setTheme}
         rpc={rpc}

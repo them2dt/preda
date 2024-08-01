@@ -10,6 +10,10 @@
         left: 0;
         width: fill;
         height: fill;
+
+        padding: 10px;
+        box-sizing: border-box;
+
         overflow-y: scroll;
         gap: 0;
         pointer-events: none;
@@ -29,9 +33,10 @@
         width: fill;
         height: fit-content;
         padding: 10px;
+        margin-bottom: 10px;
 
-        background-color: var(--secondary-faded-1);
-        border-bottom: 1px solid var(--secondary-faded-2);
+        background-color: var(--secondary);
+        border-radius: 10px;
         box-sizing: border-box;
         z-index: 1000;
         pointer-events: all;
@@ -56,10 +61,8 @@
         width: fill;
         height: fit-content;
 
-        background-color: var(--secondary-faded-1);
-        border-bottom: 1px solid var(--secondary-faded-4);
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
+        background-color: var(--secondary);
+        border-radius: 10px;
         box-sizing: border-box;
         padding: 20px;
         padding-top: 40px;
@@ -73,7 +76,7 @@
         width: fill;
         height: fit-content;
         padding: 10px;
-        border-radius: 10px;
+        border-radius: 5px;
         background-color: var(--accent);
         box-sizing: border-box;
         color: var(--white);

@@ -10,10 +10,10 @@ import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import React, { useState } from "react";
+import { burnNFT } from "@/components/backend/NFT";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { enqueueSnackbar } from "notistack";
-import { burnAsset } from "@/components/backend/CORE";
 
 export default function Page() {
   const { wallet } = useWallet();
@@ -34,7 +34,7 @@ export default function Page() {
         if (wallet.adapter.connected) {
           if (wallet.adapter.publicKey) {
             if (adress) {
-              const runner = burnAsset({ wallet, connection, assetId: adress });
+              const runner = burnNFT({ wallet, connection, assetId: adress });
               const response = await backendWrapper({
                 wallet: wallet,
                 connection: connection,
@@ -102,7 +102,7 @@ export default function Page() {
         </div>
       )}
       <SidePanel
-        sectionID={2}
+        sectionID={0}
         operationID={1}
         theme={theme}
         setTheme={setTheme}
