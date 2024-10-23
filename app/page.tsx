@@ -1,21 +1,28 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { backendWrapper } from "@/components/backend/BackendWrapper";
-import { uploadFileToIrys } from "@/components/backend/General";
-import AttributeBackdrop from "@/components/ui/AttributeBackdrop";
-import CreatorBackdrop from "@/components/ui/CreatorBackdrop";
-import { ImageInput, TextArea, TextField } from "@/components/ui/InputFields";
-import ResultPanel from "@/components/ui/Result";
+import { backendWrapper } from "@/app-elements/app-backend-wrapper/app-backend-wrapper";
+import { uploadFileToIrys } from "@/app-elements/app-transaction-handlers/app-general-handler";
+import AttributeBackdrop from "@/app-elements/app-backdrop/app-attribute-backdrop";
+import CreatorBackdrop from "@/app-elements/app-backdrop/app-creator-backdrop";
+import {
+  ImageInput,
+  TextArea,
+  TextField,
+} from "@/app-elements/app-input-fields/app-input-fields";
+import ResultPanel from "@/app-elements/app-backdrop/app-result-backdrop";
 
-import SidePanel from "@/components/ui/SidePanel";
-import { RPC_MAINNET, RPC_DEVNET } from "@/components/utils/simples";
-import { themes } from "@/components/utils/simples";
+import SidePanel from "@/app-elements/app-navigation/app-navigation";
+import {
+  RPC_MAINNET,
+  RPC_DEVNET,
+  themes,
+} from "@/app-elements/app-constants/app-constants";
 import { BackendResponse } from "@/types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
-import { createNFT } from "@/components/backend/NFT";
+import { createNFT } from "@/app-elements/app-transaction-handlers/app-nft-handler";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { ThemeProvider } from "@emotion/react";

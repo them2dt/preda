@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import React from "react";
-import { themes } from "../utils/simples";
+import { themes } from "@/app-elements/app-constants/app-constants";
 
 export default function ResultPanel({
   result,

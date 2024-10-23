@@ -1,8 +1,7 @@
 "use client"
-import { AnimatePresence, motion } from "framer-motion";;
 import React, { useState } from "react";
-import { Slider, Switch } from "./TeaUI";
-import { validateImage } from "@/components/backend/General";
+import { Slider, Switch } from "@/app-elements/app-custom-components/app-custom-components";
+import { validateImage } from "@/app-elements/app-transaction-handlers/app-general-handler";
 
 export function TextField({
   label,
