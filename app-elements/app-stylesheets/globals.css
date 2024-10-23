@@ -1,26 +1,26 @@
 @font-face {
     font-family: "satoshi-light";
-    src: url(./fonts/Satoshi-Light.otf);
+    src: url(./app-fonts/Satoshi-Light.otf);
 }
 
 @font-face {
     font-family: "satoshi-regular";
-    src: url(./fonts/Satoshi-Regular.otf);
+    src: url(./app-fonts/Satoshi-Regular.otf);
 }
 
 @font-face {
     font-family: "satoshi-medium";
-    src: url(./fonts/Satoshi-Medium.otf);
+    src: url(./app-fonts/Satoshi-Medium.otf);
 }
 
 @font-face {
     font-family: "satoshi-bold";
-    src: url(./fonts/Satoshi-Bold.otf);
+    src: url(./app-fonts/Satoshi-Bold.otf);
 }
 
 @font-face {
     font-family: "satoshi-black";
-    src: url(./fonts/Satoshi-Black.otf);
+    src: url(./app-fonts/Satoshi-Black.otf);
 }
 
 /* This file is a global stylesheet that contains the following:

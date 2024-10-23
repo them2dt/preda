@@ -1,11 +1,11 @@
-import "../style/globals.css";
-import "../style/sidepanel.css";
-import "../style/mobile-nav.css";
-import "../style/loader.css";
-import "../style/forms.css";
-import "../style/home.css";
-import "../style/adapter.css";
-import "../style/backdrop.css";
+import "@/app-elements/app-stylesheets/globals.css";
+import "@/app-elements/app-stylesheets/sidepanel.css";
+import "@/app-elements/app-stylesheets/mobile-nav.css";
+import "@/app-elements/app-stylesheets/loader.css";
+import "@/app-elements/app-stylesheets/forms.css";
+import "@/app-elements/app-stylesheets/home.css";
+import "@/app-elements/app-stylesheets/adapter.css";
+import "@/app-elements/app-stylesheets/backdrop.css";
 //
 import ClientWrapper from "./ClientWrapper";
 import Head from "next/head";
