@@ -6,9 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faWallet,
   faPalette,
-  faQuestion,
   faNetworkWired,
-  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -28,7 +26,6 @@ import {
   emptea_app_name,
   emptea_app_icons,
   icons,
-  opIcons,
   RPC_DEVNET,
   RPC_MAINNET,
 } from "../app-constants/app-constants";
