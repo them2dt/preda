@@ -1,6 +1,6 @@
-import labs from "../../media/emptea-labs/app-icons/emptea labs.png";
-import preda from "../../media/emptea-labs/app-icons/emptea preda.png";
-import galaxy from "../../media/emptea-labs/app-icons/emptea galaxy.png";
+import labs from "@/app-elements/app-media/app-media-images/emptea labs.png";
+import preda from "@/app-elements/app-media/app-media-images/emptea preda.png";
+import galaxy from "@/app-elements/app-media/app-media-images/emptea galaxy.png";
 import {
   faAtom,
   faBolt,

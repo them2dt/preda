@@ -6,9 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faWallet,
   faPalette,
-  faQuestion,
   faNetworkWired,
-  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -16,8 +14,8 @@ import { Connection } from "@solana/web3.js";
 import { enqueueSnackbar } from "notistack";
 
 //local imports
-import teacup from "../../media/emptea-labs/teacup-logo.svg";
-import Logo from "../../media/emptea-labs/app-icons/emptea preda.png";
+import teacup from "@/app-elements/app-media/app-logo/app-logo.svg";
+import Logo from "@/app-elements/app-media/app-media-images/emptea preda.png";
 //other
 import {
   themes,
@@ -28,12 +26,11 @@ import {
   emptea_app_name,
   emptea_app_icons,
   icons,
-  opIcons,
   RPC_DEVNET,
   RPC_MAINNET,
-} from "../utils/simples";
-import Loader from "./Loader";
-import MobileNav from "./MobileNav";
+} from "../app-constants/app-constants";
+import Loader from "../app-loader/app-loader";
+import MobileNav from "./app-mobile-navigation";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
